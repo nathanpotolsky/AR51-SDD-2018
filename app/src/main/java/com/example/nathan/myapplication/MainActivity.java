@@ -22,8 +22,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Example of a call to a native method
-        TextView tv = (TextView) findViewById(R.id.sample_text);
+        TextView tv = findViewById(R.id.sample_text);
         tv.setText(stringFromJNI());
+
+        // Calling C++ method to show Nathan greeting
+        TextView tvNathan = findViewById(R.id.nathan_hello);
+        tvNathan.setText(nathanFromJNI());
     }
 
     public void open(View view){
@@ -57,4 +61,5 @@ public class MainActivity extends AppCompatActivity {
      * which is packaged with this application.
      */
     public native String stringFromJNI();
+    public native String nathanFromJNI();
 }
