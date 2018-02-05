@@ -14,3 +14,10 @@ Java_com_example_nathan_myapplication_MainActivity_nathanFromJNI(JNIEnv *env, jo
     std::string greeting = "Hello from Nathan";
     return env->NewStringUTF(greeting.c_str());
 }
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_nathan_myapplication_MainActivity_calebFromJNI(JNIEnv *env, jobject /* this */) {
+    std::string greeting = "Hello from Caleb";
+    return env->NewStringUTF(greeting.c_str());
+}

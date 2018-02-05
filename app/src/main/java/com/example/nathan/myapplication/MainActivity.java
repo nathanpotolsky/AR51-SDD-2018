@@ -28,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
         // Calling C++ method to show Nathan greeting
         TextView tvNathan = findViewById(R.id.nathan_hello);
         tvNathan.setText(nathanFromJNI());
+
+
+        TextView tvCaleb = findViewById(R.id.caleb_hello);
+        tvNathan.setText(calebFromJNI());
     }
 
     public void open(View view){
@@ -62,4 +66,5 @@ public class MainActivity extends AppCompatActivity {
      */
     public native String stringFromJNI();
     public native String nathanFromJNI();
+    public native String calebFromJNI();
 }
