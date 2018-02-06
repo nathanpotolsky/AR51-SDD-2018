@@ -21,3 +21,10 @@ Java_com_example_nathan_myapplication_MainActivity_calebFromJNI(JNIEnv *env, job
     std::string greeting = "Hello from Caleb";
     return env->NewStringUTF(greeting.c_str());
 }
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_nathan_myapplication_MainActivity_youngFromJNI(JNIEnv *env, jobject /* this */) {
+    std::string greeting = "Hello from Young";
+    return env->NewStringUTF(greeting.c_str());
+}

@@ -32,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
 
         TextView tvCaleb = findViewById(R.id.caleb_hello);
         tvNathan.setText(calebFromJNI());
+
+        TextView tvYoung = findViewById(R.id.young_hello);
+        tvNathan.setText(calebFromJNI());
     }
 
     public void open(View view){
