@@ -7,19 +7,6 @@
     tools:context="com.example.nathan.myapplication.MainActivity">
 
     <TextView
-        android:id="@+id/young_hello"
-        android:layout_width="148dp"
-        android:layout_height="23dp"
-        android:text="[Young greeting]"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.622" />
-
-    <TextView
         android:id="@+id/sample_text"
         android:layout_width="200dp"
         android:layout_height="25dp"
@@ -36,14 +23,12 @@
         android:id="@+id/button_test"
         android:layout_width="122dp"
         android:layout_height="50dp"
+        android:layout_marginBottom="128dp"
         android:onClick="open"
         android:text="Click me!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.754" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -66,34 +51,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.01999998" />
 
-    <TextView
-        android:id="@+id/nathan_hello"
-        android:layout_width="148dp"
-        android:layout_height="23dp"
-        android:text="[Nathan greeting]"
-        android:textAlignment="center"
-        android:textSize="18sp"
+    <Button
+        android:id="@+id/checkersButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="260dp"
+        android:text="Checkers"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.39" />
-
-    <TextView
-        android:id="@+id/caleb_hello"
-        android:layout_width="148dp"
-        android:layout_height="23dp"
-        android:layout_marginBottom="66dp"
-        android:layout_marginEnd="106dp"
-        android:layout_marginStart="110dp"
-        android:layout_marginTop="45dp"
-        android:text="[Caleb greeting]"
-        app:layout_constraintBottom_toTopOf="@+id/button_test"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/nathan_hello"
-        tools:layout_marginLeft="110dp"
-        tools:layout_marginRight="106dp" />
+        app:layout_constraintHorizontal_bias="0.46"
+        app:layout_constraintStart_toEndOf="@+id/guideline" />
 
 </android.support.constraint.ConstraintLayout>

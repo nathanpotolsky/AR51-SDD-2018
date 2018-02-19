@@ -1,12 +1,13 @@
 package com.example.nathan.myapplication;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.widget.TextView;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,16 +26,14 @@ public class MainActivity extends AppCompatActivity {
         TextView tv = findViewById(R.id.sample_text);
         tv.setText(stringFromJNI());
 
-        // Calling C++ method to show Nathan greeting
-        TextView tvNathan = findViewById(R.id.nathan_hello);
-        tvNathan.setText(nathanFromJNI());
-
-
-        TextView tvCaleb = findViewById(R.id.caleb_hello);
-        tvNathan.setText(calebFromJNI());
-
-        TextView tvYoung = findViewById(R.id.young_hello);
-        tvNathan.setText(calebFromJNI());
+        Button checkersButton = (Button)findViewById(R.id.checkersButton);
+        checkersButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent optionIntent = new Intent(getApplicationContext(), CheckersOptions1.class);
+                startActivity(optionIntent);
+            }
+        });
     }
 
     public void open(View view){
