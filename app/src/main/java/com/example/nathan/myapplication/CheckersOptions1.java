@@ -1,7 +1,6 @@
 package com.example.nathan.myapplication;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Bundle;
@@ -17,14 +16,14 @@ public class CheckersOptions1 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkers_options1);
 
-        Button backButton = (Button)findViewById(R.id.backButton);
-        backButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent optionIntent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(optionIntent);
-            }
-        });
+//        Button backButton = (Button)findViewById(R.id.backButton);
+//        backButton.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View v){
+//                Intent optionIntent = new Intent(getApplicationContext(), MainActivity.class);
+//                startActivity(optionIntent);
+//            }
+//        });
 
         Button forwardButton = (Button)findViewById(R.id.forwardButton);
         forwardButton.setOnClickListener(new View.OnClickListener(){
