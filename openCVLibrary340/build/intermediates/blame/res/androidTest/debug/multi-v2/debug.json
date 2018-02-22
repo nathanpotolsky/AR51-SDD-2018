@@ -1,7 +1,11 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/youngchulchun/AndroidStudioProjects/AR51-SDD-2018/openCVLibrary340/build/intermediates/res/merged/androidTest/debug/values_values.arsc.flat",
+            "outputFile": "C:\\Users\\Nathan\\AndroidStudioProjects\\MyApplication\\openCVLibrary340\\build\\intermediates\\res\\merged\\androidTest\\debug\\values_values.arsc.flat",
+            "map": []
+        },
+        {
+            "outputFile": "C:\\Users\\youngchulchun\\AndroidStudioProjects\\AR51-SDD-2018\\openCVLibrary340\\build\\intermediates\\res\\merged\\androidTest\\debug\\values_values.arsc.flat",
             "map": []
         }
     ]
