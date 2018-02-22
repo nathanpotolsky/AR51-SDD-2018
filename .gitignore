@@ -9,3 +9,5 @@
 .externalNativeBuild
 
 openCVLibrary340/
+
+\.idea/misc\.xml
