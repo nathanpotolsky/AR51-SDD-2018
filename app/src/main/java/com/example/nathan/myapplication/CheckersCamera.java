@@ -1,34 +1,65 @@
 package com.example.nathan.myapplication;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.widget.ImageView;
+import android.content.Context;
+import android.hardware.Camera;
+import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
-public class CheckersCamera extends Activity {
-    private static final int CAMERA_REQUEST = 1888;
-    private ImageView imageView;
+import java.io.IOException;
 
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.main);
-//        this.imageView = (ImageView)this.findViewById(R.id.imageView1);
-//        Button photoButton = (Button) this.findViewById(R.id.button1);
-//        photoButton.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-//                startActivityForResult(cameraIntent, CAMERA_REQUEST);
-//            }
-//        });
-//    }
+public class CheckersCamera extends SurfaceView implements SurfaceHolder.Callback{
+    private SurfaceHolder mHolder;
+    private Camera mCamera;
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            imageView.setImageBitmap(photo);
+    public CheckersCamera(Context context, Camera camera){
+        super(context);
+
+        mCamera = camera;
+        mCamera.setDisplayOrientation(90);
+        //get the holder and set this class as the callback, so we can get camera data here
+        mHolder = getHolder();
+        mHolder.addCallback(this);
+        mHolder.setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        try{
+            //when the surface is created, we can set the camera to draw images in this surfaceholder
+            mCamera.setPreviewDisplay(surfaceHolder);
+            mCamera.startPreview();
+        } catch (IOException e) {
+            Log.d("ERROR", "Camera error on surfaceCreated " + e.getMessage());
         }
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i2, int i3) {
+        //before changing the application orientation, you need to stop the preview, rotate and then start it again
+        if(mHolder.getSurface() == null)//check if the surface is ready to receive camera data
+            return;
+
+        try{
+            mCamera.stopPreview();
+        } catch (Exception e){
+            //this will happen when you are trying the camera if it's not running
+        }
+
+        //now, recreate the camera preview
+        try{
+            mCamera.setPreviewDisplay(mHolder);
+            mCamera.startPreview();
+        } catch (IOException e) {
+            Log.d("ERROR", "Camera error on surfaceChanged " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+        //our app has only one screen, so we'll destroy the camera in the surface
+        //if you are unsing with more screens, please move this code your activity
+        mCamera.stopPreview();
+        mCamera.release();
     }
 }
