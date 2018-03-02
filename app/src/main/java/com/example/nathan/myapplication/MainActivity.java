@@ -8,10 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-import android.hardware.Camera;
-import android.util.Log;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
     //private Camera mCamera = null;
@@ -38,6 +34,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v){
                 Intent optionIntent = new Intent(getApplicationContext(), CheckersOptions1.class);
                 startActivity(optionIntent);
+            }
+        });
+
+        Button connectFourButton = (Button)findViewById(R.id.connectFourButton);
+        connectFourButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                CheckerBoard tempCheckerBoard = new CheckerBoard();
+                tempCheckerBoard.printBoard();
+                tempCheckerBoard.addOurPiecesToList();
+                tempCheckerBoard.findValidMoves();
             }
         });
     }
