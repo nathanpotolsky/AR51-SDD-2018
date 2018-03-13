@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -43,8 +44,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v){
                 CheckerBoard tempCheckerBoard = new CheckerBoard();
                 tempCheckerBoard.printBoard();
-                tempCheckerBoard.addOurPiecesToList();
-                tempCheckerBoard.findValidMoves();
+                tempCheckerBoard.addPiecesToLists();
+                tempCheckerBoard.findValidMoves(true);
+                tempCheckerBoard.findValidMoves(false);
+                Log.d("myTag", "  \\-----------------");
+                tempCheckerBoard.printAllPieces();
+                tempCheckerBoard.printAllMoves();
             }
         });
     }

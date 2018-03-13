@@ -1,15 +1,20 @@
 package com.example.nathan.myapplication;
 
-import org.opencv.core.Point;
-
-/**
- * Created by Nathan on 3/1/2018.
- */
-
 public class CheckersMove extends Move {
-    Point startPoint = new Point();
+    Position startPoint;
+    boolean isJumpMove;
 
-    public CheckersMove() {
+    public CheckersMove(Position startPoint, Position endPoint, boolean isJumpMove) {
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
+        this.isJumpMove = isJumpMove;
+    }
 
+    public Position getStartPoint() {
+        return startPoint;
+    }
+
+    public boolean getIsJumpMove() {
+        return isJumpMove;
     }
 }
