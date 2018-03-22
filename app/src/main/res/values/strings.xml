@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Final Draught</string>
     <string name="title_activity_checkers_camera">CheckersCamera</string>
+    <string name="title_activity_camera_filler_page">CameraFillerPage</string>
+    <string name="title_activity_color_selection">ColorSelection</string>
+    <string name="title_activity_king_tagging">KingTagging</string>
 </resources>
