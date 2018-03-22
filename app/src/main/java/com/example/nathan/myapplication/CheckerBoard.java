@@ -241,11 +241,11 @@ public class CheckerBoard extends Board{
                     } else {
                         curr.description += " You can become a king";
                     }
-                    if (intBoard[downLeft.getX()][downLeft.getY()] == 2 || intBoard[downLeft.getX()][downLeft.getY()] == 4) {
+                    if (isWithinBoard(downLeft) && (intBoard[downLeft.getX()][downLeft.getY()] == 2 || intBoard[downLeft.getX()][downLeft.getY()] == 4)) {
                         curr.weight += 0.5;
                         curr.description += " and capture a piece";
                     }
-                    if (intBoard[downRight.getX()][downRight.getY()] == 2 || intBoard[downRight.getX()][downRight.getY()] == 4) {
+                    if (isWithinBoard(downRight) && (intBoard[downRight.getX()][downRight.getY()] == 2 || intBoard[downRight.getX()][downRight.getY()] == 4)) {
                         curr.weight += 0.5;
                         curr.description += " and capture a piece";
                     }
