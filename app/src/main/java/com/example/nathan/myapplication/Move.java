@@ -2,7 +2,7 @@ package com.example.nathan.myapplication;
 
 public abstract class Move {
     Position endPoint;
-    int weight;
+    double weight;
     String description;
 
 //    public Move() {
