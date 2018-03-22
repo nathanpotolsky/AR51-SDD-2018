@@ -283,6 +283,7 @@ public class CheckerBoard extends Board{
     }
 
     void printAllMoves(){
+        assignMoveWeights();
         for(int i = 0; i < ourMoves.size(); i++)
         {
             int startX = ourMoves.get(i).getStartPoint().getX();
@@ -296,6 +297,8 @@ public class CheckerBoard extends Board{
             else{
                 Log.d("myTag", "Our (" + startX + ", " + startY + ") can jump to (" + endX + ", " + endY + ") [jump] [Instant Take]");
             }
+            Log.d("myTag", "Move weight: " + ourMoves.get(i).weight);
+            Log.d("myTag", "Move description: " + ourMoves.get(i).description);
         }
 
         for(int i = 0; i < theirMoves.size(); i++)
