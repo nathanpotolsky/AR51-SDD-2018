@@ -3,6 +3,7 @@ package com.example.nathan.myapplication;
 import android.util.Log;
 
 import java.util.LinkedList;
+import java.util.Iterator;
 
 public class CheckerBoard extends Board{
 
@@ -115,6 +116,149 @@ public class CheckerBoard extends Board{
         }
     }
 
+    void assignMoveWeights() {
+        LinkedList<CheckersMove> moves = ourMoves;
+        if (moves.size() != 0) {
+            Iterator<CheckersMove> itr = moves.iterator();
+            while(itr.hasNext()) {
+                CheckersMove curr = itr.next();
+                curr.weight = 0;
+                curr.description = "";
+
+                if (curr.isJumpMove) {
+                    curr.weight += 2;
+                    curr.description += "You can jump over a piece.";
+                }
+
+                //check if can be caught/blocks move
+                Position startPoint = curr.getStartPoint();
+                Position endPoint = curr.getEndPoint();
+
+                Position upLeft = new Position(endPoint.getX()-1, endPoint.getY()-1);
+                Position upRight = new Position(endPoint.getX()-1,endPoint.getY()+1);
+                Position downLeft = new Position(endPoint.getX()+1, endPoint.getY()-1);
+                Position downRight = new Position(endPoint.getX()+1, endPoint.getY()+1);
+
+                if (isWithinBoard(upRight) && (intBoard[upRight.getX()][upRight.getY()] == 2 || intBoard[upRight.getX()][upRight.getY()] == 4)) {
+                    if (isWithinBoard(downLeft) && intBoard[downLeft.getX()][downLeft.getY()] != 0) {
+                        curr.weight += 0.25;
+                        if (curr.description.length() == 0) {
+                            curr.description += "You blocked a piece.";
+                        } else {
+                            curr.description += " You blocked a piece's movement.";
+                        }
+                    } else {
+                        curr.weight -= 1;
+                        if (curr.description.length() == 0) {
+                            curr.description += "You can get captured by a piece.";
+                        } else {
+                            curr.description += " You can get captured by a piece.";
+                        }
+                    }
+                }
+
+                if (isWithinBoard(upLeft) && (intBoard[upLeft.getX()][upLeft.getY()] == 2 || intBoard[upLeft.getX()][upLeft.getY()] == 4)) {
+                    if (isWithinBoard(downRight) && intBoard[downRight.getX()][downRight.getY()] != 0) {
+                        curr.weight += 0.25;
+                        if (curr.description.length() == 0) {
+                            curr.description += "You blocked a piece.";
+                        } else if (curr.description.contains("You blocked a piece")){
+                            curr.description.replace("You blocked a piece", "You blocked two pieces");
+                        } else {
+                            curr.description += " You blocked a piece.";
+                        }
+                    } else {
+                        curr.weight -= 1;
+                        if (curr.description.length() == 0) {
+                            curr.description += "You can get captured by a piece.";
+                        } else if (curr.description.contains("You can get captured by a piece")) {
+                            curr.description.replace("You can get captured by a piece", "You can get captured by two pieces");
+                        } else {
+                            curr.description += " You can get captured by a piece.";
+                        }
+                    }
+                }
+
+                if (isWithinBoard(downLeft) && intBoard[downLeft.getX()][downLeft.getY()] == 4) {
+                    if (isWithinBoard(upRight) && intBoard[upRight.getX()][upRight.getY()] != 0) {
+                        curr.weight += 0.25;
+                        if (curr.description.length() == 0) {
+                            curr.description += "You blocked a piece.";
+                        } else if (curr.description.contains("You blocked a piece")){
+                            curr.description.replace("You blocked a piece", "You blocked two pieces");
+                        } else {
+                            curr.description += " You blocked a piece.";
+                        }
+                    } else {
+                        curr.weight -= 1;
+                        if (curr.description.length() == 0) {
+                            curr.description += "You can get captured by a piece.";
+                        } else if (curr.description.contains("You can get captured by a piece")) {
+                            curr.description.replace("You can get captured by a piece", "You can get captured by two pieces");
+                        } else {
+                            curr.description += " You can get captured by a piece.";
+                        }
+                    }
+                }
+
+                if (isWithinBoard(downRight) && intBoard[downRight.getX()][downRight.getY()] == 4) {
+                    if (isWithinBoard(upLeft) && intBoard[upLeft.getX()][upLeft.getY()] != 0) {
+                        curr.weight += 0.25;
+                        if (curr.description.length() == 0) {
+                            curr.description += "You blocked a piece.";
+                        } else if (curr.description.contains("You blocked a piece")){
+                            curr.description.replace("You blocked a piece", "You blocked two pieces");
+                        } else {
+                            curr.description += " You blocked a piece.";
+                        }
+                    } else {
+                        curr.weight -= 1;
+                        if (curr.description.length() == 0) {
+                            curr.description += "You can get captured by a piece.";
+                        } else if (curr.description.contains("You can get captured by a piece")) {
+                            curr.description.replace("You can get captured by a piece", "You can get captured by two pieces");
+                        } else {
+                            curr.description += " You can get captured by a piece.";
+                        }
+                    }
+                }
+                //check if on edge
+
+                if (!isWithinBoard(upLeft) || !isWithinBoard(upRight)) {
+                    curr.weight += 0.5;
+                    if (curr.description.length() == 0) {
+                        curr.description += "You are safer on an edge.";
+                    } else {
+                        curr.description += " You are safer on an edge.";
+                    }
+                }
+
+                //check if not king and on opposite side
+                if (intBoard[startPoint.getX()][startPoint.getY()] == 1 && endPoint.getX() == 0) {
+                    curr.weight += 1;
+                    if (curr.description.length() == 0) {
+                        curr.description += "You can become a king";
+                    } else {
+                        curr.description += " You can become a king";
+                    }
+                    if (intBoard[downLeft.getX()][downLeft.getY()] == 2 || intBoard[downLeft.getX()][downLeft.getY()] == 4) {
+                        curr.weight += 0.5;
+                        curr.description += " and capture a piece";
+                    }
+                    if (intBoard[downRight.getX()][downRight.getY()] == 2 || intBoard[downRight.getX()][downRight.getY()] == 4) {
+                        curr.weight += 0.5;
+                        curr.description += " and capture a piece";
+                    }
+                    curr.description += ".";
+                }
+
+                if (curr.description.length() == 0) {
+                    curr.description += "This move is neutral.";
+                }
+            }
+        }
+    }
+
     boolean isWithinBoard (Position endPoint){
         if((endPoint.x >= 0) && (endPoint.x <= rows-1) && (endPoint.y >= 0) && (endPoint.y <= columns-1)){
             return true;
@@ -139,6 +283,7 @@ public class CheckerBoard extends Board{
     }
 
     void printAllMoves(){
+        assignMoveWeights();
         for(int i = 0; i < ourMoves.size(); i++)
         {
             int startX = ourMoves.get(i).getStartPoint().getX();
@@ -152,6 +297,8 @@ public class CheckerBoard extends Board{
             else{
                 Log.d("myTag", "Our (" + startX + ", " + startY + ") can jump to (" + endX + ", " + endY + ") [jump] [Instant Take]");
             }
+            Log.d("myTag", "Move weight: " + ourMoves.get(i).weight);
+            Log.d("myTag", "Move description: " + ourMoves.get(i).description);
         }
 
         for(int i = 0; i < theirMoves.size(); i++)
