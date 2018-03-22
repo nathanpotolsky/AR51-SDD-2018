@@ -139,8 +139,8 @@ public class CheckerBoard extends Board{
                 Position downLeft = new Position(endPoint.getX()+1, endPoint.getY()-1);
                 Position downRight = new Position(endPoint.getX()+1, endPoint.getY()+1);
 
-                if (intBoard[upRight.getX()][upRight.getY()] == 2 || intBoard[upRight.getX()][upRight.getY()] == 4) {
-                    if (intBoard[downLeft.getX()][downLeft.getY()] != 0) {
+                if (isWithinBoard(upRight) && (intBoard[upRight.getX()][upRight.getY()] == 2 || intBoard[upRight.getX()][upRight.getY()] == 4)) {
+                    if (isWithinBoard(downLeft) && intBoard[downLeft.getX()][downLeft.getY()] != 0) {
                         curr.weight += 0.25;
                         if (curr.description.length() == 0) {
                             curr.description += "You blocked a piece.";
@@ -157,8 +157,8 @@ public class CheckerBoard extends Board{
                     }
                 }
 
-                if (intBoard[upLeft.getX()][upLeft.getY()] == 2 || intBoard[upLeft.getX()][upLeft.getY()] == 4) {
-                    if (intBoard[downRight.getX()][downRight.getY()] != 0) {
+                if (isWithinBoard(upLeft) && (intBoard[upLeft.getX()][upLeft.getY()] == 2 || intBoard[upLeft.getX()][upLeft.getY()] == 4)) {
+                    if (isWithinBoard(downRight) && intBoard[downRight.getX()][downRight.getY()] != 0) {
                         curr.weight += 0.25;
                         if (curr.description.length() == 0) {
                             curr.description += "You blocked a piece.";
@@ -179,8 +179,8 @@ public class CheckerBoard extends Board{
                     }
                 }
 
-                if (intBoard[downLeft.getX()][downLeft.getY()] == 4) {
-                    if (intBoard[upRight.getX()][upRight.getY()] != 0) {
+                if (isWithinBoard(downLeft) && intBoard[downLeft.getX()][downLeft.getY()] == 4) {
+                    if (isWithinBoard(upRight) && intBoard[upRight.getX()][upRight.getY()] != 0) {
                         curr.weight += 0.25;
                         if (curr.description.length() == 0) {
                             curr.description += "You blocked a piece.";
@@ -201,8 +201,8 @@ public class CheckerBoard extends Board{
                     }
                 }
 
-                if (intBoard[downRight.getX()][downRight.getY()] == 4) {
-                    if (intBoard[upLeft.getX()][upLeft.getY()] != 0) {
+                if (isWithinBoard(downRight) && intBoard[downRight.getX()][downRight.getY()] == 4) {
+                    if (isWithinBoard(upLeft) && intBoard[upLeft.getX()][upLeft.getY()] != 0) {
                         curr.weight += 0.25;
                         if (curr.description.length() == 0) {
                             curr.description += "You blocked a piece.";
