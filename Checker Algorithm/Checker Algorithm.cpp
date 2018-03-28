@@ -53,8 +53,8 @@ double euclideanDistance(Point2f& a, Point2f& b) {
 }
 
 
-int checker(const string& file) {
-	bool debug = true;
+int checker(const string& file, const vector<Scalar>& colors) {
+	bool debug = false;
 
 	if (debug) cout << "Opening file: " << file << std::endl;
 	Mat image_;
@@ -174,11 +174,12 @@ int checker(const string& file) {
 	if (debug) for (int i = 0; i < dstRect.size(); ++i) { cout << dstRect[i] << endl; }
 
 	Mat transformMatrix = getPerspectiveTransform(rect, dstRect);
-	UMat warp;
+	UMat warp, warpColored;
 	Size size(maxWidth, maxHeight);
 	if (debug) cout << type2str(orig.type()) << endl;
 	if (debug) cout << type2str(warp.type()) << endl;
 	warpPerspective(processedImage, warp, transformMatrix, size);
+	warpPerspective(orig, warpColored, transformMatrix, size);
 	if (debug) {
 		imshow("warp initial", warp);
 		// waitKey(0);
@@ -213,7 +214,7 @@ int checker(const string& file) {
 	int numCols = 0;
 	for (int i = 0; i < lines.size(); ++i) {
 		float rho = lines[i][0], theta = lines[i][1];
-		if (debug) { cout << "Line " << i << " data: " << rho << " " << theta << endl; }
+		//if (debug) { cout << "Line " << i << " data: " << rho << " " << theta << endl; }
 		Point pt1, pt2;
 		double a = cos(theta), b = sin(theta);
 		double x0 = a*rho, y0 = b*rho;
@@ -256,7 +257,7 @@ int checker(const string& file) {
 		rowBegin = points.begin() + i * numCols;
 		rowEnd = rowBegin + numCols;
 		vector<Point> temp(rowBegin, rowEnd);
-		if (debug) { cout << "Row " << i << ": " << temp << endl; }
+		//if (debug) { cout << "Row " << i << ": " << temp << endl; }
 		pointsSorted.push_back(temp);
 	}
 	// Point Detection Ends
@@ -269,38 +270,66 @@ int checker(const string& file) {
 	for (int row = 0; row < (pointsSorted.size() - 1); ++row) {
 		sort(pointsSorted[row].begin(), pointsSorted[row].end(), comparePointsX);
 		// cout << "sorted: " << pointsSorted[row] << endl;
+		vector<int> tempRow;
 		for (int col = 0; col < (pointsSorted[row].size() - 1); ++col) {
 			int x, y, w, h;
 			x = pointsSorted[row][col].x, y = pointsSorted[row][col].y;
 			w = pointsSorted[row + 1][col + 1].x - x, h = pointsSorted[row + 1][col + 1].y - y;
-			cout << (float(w) / h ) << endl;
-			cout << (float(h) / w ) << endl;
-			cout << endl;
+			//cout << (float(w) / h ) << endl;
+			//cout << (float(h) / w ) << endl;
+			//cout << endl;
 			if ((float(w) / h > 1.4) || (float(h) / w > 1.4) || (w * h < area / 200)) continue;
 			Rect roi = Rect(x, y, w, h);
 			UMat tile = warp(roi);
+			UMat coloredTile = warpColored(roi);
 
 			// Circle Detection Begins
 			vector<Vec3f> circles;
 			int dp = 1, minDist = w, cannyThresh = 75, accumulator=15, minRadius=w/3, maxRadius=w/2;
 			HoughCircles(tile, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
+			if (circles.size() == 0) tempRow.push_back(0);
 			for (int i = 0; i < circles.size(); ++i) {
 				Point center(cvRound(circles[i][0]), cvRound(circles[i][0]));
 				int radius = cvRound(circles[i][2]);
 				circle(tile, center, radius, Scalar(255), 2);
 				Point centerShifted(x + center.x, y + center.y);
-				circle(warp, centerShifted, radius, Scalar(255), 2);
+				Scalar tileColor = mean(coloredTile);
+				if (debug) { cout << tileColor << endl; }
+				float minColorDist = FLT_MAX;
+				int minIndex;
+				for (int c = 0; c < colors.size(); ++c) {
+					float colorDistance = cv::norm(tileColor, colors[c]);
+					if (debug) { cout << "distance" << colorDistance << endl; }
+					if (colorDistance < minColorDist) {
+						minColorDist = colorDistance;
+						minIndex = c;
+					}
+				}
+				tempRow.push_back(minIndex + 1);
+				circle(warpColored, centerShifted, radius, tileColor, -1);
+				// UMat roi = tile(Range(circles[i][1] - circles[i][2], circles[i][1] + circles[i][2] + 1), cv::Range(circles[i][0] - circles[i][2], circles[i][0] + circles[i][2] + 1));
 			}
 			if (debug) {
 				Mat edgeComparison;
 				hconcat(warp(roi), boardEdges(roi), edgeComparison);
 				imshow("Comparison", edgeComparison);
-				imshow("warp", warp);
+				imshow("warp", warpColored);
 				waitKey(0);
 				destroyWindow("Comparison");
 			}
-
 		}
+		if (tempRow.size() > 0) { Board.push_back(tempRow); }
+	}
+	cout << string(Board[0].size() * 4 + 1, '-') << endl;
+	for (int row = 0; row < Board.size(); ++row) {
+		cout << "| ";
+		for (int col = 0; col < Board[row].size(); ++col) {
+			cout << Board[row][col] << " | ";
+		}
+		cout << endl;
+		// int length = Board[row].size() * 4;
+		// string filler = string(Board[row].size() * 4 + 1, '-');
+		cout << string(Board[row].size() * 4 + 1, '-') << endl;
 	}
 
 
@@ -313,9 +342,15 @@ int checker(const string& file) {
 }
 
 int main() {
-	checker("TestImages/ex1.jpeg");
-	checker("TestImages/chessboard4.jpg");
-	checker("TestImages/empty_board_irl.jpg");
+	vector<Scalar> colors1;
+	colors1.push_back(Scalar(0, 0, 255));
+	colors1.push_back(Scalar(0, 0, 0));
+	checker("TestImages/ex1.jpeg", colors1);
+	vector<Scalar> colors2;
+	colors2.push_back(Scalar(0, 0, 255));
+	colors2.push_back(Scalar(255, 255, 255));
+	checker("TestImages/chessboard4.jpg", colors2);
+	checker("TestImages/empty_board_irl.jpg", colors1);
 	
 	string file;
 	file = "TestImages/ex1.jpeg";
@@ -326,7 +361,7 @@ int main() {
 	int n = 0;
 	for (int i = 0; i < n; ++i) {
 		clock_t t = clock();
-		checker(file);
+		checker(file, colors2);
 		t = clock() - t;
 		sum += t;
 	}
