@@ -15,6 +15,13 @@ bool compareLines(const Vec2f & line1, const Vec2f & line2) {
 	return line1[0] < line2[0];
 }
 
+bool comparePointsX(const Point& pt1, const Point& pt2) {
+	return pt1.x < pt2.x;
+}
+
+bool comparePointsY(const Point& pt1, const Point& pt2) {
+	return pt1.y < pt2.y;
+}
 
 string type2str(int type) {
 	string r;
@@ -46,12 +53,9 @@ double euclideanDistance(Point2f& a, Point2f& b) {
 }
 
 
-int checker() {
+int checker(const string& file) {
 	bool debug = true;
-	string file;
-	file = "TestImages/chessboard4.jpg";
-	file = "TestImages/empty_board_irl.jpg";
-	file = "TestImages/ex1.jpeg";
+
 	if (debug) cout << "Opening file: " << file << std::endl;
 	Mat image_;
 	image_ = imread(file, CV_LOAD_IMAGE_COLOR);
@@ -80,10 +84,12 @@ int checker() {
 	float desiredHeight = 300.0;
 	float ratio = image.size().height / desiredHeight;
 	resize(processedImage, image, cv::Size(), 1 / ratio, 1 / ratio);
+	UMat intermediate;
+	bilateralFilter(image, intermediate, d, sigmaColor, sigmaSpace);
 	// Preprocessing Ends
 
 	// Contour Detection Begins
-	Canny(image, image, 30, 100);
+	Canny(intermediate, image, 30, 100);
 	//if (debug) imwrite("DebugImages/Canny.png", image);
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
@@ -218,16 +224,18 @@ int checker() {
 
 		int thetaDeg = int(theta * 180 / PI);
 		// if (debug) cout << thetaDeg << endl;
-		if (-22.5 < thetaDeg  % 180 && thetaDeg % 180 < 22.5) {
+		float tol = 15;
+		if (-tol < thetaDeg  % 180 && thetaDeg % 180 < tol) {
 		  	if (abs(rho - prevVDist) > minDist) {
 		  		line(vMask , pt1, pt2, Scalar(255), 1);
 		  		prevVDist = rho;
+		  		numCols += 1;
 		  	}
-		} else if (67.5 <  thetaDeg  % 180 && thetaDeg % 180 < 112.5) {
+		} 
+		else if (90 - tol < thetaDeg % 180 && thetaDeg % 180 < 90 + tol) {
 			if (abs(rho - prevHDist) > minDist) {
 		  		line(hMask , pt1, pt2, Scalar(255), 1);
 		  		prevHDist = rho;
-		  		numCols += 1;
 		  	}
 		}
 	}
@@ -235,10 +243,14 @@ int checker() {
 	bitwise_and(hMask, vMask, intersectionMask);
 	vector<Point> points;
 	vector<vector<Point> > pointsSorted;
+	if (debug) {
+		imshow("intersection", intersectionMask);
+	}
 	findNonZero(intersectionMask, points);
 	if (debug) { cout << "num points " << points.size() << endl; }
 	if (debug) { cout << "num columns " << numCols << endl; }
 	int oldHeight = -1000;
+	//sort(points.begin(), points.end(), comparePointsY);
 	vector<Point>::const_iterator rowBegin = points.begin(), rowEnd = rowBegin + numCols;
 	for (int i = 0; i < points.size() / numCols; ++i) {
 		rowBegin = points.begin() + i * numCols;
@@ -253,19 +265,24 @@ int checker() {
 	if (debug) { cout << "num rows " << pointsSorted.size() << endl; }
 	if (debug) { cout << "num cols " << pointsSorted[0].size() << endl; }
 	int area = warp.size().height * warp.size().width;
+	vector<vector<int >> Board;
 	for (int row = 0; row < (pointsSorted.size() - 1); ++row) {
+		sort(pointsSorted[row].begin(), pointsSorted[row].end(), comparePointsX);
+		// cout << "sorted: " << pointsSorted[row] << endl;
 		for (int col = 0; col < (pointsSorted[row].size() - 1); ++col) {
 			int x, y, w, h;
 			x = pointsSorted[row][col].x, y = pointsSorted[row][col].y;
 			w = pointsSorted[row + 1][col + 1].x - x, h = pointsSorted[row + 1][col + 1].y - y;
-			cout << w * h << endl;
-			if (w / h > 1.5 || h / w > 1.5 || w * h < area / 200) continue;
+			cout << (float(w) / h ) << endl;
+			cout << (float(h) / w ) << endl;
+			cout << endl;
+			if ((float(w) / h > 1.4) || (float(h) / w > 1.4) || (w * h < area / 200)) continue;
 			Rect roi = Rect(x, y, w, h);
 			UMat tile = warp(roi);
 
 			// Circle Detection Begins
 			vector<Vec3f> circles;
-			int dp = 1, minDist = w, cannyThresh = 100, accumulator=10, minRadius=w/3, maxRadius=w/2;
+			int dp = 1, minDist = w, cannyThresh = 75, accumulator=15, minRadius=w/3, maxRadius=w/2;
 			HoughCircles(tile, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
 			for (int i = 0; i < circles.size(); ++i) {
 				Point center(cvRound(circles[i][0]), cvRound(circles[i][0]));
@@ -296,13 +313,20 @@ int checker() {
 }
 
 int main() {
-	checker();
-
+	checker("TestImages/ex1.jpeg");
+	checker("TestImages/chessboard4.jpg");
+	checker("TestImages/empty_board_irl.jpg");
+	
+	string file;
+	file = "TestImages/ex1.jpeg";
+	file = "TestImages/empty_board_irl.jpg";
+	file = "TestImages/chessboard4.jpg";
+	
 	int sum = 0;
-	int n = 20;
+	int n = 0;
 	for (int i = 0; i < n; ++i) {
 		clock_t t = clock();
-		checker();
+		checker(file);
 		t = clock() - t;
 		sum += t;
 	}
