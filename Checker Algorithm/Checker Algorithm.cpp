@@ -11,7 +11,7 @@ using namespace cv;
 using namespace std;
 
  bool compareLines(const Vec2f & line1, const Vec2f & line2) {
- 	if(line1[0] <= line2[0]) return true;
+ 	if (line1[0] <= line2[0]) return true;
  	else return false;
  }
 
@@ -47,10 +47,10 @@ double euclideanDistance(Point2f& a, Point2f& b) {
 
 
 int checker() {
-	bool debug = false;
-	string file = "ex1.jpeg";
-	file = "TestImages/chessboard3.jpg";
-	if(debug) cout << "Opening file: " << file << std::endl;
+	bool debug = true;
+	string file = "TestImages/ex1.jpeg";
+	file = "TestImages/chessboard4.jpg";
+	if (debug) cout << "Opening file: " << file << std::endl;
 	Mat image_;
 	image_ = imread(file, CV_LOAD_IMAGE_COLOR);
 	if (!image_.data) {
@@ -71,7 +71,7 @@ int checker() {
 	double sigmaColor = 17, sigmaSpace = 17;
 	UMat processedImage;
 	bilateralFilter(image, processedImage, d, sigmaColor, sigmaSpace);
-	if (debug) imwrite("./DebugImages/bilateral.png", processedImage);
+	//if (debug) imwrite("DebugImages/bilateral.png", processedImage);
 	float desiredHeight = 300.0;
 	float ratio = image.size().height / desiredHeight;
 	resize(processedImage, image, cv::Size(), 1 / ratio, 1 / ratio);
@@ -79,7 +79,7 @@ int checker() {
 
 	// Contour Detection Begins
 	Canny(image, image, 30, 100);
-	if (debug) imwrite("./DebugImages/Canny.png", image);
+	//if (debug) imwrite("DebugImages/Canny.png", image);
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
 	findContours(image, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
@@ -90,7 +90,7 @@ int checker() {
 	double maxArea = 200.0;
 	int maxContourIndex = -1;
 
-	for (int i = 0; i<contours.size(); ++i) {
+	for (int i = 0; i < contours.size(); ++i) {
 		double area = contourArea(contours[i]);
 
 		approxPolyDP(contours[i], approx, arcLength(Mat(contours[i]), true) * 0.01, true);
@@ -174,7 +174,7 @@ int checker() {
 	int minDist = 20;
 	int prevVDist = 0, prevHDist = 0;
 	int numCols = 0;
-	for(int i = 0; i < lines.size(); ++i) {
+	for (int i = 0; i < lines.size(); ++i) {
 		float rho = lines[i][0], theta = lines[i][1];
 		Point pt1, pt2;
 		double a = cos(theta), b = sin(theta);
@@ -186,14 +186,14 @@ int checker() {
 
 		int thetaDeg = int(theta * 180 / PI);
 		if (debug) cout << thetaDeg << endl;
-		if(-22.5 < thetaDeg  % 180 && thetaDeg % 180 < 22.5) {
+		if (-22.5 < thetaDeg  % 180 && thetaDeg % 180 < 22.5) {
 			// cout << rho - prevVDist <<endl;
-		  	if(abs(rho - prevVDist) > minDist) {
+		  	if (abs(rho - prevVDist) > minDist) {
 		  		line(vMask , pt1, pt2, Scalar(255), 1);
 		  		prevVDist = rho;
 		  	}
-		} else if(67.5 <  thetaDeg  % 180 && thetaDeg % 180 < 112.5) {
-			if(abs(rho - prevHDist) > minDist) {
+		} else if (67.5 <  thetaDeg  % 180 && thetaDeg % 180 < 112.5) {
+			if (abs(rho - prevHDist) > minDist) {
 		  		line(hMask , pt1, pt2, Scalar(255), 1);
 		  		prevHDist = rho;
 		  		numCols += 1;
@@ -207,20 +207,53 @@ int checker() {
 	findNonZero(intersectionMask, points);
 	int oldHeight = -1000;
 	vector<Point>::const_iterator rowBegin = points.begin(), rowEnd = rowBegin + numCols;
-	for(int i = 0; i< points.size()/numCols; ++i) {
+	for (int i = 0; i< points.size()/numCols; ++i) {
 		vector<Point> temp(rowBegin, rowEnd);
-		// cout<<"Row "<< i <<": "<<temp<<endl;
+		cout<<"Row "<< i <<": "<<temp<<endl;
 		pointsSorted.push_back(temp);
 		rowBegin = rowEnd;
 		rowEnd = rowBegin + numCols;
 	}
 	// Point Detection Ends
 
+	// Tile detection begins
+	for (int row = 0; row < (pointsSorted.size() - 1); ++row) {
+		for (int col = 0; col < (pointsSorted[row].size() - 1); ++col) {
+			int x, y, w, h;
+			x = pointsSorted[row][col].x, y = pointsSorted[row][col].y;
+			w = pointsSorted[row + 1][col + 1].x - x, h = pointsSorted[row + 1][col + 1].y - y;
+			Rect roi = Rect(x, y, w, h);
+			UMat tile = warp(roi);
+
+			// Circle Detection Begins
+			vector<Vec3f> circles;
+			int dp = 1, minDist = w, cannyThresh = 100, accumulator=10, minRadius=w/3, maxRadius=w/2;
+			HoughCircles(tile, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
+			for (int i = 0; i < circles.size(); ++i) {
+				Point center(cvRound(circles[i][0]), cvRound(circles[i][0]));
+				int radius = cvRound(circles[i][2]);
+				circle(tile, center, radius, Scalar(255), 2);
+				Point centerShifted(x + center.x, y + center.y);
+				circle(warp, centerShifted, radius, Scalar(255), 2);
+			}
+			if (debug) {
+				Mat edgeComparison;
+				hconcat(warp(roi), boardEdges(roi), edgeComparison);
+				imshow("Comparison", edgeComparison);
+			} else {
+				imshow("Tile", tile);
+			}
+			imshow("warp", warp);
+
+			waitKey();
+		}
+	}
+
 
 	// imshow("checkerboard", processedImage);
 	// imshow("warp", warp);
 	// imshow("Board edges", boardEdges);
-	imshow("intersection", intersectionMask);
+	// imshow("intersection", intersectionMask);
 	waitKey(0);
 
 	return 0;
