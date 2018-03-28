@@ -1,4 +1,5 @@
-﻿#include "stdafx.h"
+﻿// Comment out stdafx.h if not using Visual Studio
+#include "stdafx.h"
 #include <time.h>
 #include <iostream>
 #include <opencv2/core/core.hpp>
@@ -10,10 +11,9 @@
 using namespace cv;
 using namespace std;
 
- bool compareLines(const Vec2f & line1, const Vec2f & line2) {
- 	if (line1[0] <= line2[0]) return true;
- 	else return false;
- }
+bool compareLines(const Vec2f & line1, const Vec2f & line2) { 
+	return line1[0] < line2[0];
+}
 
 
 string type2str(int type) {
@@ -48,14 +48,19 @@ double euclideanDistance(Point2f& a, Point2f& b) {
 
 int checker() {
 	bool debug = true;
-	string file = "TestImages/ex1.jpeg";
+	string file;
 	file = "TestImages/chessboard4.jpg";
+	file = "TestImages/empty_board_irl.jpg";
+	file = "TestImages/ex1.jpeg";
 	if (debug) cout << "Opening file: " << file << std::endl;
 	Mat image_;
 	image_ = imread(file, CV_LOAD_IMAGE_COLOR);
 	if (!image_.data) {
 		cerr << "could not open or find the image" << endl;
 		return 0;
+	}
+	if (image_.size().width > 800 || image_.size().height > 800) {
+		resize(image_, image_, Size(800, 800 * image_.size().height / image_.size().width));
 	}
 
 	UMat image = image_.getUMat(ACCESS_READ);
@@ -89,21 +94,36 @@ int checker() {
 	vector<Point> approx, boardApprox;
 	double maxArea = 200.0;
 	int maxContourIndex = -1;
+	UMat contourImage = orig.clone();
+	resize(contourImage, contourImage, cv::Size(), 1 / ratio, 1 / ratio);
 
 	for (int i = 0; i < contours.size(); ++i) {
+		if (debug) drawContours(contourImage, contours, i, Scalar(0,255,0), 1);
 		double area = contourArea(contours[i]);
-
 		approxPolyDP(contours[i], approx, arcLength(Mat(contours[i]), true) * 0.01, true);
-		if (approx.size() == 4 && area>maxArea) {
+		if (approx.size() == 4 && area > maxArea) {
 			maxArea = area;
 			maxContourIndex = i;
 			boardApprox = approx;
 		}
 	}
+	if (debug) {
+		cout << "Max area " << maxArea << endl;
+		cout << "resized image area " << image.size().height * image.size().width << endl;
+	}
 	if (maxContourIndex == -1) cerr << "Can't find any square contours" << endl;
 	int thickness = 4;
 	Scalar color = (0, 255, 255);
-	if (debug) drawContours(canvasImage, contours, maxContourIndex, color, thickness);
+	if (debug) {
+		drawContours(contourImage, contours, maxContourIndex, Scalar(0, 0, 255), thickness);
+		//resize(contourImage, contourImage, cv::Size(), 1 / ratio, 1 / ratio);
+		imshow("CanvasImage", contourImage);
+		waitKey(0);
+	}
+	if (maxArea / (image.size().height * image.size().width) < 0.5) {
+		cout << "maxArea too small" << endl;
+		return 0;
+	}
 	// Contour Sorting Ends
 
 	// Perspective Transform Begins
@@ -153,6 +173,10 @@ int checker() {
 	if (debug) cout << type2str(orig.type()) << endl;
 	if (debug) cout << type2str(warp.type()) << endl;
 	warpPerspective(processedImage, warp, transformMatrix, size);
+	if (debug) {
+		imshow("warp initial", warp);
+		// waitKey(0);
+	}
 	//Perspective Transform Ends
 	
 	// Point detection begins
@@ -168,14 +192,22 @@ int checker() {
 	vector<Vec2f> lines;
 	Canny(warp, boardEdges, 30, 150);
 	float PI = 3.1415926;
-
+	if (debug) {
+		imshow("warp initial", boardEdges);
+		// waitKey();
+	}
 	HoughLines(boardEdges, lines, 1, PI / 180, 200);
+	if (debug) { cout << "lines " << lines.size() << endl; }
+	if (lines.size() <= 1) { return 0; }
+	// sort lines by rho
 	sort(lines.begin(), lines.end(), compareLines);
+	if (debug) { cout << "lines sorted" << endl; }
 	int minDist = 20;
-	int prevVDist = 0, prevHDist = 0;
+	int prevVDist = -1000, prevHDist = -1000;
 	int numCols = 0;
 	for (int i = 0; i < lines.size(); ++i) {
 		float rho = lines[i][0], theta = lines[i][1];
+		if (debug) { cout << "Line " << i << " data: " << rho << " " << theta << endl; }
 		Point pt1, pt2;
 		double a = cos(theta), b = sin(theta);
 		double x0 = a*rho, y0 = b*rho;
@@ -185,9 +217,8 @@ int checker() {
 		pt2.y = cvRound(y0 - 1000*(a));
 
 		int thetaDeg = int(theta * 180 / PI);
-		if (debug) cout << thetaDeg << endl;
+		// if (debug) cout << thetaDeg << endl;
 		if (-22.5 < thetaDeg  % 180 && thetaDeg % 180 < 22.5) {
-			// cout << rho - prevVDist <<endl;
 		  	if (abs(rho - prevVDist) > minDist) {
 		  		line(vMask , pt1, pt2, Scalar(255), 1);
 		  		prevVDist = rho;
@@ -205,23 +236,30 @@ int checker() {
 	vector<Point> points;
 	vector<vector<Point> > pointsSorted;
 	findNonZero(intersectionMask, points);
+	if (debug) { cout << "num points " << points.size() << endl; }
+	if (debug) { cout << "num columns " << numCols << endl; }
 	int oldHeight = -1000;
 	vector<Point>::const_iterator rowBegin = points.begin(), rowEnd = rowBegin + numCols;
-	for (int i = 0; i< points.size()/numCols; ++i) {
-		vector<Point> temp(rowBegin, rowEnd);
-		cout<<"Row "<< i <<": "<<temp<<endl;
-		pointsSorted.push_back(temp);
-		rowBegin = rowEnd;
+	for (int i = 0; i < points.size() / numCols; ++i) {
+		rowBegin = points.begin() + i * numCols;
 		rowEnd = rowBegin + numCols;
+		vector<Point> temp(rowBegin, rowEnd);
+		if (debug) { cout << "Row " << i << ": " << temp << endl; }
+		pointsSorted.push_back(temp);
 	}
 	// Point Detection Ends
 
 	// Tile detection begins
+	if (debug) { cout << "num rows " << pointsSorted.size() << endl; }
+	if (debug) { cout << "num cols " << pointsSorted[0].size() << endl; }
+	int area = warp.size().height * warp.size().width;
 	for (int row = 0; row < (pointsSorted.size() - 1); ++row) {
 		for (int col = 0; col < (pointsSorted[row].size() - 1); ++col) {
 			int x, y, w, h;
 			x = pointsSorted[row][col].x, y = pointsSorted[row][col].y;
 			w = pointsSorted[row + 1][col + 1].x - x, h = pointsSorted[row + 1][col + 1].y - y;
+			cout << w * h << endl;
+			if (w / h > 1.5 || h / w > 1.5 || w * h < area / 200) continue;
 			Rect roi = Rect(x, y, w, h);
 			UMat tile = warp(roi);
 
@@ -240,21 +278,19 @@ int checker() {
 				Mat edgeComparison;
 				hconcat(warp(roi), boardEdges(roi), edgeComparison);
 				imshow("Comparison", edgeComparison);
-			} else {
-				imshow("Tile", tile);
+				imshow("warp", warp);
+				waitKey(0);
+				destroyWindow("Comparison");
 			}
-			imshow("warp", warp);
 
-			waitKey();
 		}
 	}
 
 
 	// imshow("checkerboard", processedImage);
-	// imshow("warp", warp);
 	// imshow("Board edges", boardEdges);
 	// imshow("intersection", intersectionMask);
-	waitKey(0);
+	// waitKey(0);
 
 	return 0;
 }
@@ -263,7 +299,7 @@ int main() {
 	checker();
 
 	int sum = 0;
-	int n = 0;
+	int n = 20;
 	for (int i = 0; i < n; ++i) {
 		clock_t t = clock();
 		checker();
