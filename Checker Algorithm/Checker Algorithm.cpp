@@ -46,14 +46,28 @@ string type2str(int type) {
 	return r;
 }
 
+void printBoard(const vector<vector<int> >& Board) {
+	cout << string(Board[0].size() * 4 + 1, '-') << endl;
+	for (int row = 0; row < Board.size(); ++row) {
+		cout << "| ";
+		for (int col = 0; col < Board[row].size(); ++col) {
+			cout << Board[row][col] << " | ";
+		}
+		cout << endl;
+		// int length = Board[row].size() * 4;
+		// string filler = string(Board[row].size() * 4 + 1, '-');
+		cout << string(Board[row].size() * 4 + 1, '-') << endl;
+	}
+}
 
 double euclideanDistance(Point2f& a, Point2f& b) {
 	Point diff = a - b;
 	return sqrt(pow(diff.x, 2) + pow(diff.y, 2));
 }
 
-
-int checker(const string& file, const vector<Scalar>& colors) {
+// Takes in the file of checkerboard image, and the team colors
+// returns a 2D vector of the Board, where 0: no piece, 1: colors[0] piece, 2: colors[1] piece
+int checker(const string& file, const vector<Scalar>& colors, vector<vector<int> >& Board) {
 	bool debug = false;
 
 	if (debug) cout << "Opening file: " << file << std::endl;
@@ -63,6 +77,8 @@ int checker(const string& file, const vector<Scalar>& colors) {
 		cerr << "could not open or find the image" << endl;
 		return 0;
 	}
+
+	// Resize the image if it's too large. Processing will take too long and don't need that much resolution
 	if (image_.size().width > 800 || image_.size().height > 800) {
 		resize(image_, image_, Size(800, 800 * image_.size().height / image_.size().width));
 	}
@@ -71,16 +87,12 @@ int checker(const string& file, const vector<Scalar>& colors) {
 	UMat orig = image.clone();
 
 	// Preprocessing Begins
-	// Resizing
 	UMat canvasImage = orig.clone();
-
-	//Grayscale Conversion
 	cvtColor(image, image, CV_BGR2GRAY);
 	int d = 11;
 	double sigmaColor = 17, sigmaSpace = 17;
 	UMat processedImage;
 	bilateralFilter(image, processedImage, d, sigmaColor, sigmaSpace);
-	//if (debug) imwrite("DebugImages/bilateral.png", processedImage);
 	float desiredHeight = 300.0;
 	float ratio = image.size().height / desiredHeight;
 	resize(processedImage, image, cv::Size(), 1 / ratio, 1 / ratio);
@@ -90,7 +102,6 @@ int checker(const string& file, const vector<Scalar>& colors) {
 
 	// Contour Detection Begins
 	Canny(intermediate, image, 30, 100);
-	//if (debug) imwrite("DebugImages/Canny.png", image);
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
 	findContours(image, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
@@ -122,7 +133,6 @@ int checker(const string& file, const vector<Scalar>& colors) {
 	Scalar color = (0, 255, 255);
 	if (debug) {
 		drawContours(contourImage, contours, maxContourIndex, Scalar(0, 0, 255), thickness);
-		//resize(contourImage, contourImage, cv::Size(), 1 / ratio, 1 / ratio);
 		imshow("CanvasImage", contourImage);
 		waitKey(0);
 	}
@@ -190,11 +200,6 @@ int checker(const string& file, const vector<Scalar>& colors) {
 	Mat hMask = Mat::zeros(warp.size(), CV_8U);
 	Mat vMask = Mat::zeros(warp.size(), CV_8U);
 
-	// not sure if worth the conversion to UMat, test for time later
-	// intersectionMask.getUMat(ACCESS_READ);
-
-	// check if edge detection on whole image first is faster than canny on small
-	// and canny on warp
 	UMat boardEdges;
 	vector<Vec2f> lines;
 	Canny(warp, boardEdges, 30, 150);
@@ -266,7 +271,7 @@ int checker(const string& file, const vector<Scalar>& colors) {
 	if (debug) { cout << "num rows " << pointsSorted.size() << endl; }
 	if (debug) { cout << "num cols " << pointsSorted[0].size() << endl; }
 	int area = warp.size().height * warp.size().width;
-	vector<vector<int >> Board;
+	// vector<vector<int >> Board;
 	for (int row = 0; row < (pointsSorted.size() - 1); ++row) {
 		sort(pointsSorted[row].begin(), pointsSorted[row].end(), comparePointsX);
 		// cout << "sorted: " << pointsSorted[row] << endl;
@@ -320,33 +325,24 @@ int checker(const string& file, const vector<Scalar>& colors) {
 		}
 		if (tempRow.size() > 0) { Board.push_back(tempRow); }
 	}
-	cout << string(Board[0].size() * 4 + 1, '-') << endl;
-	for (int row = 0; row < Board.size(); ++row) {
-		cout << "| ";
-		for (int col = 0; col < Board[row].size(); ++col) {
-			cout << Board[row][col] << " | ";
-		}
-		cout << endl;
-		// int length = Board[row].size() * 4;
-		// string filler = string(Board[row].size() * 4 + 1, '-');
-		cout << string(Board[row].size() * 4 + 1, '-') << endl;
-	}
-
 
 	// imshow("checkerboard", processedImage);
 	// imshow("Board edges", boardEdges);
 	// imshow("intersection", intersectionMask);
+	// imshow("BoardGuess", warpColored);
 	// waitKey(0);
-
 	return 0;
 }
 
 int main() {
+	// Test cases
+	vector<vector<int> > Board;
 	vector<Scalar> colors1;
 	colors1.push_back(Scalar(0, 0, 255));
 	colors1.push_back(Scalar(0, 0, 0));
-	checker("TestImages/ex1.jpeg", colors1);
-	vector<Scalar> colors2;
+	checker("TestImages/ex1.jpeg", colors1, Board);
+	printBoard(Board);
+	/*vector<Scalar> colors2;
 	colors2.push_back(Scalar(0, 0, 255));
 	colors2.push_back(Scalar(255, 255, 255));
 	checker("TestImages/chessboard4.jpg", colors2);
@@ -365,5 +361,5 @@ int main() {
 		t = clock() - t;
 		sum += t;
 	}
-	cout << "Average time: " << float(sum) * 1000/ (n * CLOCKS_PER_SEC) << "ms" << endl;
+	cout << "Average time: " << float(sum) * 1000/ (n * CLOCKS_PER_SEC) << "ms" << endl;*/
 }
