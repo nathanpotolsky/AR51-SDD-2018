@@ -1,0 +1,13 @@
+# Ignore files
+
+# ignore visual studio files
+.vs*
+*.sln
+*.vcxproj*
+*lastbuildstate
+*.tlog
+*.log
+*x64
+
+# ignore debug images
+*Debug
