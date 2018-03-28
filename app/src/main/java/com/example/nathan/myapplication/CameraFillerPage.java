@@ -13,6 +13,11 @@ public class CameraFillerPage extends AppCompatActivity {
 
     ImageView imageView;
 
+    static {
+        System.loadLibrary("native-lib");
+        System.loadLibrary("opencv_java3");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +41,10 @@ public class CameraFillerPage extends AppCompatActivity {
             }
 
         });
+
+        Object[][] board = convertPicture("./res/drawable/exampleboard.png");
+        CheckerBoard temp = new CheckerBoard(board);
+        temp.printBoard();
     }
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -54,4 +63,6 @@ public class CameraFillerPage extends AppCompatActivity {
         Bitmap bitmap = (Bitmap)data.getExtras().get("data");
         imageView.setImageBitmap(bitmap);
     }
+
+    public native Object[][] convertPicture(String filePath);
 }

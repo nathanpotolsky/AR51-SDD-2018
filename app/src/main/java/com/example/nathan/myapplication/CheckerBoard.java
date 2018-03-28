@@ -10,10 +10,29 @@ public class CheckerBoard extends Board{
     LinkedList<CheckersMove> ourMoves = new LinkedList<CheckersMove>();
     LinkedList<CheckersMove> theirMoves = new LinkedList<CheckersMove>();
 
-    public CheckerBoard(){
+    public CheckerBoard() {
         rows = 8;
         columns = 8;
         intBoard = new int[rows][columns];
+        intBoard[0] = new int[] {0,0,0,0,0,0,0,0};
+        intBoard[1] = new int[] {0,0,0,0,0,0,0,0};
+        intBoard[2] = new int[] {0,0,0,0,0,0,0,0};
+        intBoard[3] = new int[] {0,0,0,0,0,0,0,0};
+        intBoard[4] = new int[] {0,0,0,0,0,0,0,0};
+        intBoard[5] = new int[] {0,0,0,1,0,0,0,0};
+        intBoard[6] = new int[] {0,0,0,0,2,0,0,0};
+        intBoard[7] = new int[] {0,0,0,1,0,1,0,0};
+    }
+
+    public CheckerBoard(Object[][] arr){
+        rows = 8;
+        columns = 8;
+        intBoard = new int[rows][columns];
+        for (int i = 0; i < arr.length; ++i) {
+            for(int j = 0; j < arr[i].length; ++j) {
+                intBoard[i][j] = (int) arr[i][j];
+            }
+        }
     }
 
     void addPiecesToLists(){

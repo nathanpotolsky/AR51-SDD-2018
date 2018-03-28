@@ -3,10 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AR51-SDD-2018.iml" filepath="$PROJECT_DIR$/AR51-SDD-2018.iml" />
-      <module fileurl="file://C:\Users\Nathan\AndroidStudioProjects\MyApplication\AR51-SDD-2018.iml" filepath="C:\Users\Nathan\AndroidStudioProjects\MyApplication\AR51-SDD-2018.iml" />
-      <module fileurl="file://C:\Users\Lappy486\StudioProject\AR51-SDD-2018\MyApplication.iml" filepath="C:\Users\Lappy486\StudioProject\AR51-SDD-2018\MyApplication.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/openCVLibrary340/openCVLibrary340.iml" filepath="$PROJECT_DIR$/openCVLibrary340/openCVLibrary340.iml" />
+      <module fileurl="file://$PROJECT_DIR$/openCVLibrary341/openCVLibrary341.iml" filepath="$PROJECT_DIR$/openCVLibrary341/openCVLibrary341.iml" />
     </modules>
   </component>
 </project>
