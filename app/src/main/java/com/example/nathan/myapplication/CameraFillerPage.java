@@ -50,6 +50,12 @@ public class CameraFillerPage extends AppCompatActivity {
                 startActivity(optionIntent);
             }
         });
+
+//        Object[][] board = convertPicture("./res/drawable/exampleboard.png");
+//        CheckerBoard temp2 = new CheckerBoard();
+//        temp2.printBoard();
+//        CheckerBoard temp = new CheckerBoard(board);
+//        temp.printBoard();
     }
 
     @Override
@@ -60,11 +66,7 @@ public class CameraFillerPage extends AppCompatActivity {
                 btnCamera.setEnabled(true);
             }
 
-        });
-
-        Object[][] board = convertPicture("./res/drawable/exampleboard.png");
-        CheckerBoard temp = new CheckerBoard(board);
-        temp.printBoard();
+        };
     }
 
     public void dispatchTakePictureIntent(View view) {
