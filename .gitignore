@@ -11,3 +11,16 @@
 openCVLibrary340/
 
 \.idea/misc\.xml
+
+# ignore visual studio files
+.vs*
+*.sln
+*.vcxproj*
+*lastbuildstate
+*.tlog
+*.log
+*x64
+
+# ignore debug images
+*Debug
+*DebugImages
