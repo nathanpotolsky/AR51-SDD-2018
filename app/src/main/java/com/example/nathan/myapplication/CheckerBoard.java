@@ -15,7 +15,7 @@ public class CheckerBoard extends Board{
         columns = 8;
         intBoard = new int[rows][columns];
         intBoard[0] = new int[] {0,0,0,0,0,0,0,0};
-        intBoard[1] = new int[] {0,0,0,0,0,0,0,0};
+        intBoard[1] = new int[] {0,0,0,0,0,0,0,1};
         intBoard[2] = new int[] {0,0,0,0,0,0,0,0};
         intBoard[3] = new int[] {0,0,0,0,0,0,0,0};
         intBoard[4] = new int[] {0,0,0,0,0,0,0,0};

@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: C:\\Users\\Lappy486\\StudioProject\\AR51-SDD-2018\\openCVLibrary341\\src\\main\\aidl\\org\\opencv\\engine\\OpenCVEngineInterface.aidl
+ * Original file: /Users/youngchulchun/AndroidStudioProjects/AR51-SDD-2018/openCVLibrary341/src/main/aidl/org/opencv/engine/OpenCVEngineInterface.aidl
  */
 package org.opencv.engine;
 /**

@@ -1,6 +1,6 @@
 #NOTE: Change paths depending on where you actually store the project
-set(pathToProject C:/Users/Lappy486/StudioProject/AR51-SDD-2018)
-set(pathToOpenCV C:/Users/Lappy486/OpenCV-android-sdk)
+set(pathToProject /Users/youngchulchun/AndroidStudioProjects/AR51-SDD-2018)
+set(pathToOpenCV /Users/youngchulchun/Computer_Vision/OpenCV-android-sdk)
 
 # For more information about using CMake with Android Studio, read the
 # documentation: https://d.android.com/studio/projects/add-native-code.html

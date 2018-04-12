@@ -1,5 +1,5 @@
 ﻿// Comment out stdafx.h if not using Visual Studio
-#include "stdafx.h"
+//#include "stdafx.h"
 #include <time.h>
 #include <iostream>
 #include <opencv2/core/core.hpp>

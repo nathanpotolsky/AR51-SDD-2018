@@ -1,10 +1,12 @@
 package com.example.nathan.myapplication;
 
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,8 +17,13 @@ import android.support.v4.app.ActivityCompat;
 import android.net.Uri;
 import android.os.Environment;
 import java.io.File;
+import java.io.IOError;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.io.BufferedReader;
 
 public class CameraFillerPage extends AppCompatActivity {
 
@@ -107,5 +114,5 @@ public class CameraFillerPage extends AppCompatActivity {
                 "IMG_"+ timeStamp + ".jpg");
     }
 
-    public native Object[][] convertPicture(String filePath);
+    public native Object[][] convertPicture(byte[] file, int size);
 }

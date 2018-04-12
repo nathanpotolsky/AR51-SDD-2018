@@ -7,6 +7,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <string>
 
+
 using namespace cv;
 using namespace std;
 
@@ -70,7 +71,11 @@ int checker(const string& file, const vector<Scalar>& colors, vector<vector<int>
     bool debug = false;
 
     if (debug) cout << "Opening file: " << file << std::endl;
+
     Mat image_;
+//    Mat temp(1, fileSize, CV_8UC1, (void*)(*file));
+//
+//    image_ = imdecode(temp, 1);
     image_ = imread(file, CV_LOAD_IMAGE_COLOR);
     if (!image_.data) {
         cerr << "could not open or find the image" << endl;
@@ -335,16 +340,22 @@ int checker(const string& file, const vector<Scalar>& colors, vector<vector<int>
 
 extern "C"
 JNIEXPORT jobjectArray JNICALL
-Java_com_example_nathan_myapplication_CameraFillerPage_convertPicture(JNIEnv *env, jobject, jstring filePath) {
+Java_com_example_nathan_myapplication_CameraFillerPage_convertPicture(JNIEnv *env, jobject, jbyteArray file, jint size) {
     //convert arg to a C++ string
     jboolean isCopy;
-    const char *temp = env->GetStringUTFChars(filePath,&isCopy);
-    string str(temp);
+    unsigned char *temp = new unsigned char[size];
+    env->GetByteArrayRegion(file,0,size, reinterpret_cast<jbyte*>(temp));
 
     //get our board data
     vector<vector <int>> initBoard;
     vector<Scalar> colors;
-    int arr = checker(str, colors, initBoard);
+    colors.push_back(Scalar(0, 0, 255));
+    colors.push_back(Scalar(0, 0, 0));
+    int t_size = (int)size;
+
+    int arr = 0;
+
+    //int arr = checker(&temp, t_size, colors, initBoard);
 
     //initialize array lengths
     int length = 8;
