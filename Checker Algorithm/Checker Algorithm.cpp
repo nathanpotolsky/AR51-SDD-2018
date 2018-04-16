@@ -46,6 +46,29 @@ string type2str(int type) {
 	return r;
 }
 
+double _median(Mat channel) {
+	double m = (channel.rows*channel.cols) / 2;
+	int bin = 0;
+	double med = -1.0;
+
+	int histSize = 256;
+	float range[] = { 0, 256 };
+	const float* histRange = { range };
+	bool uniform = true;
+	bool accumulate = false;
+	cv::Mat hist;
+	cv::calcHist(&channel, 1, 0, cv::Mat(), hist, 1, &histSize, &histRange, uniform, accumulate);
+
+	for (int i = 0; i < histSize && med < 0.0; ++i)
+	{
+		bin += cvRound(hist.at< float >(i));
+		if (bin > m && med < 0.0)
+			med = i;
+	}
+
+	return med;
+}
+
 void printBoard(const vector<vector<int> >& Board) {
 	cout << string(Board[0].size() * 4 + 1, '-') << endl;
 	for (int row = 0; row < Board.size(); ++row) {
@@ -60,6 +83,14 @@ void printBoard(const vector<vector<int> >& Board) {
 	}
 }
 
+void autoCanny(Mat& image, float sigma, int& lower, int& upper) {
+	double med = _median(image);
+	// Scalar temp = mean(image);
+	// cout << "Med and temp " << med << " " << temp << endl;
+	lower = int(max(0.0, (1.0 - sigma) * med));
+	upper = int(min(255.0, (1.0 + sigma) * med));
+}
+
 double euclideanDistance(Point2f& a, Point2f& b) {
 	Point diff = a - b;
 	return sqrt(pow(diff.x, 2) + pow(diff.y, 2));
@@ -68,7 +99,7 @@ double euclideanDistance(Point2f& a, Point2f& b) {
 // Takes in the file of checkerboard image, and the team colors
 // returns a 2D vector of the Board, where 0: no piece, 1: colors[0] piece, 2: colors[1] piece
 int checker(const string& file, const vector<Scalar>& colors, vector<vector<int> >& Board) {
-	bool debug = false;
+	bool debug = true;
 
 	if (debug) cout << "Opening file: " << file << std::endl;
 	Mat image_;
@@ -83,25 +114,29 @@ int checker(const string& file, const vector<Scalar>& colors, vector<vector<int>
 		resize(image_, image_, Size(800, 800 * image_.size().height / image_.size().width));
 	}
 
-	UMat image = image_.getUMat(ACCESS_READ);
-	UMat orig = image.clone();
+	Mat image = image_;
+	Mat orig = image.clone();
 
 	// Preprocessing Begins
-	UMat canvasImage = orig.clone();
-	cvtColor(image, image, CV_BGR2GRAY);
+	Mat processedImage, gray;
+	Mat canvasImage = orig.clone();
+	cvtColor(image, processedImage, CV_BGR2GRAY);
 	int d = 11;
 	double sigmaColor = 17, sigmaSpace = 17;
-	UMat processedImage;
-	bilateralFilter(image, processedImage, d, sigmaColor, sigmaSpace);
-	float desiredHeight = 300.0;
+	float desiredHeight = 800.0;
 	float ratio = image.size().height / desiredHeight;
 	resize(processedImage, image, cv::Size(), 1 / ratio, 1 / ratio);
-	UMat intermediate;
+	Mat intermediate;
 	bilateralFilter(image, intermediate, d, sigmaColor, sigmaSpace);
+	bilateralFilter(intermediate, image, d, sigmaColor, sigmaSpace);
 	// Preprocessing Ends
 
 	// Contour Detection Begins
-	Canny(intermediate, image, 30, 100);
+	// Canny(image, image, 30, 100);
+	int lower = 0, upper = 0;
+	autoCanny(image, 0.33, lower, upper);
+	// cout << "Lower, upper: " << lower << ", " << upper << endl;
+	Canny(image, image, lower, upper);
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
 	findContours(image, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
@@ -111,7 +146,7 @@ int checker(const string& file, const vector<Scalar>& colors, vector<vector<int>
 	vector<Point> approx, boardApprox;
 	double maxArea = 200.0;
 	int maxContourIndex = -1;
-	UMat contourImage = orig.clone();
+	Mat contourImage = orig.clone();
 	resize(contourImage, contourImage, cv::Size(), 1 / ratio, 1 / ratio);
 
 	for (int i = 0; i < contours.size(); ++i) {
@@ -184,7 +219,7 @@ int checker(const string& file, const vector<Scalar>& colors, vector<vector<int>
 	if (debug) for (int i = 0; i < dstRect.size(); ++i) { cout << dstRect[i] << endl; }
 
 	Mat transformMatrix = getPerspectiveTransform(rect, dstRect);
-	UMat warp, warpColored;
+	Mat warp, warpColored;
 	Size size(maxWidth, maxHeight);
 	if (debug) cout << type2str(orig.type()) << endl;
 	if (debug) cout << type2str(warp.type()) << endl;
@@ -200,9 +235,11 @@ int checker(const string& file, const vector<Scalar>& colors, vector<vector<int>
 	Mat hMask = Mat::zeros(warp.size(), CV_8U);
 	Mat vMask = Mat::zeros(warp.size(), CV_8U);
 
-	UMat boardEdges;
+	Mat boardEdges;
 	vector<Vec2f> lines;
-	Canny(warp, boardEdges, 30, 150);
+	// int lower, upper;
+	autoCanny(warp, 0.33, lower, upper);
+	Canny(warp, boardEdges, lower, upper);
 	float PI = 3.1415926;
 	if (debug) {
 		imshow("warp initial", boardEdges);
@@ -284,21 +321,29 @@ int checker(const string& file, const vector<Scalar>& colors, vector<vector<int>
 			//cout << (float(h) / w ) << endl;
 			//cout << endl;
 			if ((float(w) / h > 1.4) || (float(h) / w > 1.4) || (w * h < area / 200)) continue;
-			Rect roi = Rect(x, y, w, h);
-			UMat tile = warp(roi);
-			UMat coloredTile = warpColored(roi);
+			float buffer = 0.05;
+			x = int(x + buffer * w);
+			y = int(y + buffer * h);
+			Rect roi = Rect(x, y, int((1 - 2 * buffer) * w), int((1 - 2 * buffer) * h));
+			Mat tile = warp(roi);
+			Mat coloredTile = warpColored(roi);
 
 			// Circle Detection Begins
 			vector<Vec3f> circles;
-			int dp = 1, minDist = w, cannyThresh = 75, accumulator=15, minRadius=w/3, maxRadius=w/2;
+			autoCanny(tile, 0.33, lower, upper);
+			int dp = 1, minDist = w, cannyThresh = 75, accumulator=15, minRadius=w/4, maxRadius=w/2;
 			HoughCircles(tile, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
+			
 			if (circles.size() == 0) tempRow.push_back(0);
 			for (int i = 0; i < circles.size(); ++i) {
 				Point center(cvRound(circles[i][0]), cvRound(circles[i][0]));
 				int radius = cvRound(circles[i][2]);
 				circle(tile, center, radius, Scalar(255), 2);
 				Point centerShifted(x + center.x, y + center.y);
-				Scalar tileColor = mean(coloredTile);
+				int width = radius / sqrt(2);
+				int checkerX = center.x - width, checkerY = center.y - width;
+				Rect insideChecker = Rect(checkerX, checkerY, width, width);
+				Scalar tileColor = mean(coloredTile(insideChecker));
 				if (debug) { cout << tileColor << endl; }
 				float minColorDist = FLT_MAX;
 				int minIndex;
@@ -312,11 +357,13 @@ int checker(const string& file, const vector<Scalar>& colors, vector<vector<int>
 				}
 				tempRow.push_back(minIndex + 1);
 				circle(warpColored, centerShifted, radius, tileColor, -1);
-				// UMat roi = tile(Range(circles[i][1] - circles[i][2], circles[i][1] + circles[i][2] + 1), cv::Range(circles[i][0] - circles[i][2], circles[i][0] + circles[i][2] + 1));
+				// Mat roi = tile(Range(circles[i][1] - circles[i][2], circles[i][1] + circles[i][2] + 1), cv::Range(circles[i][0] - circles[i][2], circles[i][0] + circles[i][2] + 1));
 			}
 			if (debug) {
-				Mat edgeComparison;
-				hconcat(warp(roi), boardEdges(roi), edgeComparison);
+				Mat edgeComparison, cannyTile;
+				Canny(tile, cannyTile, 100 / 2, 100);
+				hconcat(warp(roi), cannyTile, edgeComparison);
+				// hconcat(warp(roi), boardEdges(roi), edgeComparison);
 				imshow("Comparison", edgeComparison);
 				imshow("warp", warpColored);
 				waitKey(0);
@@ -329,9 +376,9 @@ int checker(const string& file, const vector<Scalar>& colors, vector<vector<int>
 	// imshow("checkerboard", processedImage);
 	// imshow("Board edges", boardEdges);
 	// imshow("intersection", intersectionMask);
-	// imshow("BoardGuess", warpColored);
-	// waitKey(0);
-	return 0;
+	imshow("BoardGuess", warpColored);
+	waitKey(0);
+	return 1;
 }
 
 int main() {
@@ -340,8 +387,23 @@ int main() {
 	vector<Scalar> colors1;
 	colors1.push_back(Scalar(0, 0, 255));
 	colors1.push_back(Scalar(0, 0, 0));
-	checker("TestImages/ex1.jpeg", colors1, Board);
-	printBoard(Board);
+	int ret = checker("TestImages/irl4.jpg", colors1, Board);
+	if (ret) printBoard(Board);
+
+	int sum = 0;
+	int n = 0;
+	for (int i = 0; i < n; ++i) {
+		clock_t t = clock();
+		vector<vector<int> > Board;
+		vector<Scalar> colors1;
+		colors1.push_back(Scalar(0, 0, 255));
+		colors1.push_back(Scalar(0, 0, 0));
+		checker("TestImages/WIN_20180416_14_46_01_Pro.jpg", colors1, Board);
+		//printBoard(Board);
+		t = clock() - t;
+		sum += t;
+	}
+	cout << "Average time: " << float(sum) * 1000 / (n * CLOCKS_PER_SEC) << "ms" << endl;
 	/*vector<Scalar> colors2;
 	colors2.push_back(Scalar(0, 0, 255));
 	colors2.push_back(Scalar(255, 255, 255));
