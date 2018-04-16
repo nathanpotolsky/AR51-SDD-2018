@@ -387,7 +387,7 @@ int main() {
 	vector<Scalar> colors1;
 	colors1.push_back(Scalar(0, 0, 255));
 	colors1.push_back(Scalar(0, 0, 0));
-	int ret = checker("TestImages/irl3.jpg", colors1, Board);
+	int ret = checker("TestImages/irl4.jpg", colors1, Board);
 	if (ret) printBoard(Board);
 
 	int sum = 0;
@@ -398,7 +398,7 @@ int main() {
 		vector<Scalar> colors1;
 		colors1.push_back(Scalar(0, 0, 255));
 		colors1.push_back(Scalar(0, 0, 0));
-		checker("TestImages/irl1.jpg", colors1, Board);
+		checker("TestImages/WIN_20180416_14_46_01_Pro.jpg", colors1, Board);
 		//printBoard(Board);
 		t = clock() - t;
 		sum += t;
