@@ -123,7 +123,7 @@ int checker(const string& file, const vector<Scalar>& colors, vector<vector<int>
 	cvtColor(image, processedImage, CV_BGR2GRAY);
 	int d = 11;
 	double sigmaColor = 17, sigmaSpace = 17;
-	float desiredHeight = 300.0;
+	float desiredHeight = 800.0;
 	float ratio = image.size().height / desiredHeight;
 	resize(processedImage, image, cv::Size(), 1 / ratio, 1 / ratio);
 	Mat intermediate;
@@ -321,14 +321,17 @@ int checker(const string& file, const vector<Scalar>& colors, vector<vector<int>
 			//cout << (float(h) / w ) << endl;
 			//cout << endl;
 			if ((float(w) / h > 1.4) || (float(h) / w > 1.4) || (w * h < area / 200)) continue;
-			Rect roi = Rect(x, y, w, h);
+			float buffer = 0.05;
+			x = int(x + buffer * w);
+			y = int(y + buffer * h);
+			Rect roi = Rect(x, y, int((1 - 2 * buffer) * w), int((1 - 2 * buffer) * h));
 			Mat tile = warp(roi);
 			Mat coloredTile = warpColored(roi);
 
 			// Circle Detection Begins
 			vector<Vec3f> circles;
 			autoCanny(tile, 0.33, lower, upper);
-			int dp = 1, minDist = w, cannyThresh = 75, accumulator=15, minRadius=w/3, maxRadius=w/2;
+			int dp = 1, minDist = w, cannyThresh = 75, accumulator=15, minRadius=w/4, maxRadius=w/2;
 			HoughCircles(tile, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
 			
 			if (circles.size() == 0) tempRow.push_back(0);
@@ -375,7 +378,7 @@ int checker(const string& file, const vector<Scalar>& colors, vector<vector<int>
 	// imshow("intersection", intersectionMask);
 	imshow("BoardGuess", warpColored);
 	waitKey(0);
-	return 0;
+	return 1;
 }
 
 int main() {
@@ -384,8 +387,8 @@ int main() {
 	vector<Scalar> colors1;
 	colors1.push_back(Scalar(0, 0, 255));
 	colors1.push_back(Scalar(0, 0, 0));
-	checker("TestImages/irl2.jpg", colors1, Board);
-	printBoard(Board);
+	int ret = checker("TestImages/irl3.jpg", colors1, Board);
+	if (ret) printBoard(Board);
 
 	int sum = 0;
 	int n = 0;
