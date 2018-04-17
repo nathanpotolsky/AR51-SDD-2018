@@ -19,6 +19,7 @@
         android:layout_height="match_parent"
         android:layout_weight="9"
         android:background="@drawable/exampleboard" />
+<!--
 
     <Button
         android:id="@+id/btnCamera"
@@ -29,6 +30,7 @@
         android:textColor="@android:color/white"
         android:onClick="dispatchTakePictureIntent"
         android:text="Open Camera"/>
+-->
 
     <Button
         android:id="@+id/forwardButton"
