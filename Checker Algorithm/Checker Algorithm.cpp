@@ -99,7 +99,7 @@ double euclideanDistance(Point2f& a, Point2f& b) {
 // Takes in the file of checkerboard image, and the team colors
 // returns a 2D vector of the Board, where 0: no piece, 1: colors[0] piece, 2: colors[1] piece
 int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vector<Scalar>& colors, vector<vector<int> >& Board) {
-	bool debug = true;
+	bool debug = false;
 
 	// if (debug) cout << "Opening file: " << file << std::endl;
 	Mat image_ = *imageRef;
@@ -382,7 +382,7 @@ int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vecto
 	// imshow("checkerboard", processedImage);
 	// imshow("Board edges", boardEdges);
 	// imshow("intersection", intersectionMask);
-	imshow("BoardGuess", warpColored);
+	if (debug) {imshow("BoardGuess", warpColored);}
 	waitKey(0);
 	return 1;
 }
