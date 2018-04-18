@@ -158,6 +158,7 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
 
         Object[] objBoardState = convertPicture(mRaw.getNativeObjAddr(), mNormalized.getNativeObjAddr(), mTeam1.getNativeObjAddr(), mTeam2.getNativeObjAddr());
 
+        Log.d("myTag", "objBoardState size " + objBoardState.length);
         CheckerBoard tempCheckerBoard = new CheckerBoard(objBoardState);
 
         tempCheckerBoard.printBoard();

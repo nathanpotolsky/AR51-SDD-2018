@@ -172,7 +172,7 @@ int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vecto
         imshow("CanvasImage", contourImage);
         waitKey(0);
     }
-    if (maxArea / (image.size().height * image.size().width) < 0.5) {
+    if (maxArea / (image.size().height * image.size().width) < 0.2) {
         cout << "maxArea too small" << endl;
         return 0;
     }
@@ -403,22 +403,19 @@ Java_com_example_nathan_myapplication_BoardDetectionActivity_convertPicture(JNIE
     int arr = checker(raw, normalized, team1, team2, colors, initBoard);
 
     //initialize array lengths
-    int length = 8;
-    int height = 8;
 
     //Get int class
     jclass intClass = env->FindClass("[I");
-    jobjectArray board = env->NewObjectArray((jsize) length, intClass, NULL);
+    jobjectArray board = env->NewObjectArray((jsize) initBoard.size(), intClass, NULL);
 
-    for (int i=0; i < length; i++) {
-        int temp[height];
-        for (int j = 0; j < height; j++) {
+    for (int i=0; i < initBoard.size(); i++) {
+        int temp[initBoard[i].size()];
+        for (int j = 0; j < initBoard[i].size(); j++) {
             temp[j] = initBoard[i][j];
         }
-        jintArray intArray = env->NewIntArray(height);
-        env->SetIntArrayRegion(intArray, (jsize) 0, (jsize) height, (jint*) temp);
+        jintArray intArray = env->NewIntArray(initBoard[i].size());
+        env->SetIntArrayRegion(intArray, (jsize) 0, (jsize) initBoard[i].size(), (jint*) temp);
         env->SetObjectArrayElement(board, (jsize) i, intArray);
-        env->DeleteLocalRef(intArray);
     }
 
     return board;
