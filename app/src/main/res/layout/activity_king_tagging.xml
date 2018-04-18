@@ -11,6 +11,7 @@
         android:layout_width="410dp"
         android:layout_height="67dp"
         android:layout_marginTop="400dp"
+        android:background="@android:color/darker_gray"
         android:text="Forward"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -36,11 +37,11 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/forwardButton"
+        android:layout_marginTop="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/exampleboard" />
 
     <Button

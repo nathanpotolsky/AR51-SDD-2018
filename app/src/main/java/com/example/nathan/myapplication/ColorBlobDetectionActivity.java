@@ -116,36 +116,54 @@ public class ColorBlobDetectionActivity extends Activity implements OnTouchListe
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         File path = cw.getDir("dank_memes", Context.MODE_PRIVATE);
 //        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        String filename = "checkerboard.png";
+//        String filename = "checkerboard.png";
 //        Log.d("imageWrite", String.valueOf(path.getAbsolutePath()));
-        File file = new File(path, filename);
+        File file = new File(path, "checkerboard.png");
 
         Boolean bool = null;
         String fullfilename = file.toString();
         bool = Imgcodecs.imwrite(fullfilename, mIntermediateMat);
 
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = path;
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
+        SaveNormalizedPhotoAndTeamColors(path, mIntermediateMat);
 
-        if (bool == true){
-            Log.d("imageWrite", ("SUCCESS writing image to external storage" + file.length()));
-        }
-        else{
-            Log.d("imageWrite", "Fail writing image to external storage");
-        }
+//        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//        File f = path;
+//        Uri contentUri = Uri.fromFile(f);
+//        mediaScanIntent.setData(contentUri);
+//        this.sendBroadcast(mediaScanIntent);
+//
+//        if (bool == true){
+//            Log.d("imageWrite", ("SUCCESS writing image to external storage" + file.length()));
+//        }
+//        else{
+//            Log.d("imageWrite", "Fail writing image to external storage");
+//        }
+//
+//        String pathStr = path.getAbsolutePath();
+//        Log.d("imageWrite", "Path: " + pathStr);
+//        File directory = new File(pathStr);
+//        File[] files = directory.listFiles();
+//        Log.d("imageWrite", "Size: "+ files.length);
+//        for (int i = 0; i < files.length; i++)
+//        {
+//            Log.d("imageWrite", "FileName:" + files[i].getName());
+//        }
+    }
 
-        String pathStr = path.getAbsolutePath();
-        Log.d("imageWrite", "Path: " + pathStr);
-        File directory = new File(pathStr);
-        File[] files = directory.listFiles();
-        Log.d("imageWrite", "Size: "+ files.length);
-        for (int i = 0; i < files.length; i++)
-        {
-            Log.d("imageWrite", "FileName:" + files[i].getName());
-        }
+    public void SaveNormalizedPhotoAndTeamColors (File path, Mat mRaw) {
+        Mat mNormalized = new Mat();
+        Mat mTeam1 = new Mat();
+        Mat mTeam2 = new Mat();
+
+//        Object[][] objBoardState = convertPicture(mRaw.getNativeObjAddr(), mNormalized.getNativeObjAddr(), mTeam1.getNativeObjAddr(), mTeam2.getNativeObjAddr());
+
+        String pathNormalizedCheckerboard = new File(path, "normalizedCheckerboard.png").toString();
+        String pathTeam1 = new File(path, "team1.png").toString();
+        String pathTeam2 = new File(path, "team2.png").toString();
+
+        Imgcodecs.imwrite(pathNormalizedCheckerboard, mNormalized);
+        Imgcodecs.imwrite(pathTeam1, mTeam1);
+        Imgcodecs.imwrite(pathTeam2, mTeam2);
     }
 
     @Override
@@ -272,4 +290,6 @@ public class ColorBlobDetectionActivity extends Activity implements OnTouchListe
 
         return new Scalar(pointMatRgba.get(0, 0));
     }
+
+//    public native Object[][] convertPicture(byte[] file, int size);
 }

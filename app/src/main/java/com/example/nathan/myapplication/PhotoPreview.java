@@ -2,11 +2,14 @@ package com.example.nathan.myapplication;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -49,5 +52,15 @@ public class PhotoPreview extends AppCompatActivity {
         else{
             Log.d("imageWrite", "FAILURE ---");
         }
+
+        Button AcceptPhotoButon = (Button) findViewById(R.id.AcceptPhotoButon);
+
+        AcceptPhotoButon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent optionIntent = new Intent(getApplicationContext(), ColorSelection.class);
+                startActivity(optionIntent);
+            }
+        });
     }
 }
