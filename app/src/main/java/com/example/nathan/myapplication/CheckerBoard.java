@@ -36,6 +36,25 @@ public class CheckerBoard extends Board{
         }
     }
 
+    public void setKing(int x, int y) {
+        if (intBoard[x][y] > 2) {
+            intBoard[x][y] -= 2;
+        } else if (intBoard[x][y] != 0){
+            intBoard[x][y] += 2;
+        }
+    }
+
+    public void switchTeams() {
+        for (int i = 0; i < intBoard.length; ++i) {
+            for (int j = 0; j < intBoard[j].length; ++j) {
+                if (intBoard[i][j] == 1 || intBoard[i][j] == 3) {
+                    intBoard[i][j] += 1;
+                } else if (intBoard[i][j] != 0) {
+                    intBoard[i][j] -= 1;
+                }
+            }
+        }
+    }
     void addPiecesToLists(){
         //Go through board, looking for our men then add to a list
         for(int i = 0; i<rows; i++)

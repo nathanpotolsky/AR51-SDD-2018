@@ -179,7 +179,11 @@ public class KingTagging extends AppCompatActivity {
             currentSquare.setBackgroundResource(R.drawable.crown);
             currentSquare.setSelected(true);
         }
-
+        
+        String name = currentSquare.getTag().toString();
+        int y = Integer.parseInt(name.substring(name.length()-1))-1;
+        int x = Integer.parseInt(name.substring(name.length()-2, name.length()-1))-1;
+        PhotoPreview.getCheckerBoard().setKing(x, y);
     }
 
 }

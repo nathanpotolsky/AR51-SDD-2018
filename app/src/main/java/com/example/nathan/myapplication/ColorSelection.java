@@ -9,6 +9,8 @@ import android.widget.Button;
 
 public class ColorSelection extends AppCompatActivity {
 
+    boolean on = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +30,10 @@ public class ColorSelection extends AppCompatActivity {
         firstColorButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                if (!on) {
+                    PhotoPreview.getCheckerBoard().switchTeams();
+                }
+                on = true;
                 firstColorButton.setBackgroundResource(R.drawable.greencheck);
                 secondColorButton.setBackgroundColor(Color.TRANSPARENT);
 
@@ -37,6 +43,10 @@ public class ColorSelection extends AppCompatActivity {
         secondColorButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                if (on) {
+                    PhotoPreview.getCheckerBoard().switchTeams();
+                }
+                on = false;
                 firstColorButton.setBackgroundColor(Color.TRANSPARENT);
                 secondColorButton.setBackgroundResource(R.drawable.greencheck);
             }
