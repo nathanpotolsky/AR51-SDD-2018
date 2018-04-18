@@ -11,6 +11,7 @@
         android:layout_width="410dp"
         android:layout_height="67dp"
         android:layout_marginTop="400dp"
+        android:background="@android:color/darker_gray"
         android:text="Forward"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
