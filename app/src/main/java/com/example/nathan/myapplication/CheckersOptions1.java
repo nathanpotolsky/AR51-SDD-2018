@@ -78,7 +78,7 @@ public class CheckersOptions1 extends AppCompatActivity {
         });
 
         Button showAllMovesButton = (Button)findViewById(R.id.toggleButton);
-        forwardButton.setOnClickListener(new View.OnClickListener(){
+        showAllMovesButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 showAllMoves = !showAllMoves;
@@ -86,7 +86,7 @@ public class CheckersOptions1 extends AppCompatActivity {
         });
 
         Button instantTakesButton = (Button)findViewById(R.id.toggleButton2);
-        forwardButton.setOnClickListener(new View.OnClickListener(){
+        instantTakesButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 instantTakes = !instantTakes;
@@ -94,7 +94,7 @@ public class CheckersOptions1 extends AppCompatActivity {
         });
 
         Button instantLossesButton = (Button)findViewById(R.id.toggleButton3);
-        forwardButton.setOnClickListener(new View.OnClickListener(){
+        instantLossesButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 instantLosses = !instantLosses;
@@ -102,7 +102,7 @@ public class CheckersOptions1 extends AppCompatActivity {
         });
 
         Button bestMoveButton = (Button)findViewById(R.id.toggleButton4);
-        forwardButton.setOnClickListener(new View.OnClickListener(){
+        bestMoveButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 bestMove = !bestMove;
@@ -110,7 +110,7 @@ public class CheckersOptions1 extends AppCompatActivity {
         });
 
         Button worstMoveButton = (Button)findViewById(R.id.toggleButton5);
-        forwardButton.setOnClickListener(new View.OnClickListener(){
+        worstMoveButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 worstMove = !worstMove;
@@ -118,7 +118,7 @@ public class CheckersOptions1 extends AppCompatActivity {
         });
 
         Button rankAllMovesButton = (Button)findViewById(R.id.toggleButton6);
-        forwardButton.setOnClickListener(new View.OnClickListener(){
+        rankAllMovesButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 rankAllMoves = !rankAllMoves;

@@ -1,12 +1,13 @@
-// Comment out stdafx.h if not using Visual Studio
-//#include "stdafx.h"
+#include <jni.h>
+
+
+
 #include <time.h>
 #include <iostream>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include <jni.h>
 #include <string>
 
 using namespace cv;
@@ -99,7 +100,7 @@ double euclideanDistance(Point2f& a, Point2f& b) {
 
 // Takes in the file of checkerboard image, and the team colors
 // returns a 2D vector of the Board, where 0: no piece, 1: colors[0] piece, 2: colors[1] piece
-int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vector<Scalar>& colors, vector<vector<int> >& Board) {
+int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const vector<Scalar>& colors, vector<vector<int> >& Board) {
     bool debug = false;
 
     // if (debug) cout << "Opening file: " << file << std::endl;
@@ -226,6 +227,9 @@ int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vecto
     if (debug) cout << type2str(warp.type()) << endl;
     warpPerspective(processedImage, warp, transformMatrix, size);
     warpPerspective(orig, warpColored, transformMatrix, size);
+    Mat* normalized = new Mat();
+    *normalized = warpColored.clone();
+    warpedImage = normalized;
     if (debug) {
         imshow("warp initial", warp);
         // waitKey(0);
@@ -320,7 +324,8 @@ int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vecto
     if (debug) { cout << "num cols " << pointsSorted[0].size() << endl; }
     int area = warp.size().height * warp.size().width;
     // vector<vector<int >> Board;
-    int minDistCenter = int(FLT_MAX);
+    int minDistCenterT1 = warp.size().width;
+    int minDistCenterT2 = warp.size().width;
     for (int row = 0; row < (pointsSorted.size() - 1); ++row) {
         sort(pointsSorted[row].begin(), pointsSorted[row].end(), comparePointsX);
         // cout << "sorted: " << pointsSorted[row] << endl;
@@ -349,7 +354,7 @@ int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vecto
 
             if (circles.size() == 0) tempRow.push_back(0);
             for (int i = 0; i < circles.size(); ++i) {
-                Point center(cvRound(circles[i][0]), cvRound(circles[i][0]));
+                Point2f center(cvRound(circles[i][0]), cvRound(circles[i][0]));
                 int radius = cvRound(circles[i][2]);
                 circle(tile, center, radius, Scalar(255), 2);
                 Point centerShifted(x + center.x, y + center.y);
@@ -360,24 +365,29 @@ int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vecto
                 if (debug) { cout << tileColor << endl; }
                 float minColorDist = FLT_MAX;
                 int minIndex;
+                Point2f middle = Point2f(x + w/2, y + h/2);
+                int distCenter = int(euclideanDistance(center, middle));
+                Mat* tileCopy = new Mat;
+                *tileCopy = coloredTile.clone();
                 for (int c = 0; c < colors.size(); ++c) {
                     float colorDistance = cv::norm(tileColor, colors[c]);
                     if (debug) { cout << "distance" << colorDistance << endl; }
                     if (colorDistance < minColorDist) {
-                        /*
-                        int distCenter = int(euclideanDistance(center, Point(x + w/2, y + h/2))
-                        if (distCenter < minDistCenter) {
-                            minDistCenter = distCenter;
-                            if (c == 0) {
-                                team1 = &(tile.clone());
-                            } else {
-                                team 2 = &(tile.clone());
-                            }
-                        }
-                        */
                         minColorDist = colorDistance;
                         minIndex = c;
                     }
+                }
+                if (minIndex == 0) {
+                    if (distCenter < minDistCenterT1) {
+                        minDistCenterT1 = distCenter;
+                        team1 = tileCopy;
+                    }
+                } else {
+                    if (distCenter < minDistCenterT2) {
+                        minDistCenterT2 = distCenter;
+                        team2 = tileCopy;
+                    }
+
                 }
                 tempRow.push_back(minIndex + 1);
 
@@ -405,6 +415,7 @@ int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vecto
     waitKey(0);
     return 1;
 }
+
 
 extern "C"
 JNIEXPORT jobjectArray JNICALL
