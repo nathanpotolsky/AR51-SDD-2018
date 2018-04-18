@@ -90,7 +90,7 @@ public class ColorBlobDetectionActivity extends Activity implements OnTouchListe
             @Override
             public void onClick(View v){
 //                Imgcodecs.imwrite("examplePhotoOfCheckersBoard.jpg", mRgba);
-                SaveImage(mRgba);
+                SaveImage();
 
                 Intent PhotoPreviewIntent = new Intent(getApplicationContext(), PhotoPreview.class);
                 startActivity(PhotoPreviewIntent);
@@ -98,16 +98,26 @@ public class ColorBlobDetectionActivity extends Activity implements OnTouchListe
         });
     }
 
-    public void SaveImage (Mat mat) {
-        Mat mIntermediateMat = new Mat();
+    public void SaveImage () {
+        Mat mIntermediateMat = mRgba;
+
+//        mRgba = inputFrame.rgba();
+        Mat mRgbaT = new Mat();
+        Core.transpose(mIntermediateMat, mRgbaT);
+        Core.flip(mRgbaT, mIntermediateMat, 1);
+//        Imgproc.resize(mRgbaT, mRgbaT, mRgba.size());
+
+
+
+
 
         Imgproc.cvtColor(mRgba, mIntermediateMat, Imgproc.COLOR_RGBA2BGR, 3);
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
-//        File path = cw.getDir("dank_memes", Context.MODE_PRIVATE);
-        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File path = cw.getDir("dank_memes", Context.MODE_PRIVATE);
+//        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         String filename = "checkerboard.png";
-        Log.d("imageWrite", String.valueOf(path.getAbsolutePath()));
+//        Log.d("imageWrite", String.valueOf(path.getAbsolutePath()));
         File file = new File(path, filename);
 
         Boolean bool = null;
@@ -121,21 +131,21 @@ public class ColorBlobDetectionActivity extends Activity implements OnTouchListe
         this.sendBroadcast(mediaScanIntent);
 
         if (bool == true){
-            Log.d("imageWrite", "SUCCESS writing image to external storage");
+            Log.d("imageWrite", ("SUCCESS writing image to external storage" + file.length()));
         }
         else{
             Log.d("imageWrite", "Fail writing image to external storage");
         }
 
-//        String pathStr = path.getAbsolutePath();
-//        Log.d("imageWrite", "Path: " + pathStr);
-//        File directory = new File(pathStr);
-//        File[] files = directory.listFiles();
-//        Log.d("imageWrite", "Size: "+ files.length);
-//        for (int i = 0; i < files.length; i++)
-//        {
-//            Log.d("imageWrite", "FileName:" + files[i].getName());
-//        }
+        String pathStr = path.getAbsolutePath();
+        Log.d("imageWrite", "Path: " + pathStr);
+        File directory = new File(pathStr);
+        File[] files = directory.listFiles();
+        Log.d("imageWrite", "Size: "+ files.length);
+        for (int i = 0; i < files.length; i++)
+        {
+            Log.d("imageWrite", "FileName:" + files[i].getName());
+        }
     }
 
     @Override
@@ -231,21 +241,28 @@ public class ColorBlobDetectionActivity extends Activity implements OnTouchListe
 
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
         mRgba = inputFrame.rgba();
-
-        if (mIsColorSelected) {
-            mDetector.process(mRgba);
-            List<MatOfPoint> contours = mDetector.getContours();
-            Log.e(TAG, "Contours count: " + contours.size());
-            Imgproc.drawContours(mRgba, contours, -1, CONTOUR_COLOR);
-
-            Mat colorLabel = mRgba.submat(4, 68, 4, 68);
-            colorLabel.setTo(mBlobColorRgba);
-
-            Mat spectrumLabel = mRgba.submat(4, 4 + mSpectrum.rows(), 70, 70 + mSpectrum.cols());
-            mSpectrum.copyTo(spectrumLabel);
-        }
-
+//        Mat mRgbaT = new Mat();
+//        Core.transpose(mRgba, mRgbaT);
+//        Core.flip(mRgbaT, mRgbaT, 1);
+//        Imgproc.resize(mRgbaT, mRgbaT, mRgba.size());
         return mRgba;
+
+//        mRgba = mRgbaT;
+
+//        if (mIsColorSelected) {
+//            mDetector.process(mRgba);
+//            List<MatOfPoint> contours = mDetector.getContours();
+//            Log.e(TAG, "Contours count: " + contours.size());
+//            Imgproc.drawContours(mRgba, contours, -1, CONTOUR_COLOR);
+//
+//            Mat colorLabel = mRgba.submat(4, 68, 4, 68);
+//            colorLabel.setTo(mBlobColorRgba);
+//
+//            Mat spectrumLabel = mRgba.submat(4, 4 + mSpectrum.rows(), 70, 70 + mSpectrum.cols());
+//            mSpectrum.copyTo(spectrumLabel);
+//        }
+
+//        return mRgbaT;
     }
 
     private Scalar converScalarHsv2Rgba(Scalar hsvColor) {
