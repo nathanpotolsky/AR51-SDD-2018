@@ -17,6 +17,7 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -25,7 +26,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".ColorBlobDetectionActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,14 +34,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".CheckersOptions1" />
-        <activity
-            android:name=".CheckersCamera"
-            android:label="@string/title_activity_checkers_camera"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <!--<activity-->
+            <!--android:name=".CheckersCamera"-->
+            <!--android:label="@string/title_activity_checkers_camera"-->
+            <!--android:theme="@style/AppTheme.NoActionBar" />-->
         <activity android:name=".CameraFillerPage" />
         <activity android:name=".ColorSelection" />
         <activity android:name=".KingTagging" />
-        <activity android:name=".ARPage"></activity>
+        <activity android:name=".ARPage" />
+        <activity android:name=".PhotoPreview"></activity>
     </application>
 
 </manifest>

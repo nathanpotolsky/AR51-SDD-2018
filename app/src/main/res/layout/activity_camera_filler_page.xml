@@ -11,24 +11,24 @@
     android:orientation="vertical"
     android:weightSum="10"
     tools:context="com.example.nathan.myapplication.CameraFillerPage"
-   >
+    >
 
-    <ImageView
+    <org.opencv.android.JavaCameraView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="9"
         android:background="@drawable/exampleboard" />
 
-    <Button
-        android:id="@+id/btnCamera"
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/holo_red_dark"
-        android:textColor="@android:color/white"
-        android:onClick="dispatchTakePictureIntent"
-        android:text="Open Camera"/>
+    <!--<Button-->
+        <!--android:id="@+id/btnCamera"-->
+        <!--android:layout_weight="1"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@android:color/holo_red_dark"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--android:onClick="dispatchTakePictureIntent"-->
+        <!--android:text="Open Camera"/>-->
 
     <Button
         android:id="@+id/forwardButton"
