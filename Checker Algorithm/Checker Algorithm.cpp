@@ -1,5 +1,5 @@
 ﻿// Comment out stdafx.h if not using Visual Studio
-#include "stdafx.h"
+//#include "stdafx.h"
 #include <time.h>
 #include <iostream>
 #include <opencv2/core/core.hpp>
@@ -98,12 +98,12 @@ double euclideanDistance(Point2f& a, Point2f& b) {
 
 // Takes in the file of checkerboard image, and the team colors
 // returns a 2D vector of the Board, where 0: no piece, 1: colors[0] piece, 2: colors[1] piece
-int checker(const string& file, const vector<Scalar>& colors, vector<vector<int> >& Board) {
-	bool debug = true;
+int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vector<Scalar>& colors, vector<vector<int> >& Board) {
+	bool debug = false;
 
-	if (debug) cout << "Opening file: " << file << std::endl;
-	Mat image_;
-	image_ = imread(file, CV_LOAD_IMAGE_COLOR);
+	// if (debug) cout << "Opening file: " << file << std::endl;
+	Mat image_ = *imageRef;
+	// image_ = imread(file, CV_LOAD_IMAGE_COLOR);
 	if (!image_.data) {
 		cerr << "could not open or find the image" << endl;
 		return 0;
@@ -335,6 +335,7 @@ int checker(const string& file, const vector<Scalar>& colors, vector<vector<int>
 			HoughCircles(tile, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
 			
 			if (circles.size() == 0) tempRow.push_back(0);
+			int distCenter = 10000;
 			for (int i = 0; i < circles.size(); ++i) {
 				Point center(cvRound(circles[i][0]), cvRound(circles[i][0]));
 				int radius = cvRound(circles[i][2]);
@@ -356,6 +357,11 @@ int checker(const string& file, const vector<Scalar>& colors, vector<vector<int>
 					}
 				}
 				tempRow.push_back(minIndex + 1);
+				/* 				
+				if (euclideanDistance(center, Point(x + w/2, y + h/2)) < distCenter) {
+
+				}
+				*/
 				circle(warpColored, centerShifted, radius, tileColor, -1);
 				// Mat roi = tile(Range(circles[i][1] - circles[i][2], circles[i][1] + circles[i][2] + 1), cv::Range(circles[i][0] - circles[i][2], circles[i][0] + circles[i][2] + 1));
 			}
@@ -376,34 +382,37 @@ int checker(const string& file, const vector<Scalar>& colors, vector<vector<int>
 	// imshow("checkerboard", processedImage);
 	// imshow("Board edges", boardEdges);
 	// imshow("intersection", intersectionMask);
-	imshow("BoardGuess", warpColored);
+	if (debug) {imshow("BoardGuess", warpColored);}
 	waitKey(0);
 	return 1;
 }
 
 int main() {
 	// Test cases
+
 	vector<vector<int> > Board;
 	vector<Scalar> colors1;
 	colors1.push_back(Scalar(0, 0, 255));
 	colors1.push_back(Scalar(0, 0, 0));
-	int ret = checker("TestImages/irl4.jpg", colors1, Board);
+	Mat image = imread("TestImages/irl4.jpg");
+	Mat* imageRef = &image;
+	int ret = checker(imageRef,imageRef,imageRef,imageRef, colors1, Board);
 	if (ret) printBoard(Board);
 
-	int sum = 0;
-	int n = 0;
-	for (int i = 0; i < n; ++i) {
-		clock_t t = clock();
-		vector<vector<int> > Board;
-		vector<Scalar> colors1;
-		colors1.push_back(Scalar(0, 0, 255));
-		colors1.push_back(Scalar(0, 0, 0));
-		checker("TestImages/WIN_20180416_14_46_01_Pro.jpg", colors1, Board);
-		//printBoard(Board);
-		t = clock() - t;
-		sum += t;
-	}
-	cout << "Average time: " << float(sum) * 1000 / (n * CLOCKS_PER_SEC) << "ms" << endl;
+	// int sum = 0;
+	// int n = 0;
+	// for (int i = 0; i < n; ++i) {
+	// 	clock_t t = clock();
+	// 	vector<vector<int> > Board;
+	// 	vector<Scalar> colors1;
+	// 	colors1.push_back(Scalar(0, 0, 255));
+	// 	colors1.push_back(Scalar(0, 0, 0));
+	// 	checker("TestImages/WIN_20180416_14_46_01_Pro.jpg", colors1, Board);
+	// 	//printBoard(Board);
+	// 	t = clock() - t;
+	// 	sum += t;
+	// }
+	// cout << "Average time: " << float(sum) * 1000 / (n * CLOCKS_PER_SEC) << "ms" << endl;
 	/*vector<Scalar> colors2;
 	colors2.push_back(Scalar(0, 0, 255));
 	colors2.push_back(Scalar(255, 255, 255));
