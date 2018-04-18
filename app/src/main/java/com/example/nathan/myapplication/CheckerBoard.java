@@ -4,11 +4,13 @@ import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.Iterator;
+import java.util.Comparator;
 
 public class CheckerBoard extends Board{
 
     LinkedList<CheckersMove> ourMoves = new LinkedList<CheckersMove>();
     LinkedList<CheckersMove> theirMoves = new LinkedList<CheckersMove>();
+    LinkedList<Position> instantLosses = new LinkedList<Position>();
 
     public CheckerBoard() {
         rows = 8;
@@ -36,6 +38,7 @@ public class CheckerBoard extends Board{
         }
     }
 
+
     public void setKing(int x, int y) {
         if (intBoard[x][y] > 2) {
             intBoard[x][y] -= 2;
@@ -55,6 +58,78 @@ public class CheckerBoard extends Board{
             }
         }
     }
+
+    public LinkedList<CheckersMove> rankedMoves() {
+        assignMoveWeights();
+        ourMoves.sort( new Comparator<CheckersMove>(){
+            @Override
+            public int compare(CheckersMove o1, CheckersMove o2){
+                if (o1.weight < o2.weight) {
+                    return -1;
+                } else if (o1.weight > o2.weight) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+        return ourMoves;
+    }
+
+    public LinkedList<Position> instantLosses() {
+        return instantLosses;
+    }
+
+    public LinkedList<CheckersMove> instantTakes() {
+        LinkedList<CheckersMove> takes = new LinkedList<CheckersMove>();
+        Iterator<CheckersMove> itr = ourMoves.iterator();
+        while (itr.hasNext()) {
+            CheckersMove move = itr.next();
+            if (move.isJumpMove) {
+                takes.add(move);
+            }
+        }
+        return takes;
+    }
+
+    public LinkedList<CheckersMove> allMoves() {
+        return ourMoves;
+    }
+
+    public CheckersMove bestMove() {
+        assignMoveWeights();
+        ourMoves.sort( new Comparator<CheckersMove>(){
+            @Override
+            public int compare(CheckersMove o1, CheckersMove o2){
+                if (o1.weight < o2.weight) {
+                    return -1;
+                } else if (o1.weight > o2.weight) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+        return ourMoves.getFirst();
+    }
+
+    public CheckersMove worstMove() {
+        assignMoveWeights();
+        ourMoves.sort( new Comparator<CheckersMove>(){
+            @Override
+            public int compare(CheckersMove o1, CheckersMove o2){
+                if (o1.weight < o2.weight) {
+                    return -1;
+                } else if (o1.weight > o2.weight) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+        return ourMoves.getLast();
+    }
+
     void addPiecesToLists(){
         //Go through board, looking for our men then add to a list
         for(int i = 0; i<rows; i++)
@@ -73,7 +148,7 @@ public class CheckerBoard extends Board{
         }
     }
 
-    void findValidMoves(boolean isOurTeam){
+    public void findValidMoves(boolean isOurTeam){
         //Default to processing moves for our team
         LinkedList<Position> piecesList = ourPieces;
         LinkedList<CheckersMove> movesList = ourMoves;
@@ -107,6 +182,9 @@ public class CheckerBoard extends Board{
                 else if((intBoard[x-1][y-1] == otherTeamMan || intBoard[x][y] == otherTeamKing) && (intBoard[x-2][y-2] == 0)){
                     proposedUpLeftPoint = new Position(x-2,y-2);
                     movesList.add(new CheckersMove(new Position(x, y), proposedUpLeftPoint, true));
+                    if (!isOurTeam) {
+                        instantLosses.add(new Position(x-1, y-1));
+                    }
                     //Log.d("myTag", "(" + x + ", " + y + ") can jump to (" + proposedUpLeftPoint.x + ", " + proposedUpLeftPoint.y + ")");
                 }
             }
@@ -121,6 +199,9 @@ public class CheckerBoard extends Board{
                 else if((intBoard[x-1][y+1] == otherTeamMan || intBoard[x][y] == otherTeamKing) && (intBoard[x-2][y+2] == 0)){
                     proposedUpRightPoint = new Position(x-2,y+2);
                     movesList.add(new CheckersMove(new Position(x, y), proposedUpRightPoint, true));
+                    if (!isOurTeam) {
+                        instantLosses.add(new Position(x-1, y+1));
+                    }
                     //Log.d("myTag", "(" + x + ", " + y + ") can jump to (" + proposedUpRightPoint.x + ", " + proposedUpRightPoint.y + ")");
                 }
             }
@@ -135,6 +216,9 @@ public class CheckerBoard extends Board{
                 else if((intBoard[x+1][y-1] == otherTeamMan || intBoard[x][y] == otherTeamKing) && (intBoard[x+2][y-2] == 0)){
                     proposedDownLeftPoint = new Position(x+2,y-2);
                     movesList.add(new CheckersMove(new Position(x, y), proposedDownLeftPoint, true));
+                    if (!isOurTeam) {
+                        instantLosses.add(new Position(x+1, y-1));
+                    }
                     //Log.d("myTag", "(" + x + ", " + y + ") can jump to (" + proposedDownLeftPoint.x + ", " + proposedDownLeftPoint.y + ")");
                 }
             }
@@ -149,6 +233,10 @@ public class CheckerBoard extends Board{
                 else if((intBoard[x+1][y+1] == otherTeamMan || intBoard[x][y] == otherTeamKing) && (intBoard[x+2][y+2] == 0)){
                     proposedDownRightPoint = new Position(x+2,y+2);
                     movesList.add(new CheckersMove(new Position(x, y), proposedDownRightPoint, true));
+
+                    if (!isOurTeam) {
+                        instantLosses.add(new Position(x+1, y+1));
+                    }
                     //Log.d("myTag", "(" + x + ", " + y + ") can jump to (" + proposedDownRightPoint.x + ", " + proposedDownRightPoint.y + ")");
                 }
             }
