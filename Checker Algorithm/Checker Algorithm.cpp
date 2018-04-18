@@ -171,7 +171,7 @@ int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vecto
 		imshow("CanvasImage", contourImage);
 		waitKey(0);
 	}
-	if (maxArea / (image.size().height * image.size().width) < 0.5) {
+	if (maxArea / (image.size().height * image.size().width) < 0.3) {
 		cout << "maxArea too small" << endl;
 		return 0;
 	}
@@ -267,9 +267,14 @@ int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vecto
 
 		int thetaDeg = int(theta * 180 / PI);
 		// if (debug) cout << thetaDeg << endl;
-		float tol = 15;
+		float tol = 5;
 		if (-tol < thetaDeg  % 180 && thetaDeg % 180 < tol) {
+
 		  	if (abs(rho - prevVDist) > minDist) {
+		  		pt2.x = (pt1.x + pt2.x) / 2;
+		  		pt1.x = pt2.x;
+		  		// pt2.y = vMask.size().height - 1;
+
 		  		line(vMask , pt1, pt2, Scalar(255), 1);
 		  		prevVDist = rho;
 		  		numCols += 1;
@@ -277,6 +282,9 @@ int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vecto
 		} 
 		else if (90 - tol < thetaDeg % 180 && thetaDeg % 180 < 90 + tol) {
 			if (abs(rho - prevHDist) > minDist) {
+		  		// pt2.x = hMask.size().width - 1;
+		  		pt2.y = (pt1.y + pt2.y) / 2;
+		  		pt1.y = pt2.y;
 		  		line(hMask , pt1, pt2, Scalar(255), 1);
 		  		prevHDist = rho;
 		  	}
@@ -289,6 +297,8 @@ int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vecto
 	if (debug) {
 		imshow("intersection", intersectionMask);
 	}
+	waitKey(0);
+
 	findNonZero(intersectionMask, points);
 	if (debug) { cout << "num points " << points.size() << endl; }
 	if (debug) { cout << "num columns " << numCols << endl; }
@@ -299,7 +309,7 @@ int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vecto
 		rowBegin = points.begin() + i * numCols;
 		rowEnd = rowBegin + numCols;
 		vector<Point> temp(rowBegin, rowEnd);
-		//if (debug) { cout << "Row " << i << ": " << temp << endl; }
+		if (debug) { cout << "Row " << i << ": " << temp << endl; }
 		pointsSorted.push_back(temp);
 	}
 	// Point Detection Ends
@@ -309,18 +319,20 @@ int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vecto
 	if (debug) { cout << "num cols " << pointsSorted[0].size() << endl; }
 	int area = warp.size().height * warp.size().width;
 	// vector<vector<int >> Board;
+	int minDistCenter = int(FLT_MAX);
 	for (int row = 0; row < (pointsSorted.size() - 1); ++row) {
 		sort(pointsSorted[row].begin(), pointsSorted[row].end(), comparePointsX);
 		// cout << "sorted: " << pointsSorted[row] << endl;
 		vector<int> tempRow;
+
 		for (int col = 0; col < (pointsSorted[row].size() - 1); ++col) {
 			int x, y, w, h;
 			x = pointsSorted[row][col].x, y = pointsSorted[row][col].y;
 			w = pointsSorted[row + 1][col + 1].x - x, h = pointsSorted[row + 1][col + 1].y - y;
-			//cout << (float(w) / h ) << endl;
-			//cout << (float(h) / w ) << endl;
-			//cout << endl;
-			if ((float(w) / h > 1.4) || (float(h) / w > 1.4) || (w * h < area / 200)) continue;
+			// cout << (float(w) / h ) << endl;
+			// cout << (float(h) / w ) << endl;
+			// cout << endl;
+			if ((float(w) / h > 1.4) || (float(h) / w > 1.4) || (float(w)/h <= 0) || (w * h < area / 200)) continue;
 			float buffer = 0.05;
 			x = int(x + buffer * w);
 			y = int(y + buffer * h);
@@ -335,7 +347,6 @@ int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vecto
 			HoughCircles(tile, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
 			
 			if (circles.size() == 0) tempRow.push_back(0);
-			int distCenter = 10000;
 			for (int i = 0; i < circles.size(); ++i) {
 				Point center(cvRound(circles[i][0]), cvRound(circles[i][0]));
 				int radius = cvRound(circles[i][2]);
@@ -352,16 +363,23 @@ int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vecto
 					float colorDistance = cv::norm(tileColor, colors[c]);
 					if (debug) { cout << "distance" << colorDistance << endl; }
 					if (colorDistance < minColorDist) {
+						/*
+						int distCenter = int(euclideanDistance(center, Point(x + w/2, y + h/2))
+						if (distCenter < minDistCenter) {
+							minDistCenter = distCenter;
+							if (c == 0) {
+								team1 = &(tile.clone());
+							} else {
+								team 2 = &(tile.clone());
+							}
+						}
+						*/
 						minColorDist = colorDistance;
 						minIndex = c;
 					}
 				}
 				tempRow.push_back(minIndex + 1);
-				/* 				
-				if (euclideanDistance(center, Point(x + w/2, y + h/2)) < distCenter) {
-
-				}
-				*/
+				
 				circle(warpColored, centerShifted, radius, tileColor, -1);
 				// Mat roi = tile(Range(circles[i][1] - circles[i][2], circles[i][1] + circles[i][2] + 1), cv::Range(circles[i][0] - circles[i][2], circles[i][0] + circles[i][2] + 1));
 			}
@@ -394,9 +412,10 @@ int main() {
 	vector<Scalar> colors1;
 	colors1.push_back(Scalar(0, 0, 255));
 	colors1.push_back(Scalar(0, 0, 0));
-	Mat image = imread("TestImages/irl4.jpg");
+	Mat image = imread("TestImages/irl6.png");
 	Mat* imageRef = &image;
 	int ret = checker(imageRef,imageRef,imageRef,imageRef, colors1, Board);
+	
 	if (ret) printBoard(Board);
 
 	// int sum = 0;
