@@ -24,13 +24,14 @@ public class CheckerBoard extends Board{
         intBoard[7] = new int[] {0,0,0,1,0,1,0,0};
     }
 
-    public CheckerBoard(Object[][] arr){
+    public CheckerBoard(Object[] arr){
         rows = 8;
         columns = 8;
         intBoard = new int[rows][columns];
         for (int i = 0; i < arr.length; ++i) {
-            for(int j = 0; j < arr[i].length; ++j) {
-                intBoard[i][j] = (int) arr[i][j];
+            int[] temp = (int[]) arr[i];
+            for(int j = 0; j < temp.length; ++j) {
+                intBoard[i][j] = temp[j];
             }
         }
     }

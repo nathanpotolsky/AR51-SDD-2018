@@ -1,11 +1,13 @@
+// Comment out stdafx.h if not using Visual Studio
+//#include "stdafx.h"
 #include <time.h>
 #include <iostream>
-#include <jni.h>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <string>
+#include <jni.h>
 
 using namespace cv;
 using namespace std;
@@ -45,6 +47,29 @@ string type2str(int type) {
     return r;
 }
 
+double _median(Mat channel) {
+    double m = (channel.rows*channel.cols) / 2;
+    int bin = 0;
+    double med = -1.0;
+
+    int histSize = 256;
+    float range[] = { 0, 256 };
+    const float* histRange = { range };
+    bool uniform = true;
+    bool accumulate = false;
+    cv::Mat hist;
+    cv::calcHist(&channel, 1, 0, cv::Mat(), hist, 1, &histSize, &histRange, uniform, accumulate);
+
+    for (int i = 0; i < histSize && med < 0.0; ++i)
+    {
+        bin += cvRound(hist.at< float >(i));
+        if (bin > m && med < 0.0)
+            med = i;
+    }
+
+    return med;
+}
+
 void printBoard(const vector<vector<int> >& Board) {
     cout << string(Board[0].size() * 4 + 1, '-') << endl;
     for (int row = 0; row < Board.size(); ++row) {
@@ -59,6 +84,14 @@ void printBoard(const vector<vector<int> >& Board) {
     }
 }
 
+void autoCanny(Mat& image, float sigma, int& lower, int& upper) {
+    double med = _median(image);
+    // Scalar temp = mean(image);
+    // cout << "Med and temp " << med << " " << temp << endl;
+    lower = int(max(0.0, (1.0 - sigma) * med));
+    upper = int(min(255.0, (1.0 + sigma) * med));
+}
+
 double euclideanDistance(Point2f& a, Point2f& b) {
     Point diff = a - b;
     return sqrt(pow(diff.x, 2) + pow(diff.y, 2));
@@ -67,7 +100,7 @@ double euclideanDistance(Point2f& a, Point2f& b) {
 // Takes in the file of checkerboard image, and the team colors
 // returns a 2D vector of the Board, where 0: no piece, 1: colors[0] piece, 2: colors[1] piece
 int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vector<Scalar>& colors, vector<vector<int> >& Board) {
-    bool debug = true;
+    bool debug = false;
 
     // if (debug) cout << "Opening file: " << file << std::endl;
     Mat image_ = *imageRef;
@@ -350,7 +383,7 @@ int checker(Mat* imageRef, Mat* warpedImage, Mat* team1, Mat* team2, const vecto
     // imshow("checkerboard", processedImage);
     // imshow("Board edges", boardEdges);
     // imshow("intersection", intersectionMask);
-    imshow("BoardGuess", warpColored);
+    if (debug) {imshow("BoardGuess", warpColored);}
     waitKey(0);
     return 1;
 }
@@ -393,12 +426,12 @@ Java_com_example_nathan_myapplication_BoardDetectionActivity_convertPicture(JNIE
 
 int main() {
     // Test cases
-    vector<vector<int> > Board;
-    vector<Scalar> colors1;
-    colors1.push_back(Scalar(0, 0, 255));
-    colors1.push_back(Scalar(0, 0, 0));
-    checker("TestImages/ex1.jpeg", colors1, Board);
-    printBoard(Board);
+//    vector<vector<int> > Board;
+//    vector<Scalar> colors1;
+//    colors1.push_back(Scalar(0, 0, 255));
+//    colors1.push_back(Scalar(0, 0, 0));
+////    checker("TestImages/ex1.jpeg", colors1, Board);
+//    printBoard(Board);
     /*vector<Scalar> colors2;
     colors2.push_back(Scalar(0, 0, 255));
     colors2.push_back(Scalar(255, 255, 255));

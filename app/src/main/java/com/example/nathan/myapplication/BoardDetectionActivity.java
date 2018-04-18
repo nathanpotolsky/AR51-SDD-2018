@@ -45,6 +45,11 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
 
     private CameraBridgeViewBase mOpenCvCameraView;
 
+    static {
+        System.loadLibrary("native-lib");
+        System.loadLibrary("opencv_java3");
+    }
+
     private BaseLoaderCallback  mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
@@ -151,7 +156,11 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
         Mat mTeam1 = new Mat();
         Mat mTeam2 = new Mat();
 
-//        Object[][] objBoardState = convertPicture(mRaw.getNativeObjAddr(), mNormalized.getNativeObjAddr(), mTeam1.getNativeObjAddr(), mTeam2.getNativeObjAddr());
+        Object[] objBoardState = convertPicture(mRaw.getNativeObjAddr(), mNormalized.getNativeObjAddr(), mTeam1.getNativeObjAddr(), mTeam2.getNativeObjAddr());
+
+        CheckerBoard tempCheckerBoard = new CheckerBoard(objBoardState);
+
+        tempCheckerBoard.printBoard();
 
         String pathNormalizedCheckerboard = new File(path, "normalizedCheckerboard.png").toString();
         String pathTeam1 = new File(path, "team1.png").toString();
@@ -287,5 +296,5 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
         return new Scalar(pointMatRgba.get(0, 0));
     }
 
-//    public native Object[][] convertPicture(byte[] file, int size);
+    public native Object[] convertPicture(long mRaw, long mNormalized, long mTeam1, long mTeam2);
 }
