@@ -1,7 +1,6 @@
 package com.example.nathan.myapplication;
 
 import java.io.File;
-import java.util.List;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
@@ -10,7 +9,6 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -23,9 +21,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,7 +31,7 @@ import android.view.View.OnTouchListener;
 import android.view.SurfaceView;
 import android.widget.Button;
 
-public class ColorBlobDetectionActivity extends Activity implements OnTouchListener, CvCameraViewListener2 {
+public class BoardDetectionActivity extends Activity implements OnTouchListener, CvCameraViewListener2 {
     private static final String  TAG              = "OCVSample::Activity";
 
     private boolean              mIsColorSelected = false;
@@ -57,7 +53,7 @@ public class ColorBlobDetectionActivity extends Activity implements OnTouchListe
                 {
                     Log.i(TAG, "OpenCV loaded successfully");
                     mOpenCvCameraView.enableView();
-                    mOpenCvCameraView.setOnTouchListener(ColorBlobDetectionActivity.this);
+                    mOpenCvCameraView.setOnTouchListener(BoardDetectionActivity.this);
                 } break;
                 default:
                 {
@@ -67,7 +63,7 @@ public class ColorBlobDetectionActivity extends Activity implements OnTouchListe
         }
     };
 
-    public ColorBlobDetectionActivity() {
+    public BoardDetectionActivity() {
         Log.i(TAG, "Instantiated new " + this.getClass());
     }
 
@@ -195,12 +191,12 @@ public class ColorBlobDetectionActivity extends Activity implements OnTouchListe
 
     public void onCameraViewStarted(int width, int height) {
         mRgba = new Mat(height, width, CvType.CV_8UC4);
-        mDetector = new ColorBlobDetector();
-        mSpectrum = new Mat();
-        mBlobColorRgba = new Scalar(255);
-        mBlobColorHsv = new Scalar(255);
-        SPECTRUM_SIZE = new Size(200, 64);
-        CONTOUR_COLOR = new Scalar(255,0,0,255);
+//        mDetector = new ColorBlobDetector();
+//        mSpectrum = new Mat();
+//        mBlobColorRgba = new Scalar(255);
+//        mBlobColorHsv = new Scalar(255);
+//        SPECTRUM_SIZE = new Size(200, 64);
+//        CONTOUR_COLOR = new Scalar(255,0,0,255);
     }
 
     public void onCameraViewStopped() {

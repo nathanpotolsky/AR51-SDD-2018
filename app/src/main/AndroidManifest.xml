@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".CheckersOptions1" />
-        <activity android:name=".ColorBlobDetectionActivity" />
+        <activity android:name=".BoardDetectionActivity" />
         <!-- <activity -->
         <!-- android:name=".CheckersCamera" -->
         <!-- android:label="@string/title_activity_checkers_camera" -->

@@ -45,7 +45,7 @@ public class CheckersOptions1 extends AppCompatActivity {
         forwardButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Intent optionIntent = new Intent(getApplicationContext(), ColorBlobDetectionActivity.class);
+                Intent optionIntent = new Intent(getApplicationContext(), BoardDetectionActivity.class);
                 startActivity(optionIntent);
             }
         });

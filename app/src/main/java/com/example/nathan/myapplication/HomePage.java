@@ -17,7 +17,7 @@ public class HomePage extends AppCompatActivity {
         BeginButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Intent optionIntent = new Intent(getApplicationContext(), CheckersOptions1.class);
+                Intent optionIntent = new Intent(getApplicationContext(), ARPage.class);
                 startActivity(optionIntent);
             }
         });

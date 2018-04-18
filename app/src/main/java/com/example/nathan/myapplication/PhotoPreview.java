@@ -16,8 +16,16 @@ import java.io.File;
 
 public class PhotoPreview extends AppCompatActivity {
 
+    private static CheckerBoard checkerBoard = new CheckerBoard();
+
+    public static CheckerBoard getCheckerBoard()
+    {
+        return checkerBoard;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_preview);
 
@@ -36,18 +44,18 @@ public class PhotoPreview extends AppCompatActivity {
             ImageView myImage = (ImageView) findViewById(R.id.photoPreview);
 
             myImage.setImageBitmap(myBitmap);
-            Log.d("imageWrite", "SUCCESS ---");
-
-            String pathStr = path1.getAbsolutePath();
-            Log.d("imageWrite", "Path: " + pathStr);
-            File directory = new File(pathStr);
-            File[] files = directory.listFiles();
-            Log.d("imageWrite", "Size: "+ files.length);
-            for (int i = 0; i < files.length; i++)
-            {
-                Log.d("imageWrite", "FileName:" + files[i].getName());
-                Log.d("imageWrite", "FileName:" + files[i]);
-            }
+//            Log.d("imageWrite", "SUCCESS ---");
+//
+//            String pathStr = path1.getAbsolutePath();
+//            Log.d("imageWrite", "Path: " + pathStr);
+//            File directory = new File(pathStr);
+//            File[] files = directory.listFiles();
+//            Log.d("imageWrite", "Size: "+ files.length);
+//            for (int i = 0; i < files.length; i++)
+//            {
+//                Log.d("imageWrite", "FileName:" + files[i].getName());
+//                Log.d("imageWrite", "FileName:" + files[i]);
+//            }
         }
         else{
             Log.d("imageWrite", "FAILURE ---");
