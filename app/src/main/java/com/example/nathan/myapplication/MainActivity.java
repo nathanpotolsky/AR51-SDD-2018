@@ -11,9 +11,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    //private Camera mCamera = null;
-    //private CheckersCamera mCameraView = null;
-
 
     // Used to load the 'native-lib' library on application startup.
     static {

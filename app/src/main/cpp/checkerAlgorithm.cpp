@@ -7,7 +7,6 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
 #include <string>
 
 using namespace cv;
@@ -202,7 +201,6 @@ vector<vector<Point> > pointDection(Mat& warp, int lower, int upper){
     int numCols = 0;
     for (int i = 0; i < lines.size(); ++i) {
         float rho = lines[i][0], theta = lines[i][1];
-        //if (debug) { cout << "Line " << i << " data: " << rho << " " << theta << endl; }
         Point pt1, pt2;
         double a = cos(theta), b = sin(theta);
         double x0 = a*rho, y0 = b*rho;
@@ -212,14 +210,12 @@ vector<vector<Point> > pointDection(Mat& warp, int lower, int upper){
         pt2.y = cvRound(y0 - 1000*(a));
 
         int thetaDeg = int(theta * 180 / PI);
-        // if (debug) cout << thetaDeg << endl;
         float tol = 5;
         if (-tol < thetaDeg  % 180 && thetaDeg % 180 < tol) {
 
             if (abs(rho - prevVDist) > minDist) {
                 pt2.x = (pt1.x + pt2.x) / 2;
                 pt1.x = pt2.x;
-                // pt2.y = vMask.size().height - 1;
 
                 line(vMask , pt1, pt2, Scalar(255), 1);
                 prevVDist = rho;
@@ -228,7 +224,6 @@ vector<vector<Point> > pointDection(Mat& warp, int lower, int upper){
         }
         else if (90 - tol < thetaDeg % 180 && thetaDeg % 180 < 90 + tol) {
             if (abs(rho - prevHDist) > minDist) {
-                // pt2.x = hMask.size().width - 1;
                 pt2.y = (pt1.y + pt2.y) / 2;
                 pt1.y = pt2.y;
                 line(hMask , pt1, pt2, Scalar(255), 1);
@@ -261,7 +256,6 @@ void tileDetection(Mat& warp, Mat& warpColored,vector<vector<Point> > pointsSort
     int minDistCenterT2 = warp.size().width;
     for (int row = 0; row < (pointsSorted.size() - 1); ++row) {
         sort(pointsSorted[row].begin(), pointsSorted[row].end(), comparePointsX);
-        // cout << "sorted: " << pointsSorted[row] << endl;
         vector<int> tempRow;
 
         for (int col = 0; col < (pointsSorted[row].size() - 1); ++col) {

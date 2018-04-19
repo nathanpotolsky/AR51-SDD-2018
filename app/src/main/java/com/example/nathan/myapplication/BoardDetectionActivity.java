@@ -90,7 +90,6 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
         takePhotoButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-//                Imgcodecs.imwrite("examplePhotoOfCheckersBoard.jpg", mRgba);
                 SaveImage();
 
                 Intent PhotoPreviewIntent = new Intent(getApplicationContext(), PhotoPreview.class);
@@ -102,23 +101,14 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
     public void SaveImage () {
         Mat mIntermediateMat = mRgba;
 
-//        mRgba = inputFrame.rgba();
         Mat mRgbaT = new Mat();
         Core.transpose(mIntermediateMat, mRgbaT);
         Core.flip(mRgbaT, mIntermediateMat, 1);
-//        Imgproc.resize(mRgbaT, mRgbaT, mRgba.size());
-
-
-
-
 
         Imgproc.cvtColor(mRgba, mIntermediateMat, Imgproc.COLOR_RGBA2BGR, 3);
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         File path = cw.getDir("dank_memes", Context.MODE_PRIVATE);
-//        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-//        String filename = "checkerboard.png";
-//        Log.d("imageWrite", String.valueOf(path.getAbsolutePath()));
         File file = new File(path, "checkerboard.png");
 
         Boolean bool = null;
@@ -126,42 +116,12 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
         bool = Imgcodecs.imwrite(fullfilename, mIntermediateMat);
 
         SaveNormalizedPhotoAndTeamColors(path, mIntermediateMat);
-
-//        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//        File f = path;
-//        Uri contentUri = Uri.fromFile(f);
-//        mediaScanIntent.setData(contentUri);
-//        this.sendBroadcast(mediaScanIntent);
-//
-//        if (bool == true){
-//            Log.d("imageWrite", ("SUCCESS writing image to external storage" + file.length()));
-//        }
-//        else{
-//            Log.d("imageWrite", "Fail writing image to external storage");
-//        }
-//
-//        String pathStr = path.getAbsolutePath();
-//        Log.d("imageWrite", "Path: " + pathStr);
-//        File directory = new File(pathStr);
-//        File[] files = directory.listFiles();
-//        Log.d("imageWrite", "Size: "+ files.length);
-//        for (int i = 0; i < files.length; i++)
-//        {
-//            Log.d("imageWrite", "FileName:" + files[i].getName());
-//        }
     }
 
     public void SaveNormalizedPhotoAndTeamColors (File path, Mat mRaw) {
         Mat mNormalized = new Mat();
         Mat mTeam1 = new Mat();
         Mat mTeam2 = new Mat();
-
-//        Object[] objBoardState = convertPicture(mRaw.getNativeObjAddr(), mNormalized.getNativeObjAddr(), mTeam1.getNativeObjAddr(), mTeam2.getNativeObjAddr());
-
-//        Log.d("myTag", "objBoardState size " + objBoardState.length);
-//        CheckerBoard tempCheckerBoard = new CheckerBoard(objBoardState);
-
-//        tempCheckerBoard.printBoard();
 
         String pathNormalizedCheckerboard = new File(path, "normalizedCheckerboard.png").toString();
         String pathTeam1 = new File(path, "team1.png").toString();
@@ -201,12 +161,6 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
 
     public void onCameraViewStarted(int width, int height) {
         mRgba = new Mat(height, width, CvType.CV_8UC4);
-//        mDetector = new ColorBlobDetector();
-//        mSpectrum = new Mat();
-//        mBlobColorRgba = new Scalar(255);
-//        mBlobColorHsv = new Scalar(255);
-//        SPECTRUM_SIZE = new Size(200, 64);
-//        CONTOUR_COLOR = new Scalar(255,0,0,255);
     }
 
     public void onCameraViewStopped() {
@@ -265,28 +219,7 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
 
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
         mRgba = inputFrame.rgba();
-//        Mat mRgbaT = new Mat();
-//        Core.transpose(mRgba, mRgbaT);
-//        Core.flip(mRgbaT, mRgbaT, 1);
-//        Imgproc.resize(mRgbaT, mRgbaT, mRgba.size());
         return mRgba;
-
-//        mRgba = mRgbaT;
-
-//        if (mIsColorSelected) {
-//            mDetector.process(mRgba);
-//            List<MatOfPoint> contours = mDetector.getContours();
-//            Log.e(TAG, "Contours count: " + contours.size());
-//            Imgproc.drawContours(mRgba, contours, -1, CONTOUR_COLOR);
-//
-//            Mat colorLabel = mRgba.submat(4, 68, 4, 68);
-//            colorLabel.setTo(mBlobColorRgba);
-//
-//            Mat spectrumLabel = mRgba.submat(4, 4 + mSpectrum.rows(), 70, 70 + mSpectrum.cols());
-//            mSpectrum.copyTo(spectrumLabel);
-//        }
-
-//        return mRgbaT;
     }
 
     private Scalar converScalarHsv2Rgba(Scalar hsvColor) {
