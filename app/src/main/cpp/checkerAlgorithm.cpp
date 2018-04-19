@@ -97,8 +97,12 @@ double euclideanDistance(Point2f& a, Point2f& b) {
 
 // Resize the image if it's too large. Processing will take too long and don't need that much resolution
 void resizeImage(Mat& image_) {
-    if (image_.size().width > 800 || image_.size().height > 800) {
-        resize(image_, image_, Size(800, 800 * image_.size().height / image_.size().width));
+    int maxDimension = 1088;
+    // Resize the image if it's too large. Processing will take too long and don't need that much resolution
+    if (image_.size().width > maxDimension) {
+        resize(image_, image_, Size(maxDimension, maxDimension * image_.size().height / image_.size().width));
+    } else if(image_.size().height > maxDimension) {
+        resize(image_, image_, Size(maxDimension * image_.size().width / image_.size().height, maxDimension));
     }
 }
 
@@ -117,7 +121,8 @@ float preprocessing(Mat& processedImage, Mat& gray, Mat& image) {
     return ratio;
 }
 
-int contourSorting(Mat& image, vector<vector<Point> > &contours, vector<Point> &approx, vector<Point> &boardApprox) {
+int contourSorting(Mat& image, Mat& contourImage, Mat*& warpedImage,
+                   vector<vector<Point> > &contours, vector<Point> &approx, vector<Point> &boardApprox) {
     int maxContourIndex = -1;
     double maxArea = 200.0;
     for (int i = 0; i < contours.size(); ++i) {
@@ -187,20 +192,20 @@ Mat* perspectiveTransform(Mat& warp, Mat& warpColored, Mat& processedImage, Mat&
     return normalized;
 }
 
-vector<vector<Point> > pointDection(Mat& warp, int lower, int upper){
+vector<vector<Point> > pointDection(Mat& warpColored, Mat& warp, Mat*& warpedImage, int lower, int upper){
     Mat hMask = Mat::zeros(warp.size(), CV_8U);
     Mat vMask = Mat::zeros(warp.size(), CV_8U);
 
     Mat boardEdges;
+    vector<vector<Point> > pointsSorted;
     vector<Vec2f> lines;
     autoCanny(warp, 0.33, lower, upper);
     Canny(warp, boardEdges, lower, upper);
     float PI = 3.1415926;
     HoughLines(boardEdges, lines, 1, PI / 180, 200);
-    if (debug) { cout << "lines " << lines.size() << endl; }
     if (lines.size() <= 1) {
         warpColored.copyTo(*warpedImage);
-        return 0;
+        return pointsSorted;
     }
     // sort lines by rho
     sort(lines.begin(), lines.end(), compareLines);
@@ -242,7 +247,6 @@ vector<vector<Point> > pointDection(Mat& warp, int lower, int upper){
     Mat intersectionMask;
     bitwise_and(hMask, vMask, intersectionMask);
     vector<Point> points;
-    vector<vector<Point> > pointsSorted;
     waitKey(0);
 
     findNonZero(intersectionMask, points);
