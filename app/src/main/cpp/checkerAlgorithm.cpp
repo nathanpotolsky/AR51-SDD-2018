@@ -354,7 +354,7 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
             // Circle Detection Begins
             vector<Vec3f> circles;
             autoCanny(tile, 0.33, lower, upper);
-            int dp = 1, minDist = w, cannyThresh = upper, accumulator=15, minRadius=w/4, maxRadius=w/2;
+            int dp = 1, minDist = w, cannyThresh = upper, accumulator=30, minRadius=w/4, maxRadius=0.4*w;
             HoughCircles(tile, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
 
             if (circles.size() == 0) tempRow.push_back(0);
