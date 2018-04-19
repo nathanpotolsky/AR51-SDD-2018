@@ -162,7 +162,7 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     for (int i = 0; i < contours.size(); ++i) {
         if (debug) drawContours(contourImage, contours, i, Scalar(0,255,0), 1);
         double area = contourArea(contours[i]);
-        approxPolyDP(contours[i], approx, arcLength(Mat(contours[i]), true) * 0.01, true);
+        approxPolyDP(contours[i], approx, arcLength(Mat(contours[i]), true) * 0.05, true);
         if (approx.size() == 4 && area > maxArea) {
             maxArea = area;
             maxContourIndex = i;
