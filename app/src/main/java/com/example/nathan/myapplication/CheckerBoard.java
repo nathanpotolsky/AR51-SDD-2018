@@ -41,20 +41,28 @@ public class CheckerBoard extends Board{
 
 
     public void setKing(int x, int y) {
-        if (intBoard[x][y] > 2) {
-            intBoard[x][y] -= 2;
-        } else if (intBoard[x][y] != 0){
-            intBoard[x][y] += 2;
+        if (intBoard[x][y] == 1) {
+            intBoard[x][y] = 3;
+        } else if (intBoard[x][y] == 2) {
+            intBoard[x][y] = 4;
+        } else if (intBoard[x][y] == 3) {
+            intBoard[x][y] = 1;
+        } else if (intBoard[x][y] == 4) {
+            intBoard[x][y] = 2;
         }
     }
 
     public void switchTeams() {
-        for (int i = 0; i < intBoard.length; ++i) {
-            for (int j = 0; j < intBoard[j].length; ++j) {
-                if (intBoard[i][j] == 1 || intBoard[i][j] == 3) {
-                    intBoard[i][j] += 1;
-                } else if (intBoard[i][j] != 0) {
-                    intBoard[i][j] -= 1;
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < columns; ++j) {
+                if (intBoard[i][j] == 1) {
+                    intBoard[i][j] = 2;
+                } else if (intBoard[i][j] == 2) {
+                    intBoard[i][j] = 1;
+                } else if (intBoard[i][j] == 3) {
+                    intBoard[i][j] = 4;
+                } else if (intBoard[i][j] == 4) {
+                    intBoard[i][j] = 3;
                 }
             }
         }

@@ -13,7 +13,7 @@ public class ARPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("myTag", "111");
-        CheckerBoard checkerBoard = PhotoPreview.getCheckerBoard();
+        CheckerBoard checkerBoard = KingTagging.getCheckerBoard();
         checkerBoard.printBoard();
         checkerBoard.addPiecesToLists();
         checkerBoard.findValidMoves(true);

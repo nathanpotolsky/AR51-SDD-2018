@@ -25,21 +25,20 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="Select Both Teams' Kings"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
+        android:id="@+id/normalizedView"
+        android:layout_width="370dp"
+        android:layout_height="370dp"
+        android:layout_marginTop="62dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/exampleboard" />
@@ -48,768 +47,832 @@
         android:id="@+id/king11"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="448dp"
+        android:layout_marginBottom="428dp"
         android:background="@android:color/transparent"
+        android:tag="king00"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.03"
+        app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king12"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="448dp"
+        android:layout_marginBottom="428dp"
         android:background="@android:color/transparent"
+        android:tag="king01"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.162"
+        app:layout_constraintHorizontal_bias="0.182"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king13"
+        android:tag="king02"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="448dp"
+        android:layout_marginBottom="428dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.294"
+        app:layout_constraintHorizontal_bias="0.317"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king14"
+        android:tag="king03"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="448dp"
+        android:layout_marginBottom="428dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.43"
+        app:layout_constraintHorizontal_bias="0.448"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king15"
+        android:tag="king04"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="448dp"
+        android:layout_marginBottom="428dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.56"
+        app:layout_constraintHorizontal_bias="0.583"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king16"
+        android:tag="king05"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="448dp"
+        android:layout_marginBottom="428dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.7"
+        app:layout_constraintHorizontal_bias="0.714"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king17"
+        android:tag="king06"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="448dp"
+        android:layout_marginBottom="428dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.83"
+        app:layout_constraintHorizontal_bias="0.852"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king18"
+        android:tag="king07"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="448dp"
+        android:layout_marginBottom="428dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.96"
+        app:layout_constraintHorizontal_bias="0.948"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king21"
+        android:tag="king10"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="398dp"
+        android:layout_marginBottom="376dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.03"
+        app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king22"
+        android:tag="king11"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="398dp"
+        android:layout_marginBottom="376dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.162"
+        app:layout_constraintHorizontal_bias="0.182"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king23"
+        android:tag="king12"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="398dp"
+        android:layout_marginBottom="376dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.294"
+        app:layout_constraintHorizontal_bias="0.317"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king24"
+        android:tag="king13"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="398dp"
+        android:layout_marginBottom="376dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.43"
+        app:layout_constraintHorizontal_bias="0.448"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king25"
+        android:tag="king14"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="398dp"
+        android:layout_marginBottom="376dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.56"
+        app:layout_constraintHorizontal_bias="0.583"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king26"
+        android:tag="king15"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="398dp"
+        android:layout_marginBottom="376dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.7"
+        app:layout_constraintHorizontal_bias="0.714"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king27"
+        android:tag="king16"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="398dp"
+        android:layout_marginBottom="376dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.83"
+        app:layout_constraintHorizontal_bias="0.852"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king28"
+        android:tag="king17"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="398dp"
+        android:layout_marginBottom="376dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.96"
+        app:layout_constraintHorizontal_bias="0.948"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king31"
+        android:tag="king20"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="348dp"
+        android:layout_marginBottom="328dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.03"
+        app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king32"
+        android:tag="king21"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="348dp"
+        android:layout_marginBottom="328dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.162"
+        app:layout_constraintHorizontal_bias="0.182"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king33"
+        android:tag="king22"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="348dp"
+        android:layout_marginBottom="328dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.294"
+        app:layout_constraintHorizontal_bias="0.317"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king34"
+        android:tag="king23"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="348dp"
+        android:layout_marginBottom="328dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.43"
+        app:layout_constraintHorizontal_bias="0.448"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king35"
+        android:tag="king24"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="348dp"
+        android:layout_marginBottom="328dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.56"
+        app:layout_constraintHorizontal_bias="0.583"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king36"
+        android:tag="king25"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="348dp"
+        android:layout_marginBottom="328dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.7"
+        app:layout_constraintHorizontal_bias="0.714"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king37"
+        android:tag="king26"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="348dp"
+        android:layout_marginBottom="328dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.83"
+        app:layout_constraintHorizontal_bias="0.852"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king38"
+        android:tag="king27"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="348dp"
+        android:layout_marginBottom="328dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.96"
+        app:layout_constraintHorizontal_bias="0.948"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king41"
+        android:tag="king30"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="299dp"
+        android:layout_marginBottom="276dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.03"
+        app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king42"
+        android:tag="king31"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="299dp"
+        android:layout_marginBottom="276dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.162"
+        app:layout_constraintHorizontal_bias="0.182"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king43"
+        android:tag="king32"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="299dp"
+        android:layout_marginBottom="276dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.294"
+        app:layout_constraintHorizontal_bias="0.317"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king44"
+        android:tag="king33"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="299dp"
+        android:layout_marginBottom="276dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.43"
+        app:layout_constraintHorizontal_bias="0.448"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king45"
+        android:tag="king34"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="299dp"
+        android:layout_marginBottom="276dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.56"
+        app:layout_constraintHorizontal_bias="0.583"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king46"
+        android:tag="king35"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="299dp"
+        android:layout_marginBottom="276dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.7"
+        app:layout_constraintHorizontal_bias="0.714"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king47"
+        android:tag="king36"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="299dp"
+        android:layout_marginBottom="276dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.83"
+        app:layout_constraintHorizontal_bias="0.852"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king48"
+        android:tag="king37"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="299dp"
+        android:layout_marginBottom="276dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.96"
+        app:layout_constraintHorizontal_bias="0.948"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king51"
+        android:tag="king40"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="251dp"
+        android:layout_marginBottom="232dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.03"
+        app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king52"
+        android:tag="king41"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="251dp"
+        android:layout_marginBottom="232dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.162"
+        app:layout_constraintHorizontal_bias="0.182"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king53"
+        android:tag="king42"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="251dp"
+        android:layout_marginBottom="232dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.294"
+        app:layout_constraintHorizontal_bias="0.317"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king54"
+        android:tag="king43"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="251dp"
+        android:layout_marginBottom="232dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.43"
+        app:layout_constraintHorizontal_bias="0.448"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king55"
+        android:tag="king44"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="251dp"
+        android:layout_marginBottom="232dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.56"
+        app:layout_constraintHorizontal_bias="0.583"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king56"
+        android:tag="king45"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="251dp"
+        android:layout_marginBottom="232dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.7"
+        app:layout_constraintHorizontal_bias="0.714"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king57"
+        android:tag="king46"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="251dp"
+        android:layout_marginBottom="232dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.83"
+        app:layout_constraintHorizontal_bias="0.852"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king58"
+        android:tag="king47"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="251dp"
+        android:layout_marginBottom="232dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.96"
+        app:layout_constraintHorizontal_bias="0.948"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king61"
+        android:tag="king50"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="202dp"
+        android:layout_marginBottom="180dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.03"
+        app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king62"
+        android:tag="king51"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="202dp"
+        android:layout_marginBottom="180dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.162"
+        app:layout_constraintHorizontal_bias="0.182"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king63"
+        android:tag="king52"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="202dp"
+        android:layout_marginBottom="180dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.294"
+        app:layout_constraintHorizontal_bias="0.317"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king64"
+        android:tag="king53"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="202dp"
+        android:layout_marginBottom="180dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.43"
+        app:layout_constraintHorizontal_bias="0.448"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king65"
+        android:tag="king54"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="202dp"
+        android:layout_marginBottom="180dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.56"
+        app:layout_constraintHorizontal_bias="0.583"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king66"
+        android:tag="king55"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="202dp"
+        android:layout_marginBottom="180dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.7"
+        app:layout_constraintHorizontal_bias="0.714"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king67"
+        android:tag="king56"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="202dp"
+        android:layout_marginBottom="180dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.83"
+        app:layout_constraintHorizontal_bias="0.852"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king68"
+        android:tag="king57"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="202dp"
+        android:layout_marginBottom="180dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.96"
+        app:layout_constraintHorizontal_bias="0.948"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king71"
+        android:tag="king60"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="152dp"
+        android:layout_marginBottom="124dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.03"
+        app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king72"
+        android:tag="king61"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="152dp"
+        android:layout_marginBottom="124dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.162"
+        app:layout_constraintHorizontal_bias="0.182"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king73"
+        android:tag="king62"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="152dp"
+        android:layout_marginBottom="124dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.294"
+        app:layout_constraintHorizontal_bias="0.317"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king74"
+        android:tag="king63"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="152dp"
+        android:layout_marginBottom="124dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.43"
+        app:layout_constraintHorizontal_bias="0.448"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king75"
+        android:tag="king64"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="152dp"
+        android:layout_marginBottom="124dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.56"
+        app:layout_constraintHorizontal_bias="0.583"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king76"
+        android:tag="king65"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="152dp"
+        android:layout_marginBottom="124dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.7"
+        app:layout_constraintHorizontal_bias="0.714"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king77"
+        android:tag="king66"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="152dp"
+        android:layout_marginBottom="124dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.83"
+        app:layout_constraintHorizontal_bias="0.852"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king78"
+        android:tag="king67"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="152dp"
+        android:layout_marginBottom="124dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.96"
+        app:layout_constraintHorizontal_bias="0.948"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king81"
+        android:tag="king70"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="104dp"
+        android:layout_marginBottom="76dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.03"
+        app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king82"
+        android:tag="king71"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="104dp"
+        android:layout_marginBottom="76dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.162"
+        app:layout_constraintHorizontal_bias="0.182"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king83"
+        android:tag="king72"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="104dp"
+        android:layout_marginBottom="76dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.294"
+        app:layout_constraintHorizontal_bias="0.317"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king84"
+        android:tag="king73"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="104dp"
+        android:layout_marginBottom="76dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.43"
+        app:layout_constraintHorizontal_bias="0.448"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king85"
+        android:tag="king74"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="104dp"
+        android:layout_marginBottom="76dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.56"
+        app:layout_constraintHorizontal_bias="0.583"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king86"
+        android:tag="king75"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="104dp"
+        android:layout_marginBottom="76dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.7"
+        app:layout_constraintHorizontal_bias="0.714"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king87"
+        android:tag="king76"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="104dp"
+        android:layout_marginBottom="76dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.83"
+        app:layout_constraintHorizontal_bias="0.852"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king88"
+        android:tag="king77"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="104dp"
+        android:layout_marginBottom="76dp"
         android:background="@android:color/transparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.96"
+        app:layout_constraintHorizontal_bias="0.948"
         app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

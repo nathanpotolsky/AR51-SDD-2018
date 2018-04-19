@@ -1,18 +1,48 @@
 package com.example.nathan.myapplication;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+
+import java.io.File;
 
 public class KingTagging extends AppCompatActivity {
+
+    private static CheckerBoard checkerBoard = ColorSelection.getCheckerBoard();
+
+    public static CheckerBoard getCheckerBoard() {return checkerBoard;}
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_king_tagging);
+
+        ContextWrapper normalizedCW = new ContextWrapper(getApplicationContext());
+        File normalizedPath = new File(normalizedCW.getDir("dank_memes", Context.MODE_PRIVATE), "normalizedCheckerboard.png");
+
+        if(normalizedPath.exists()){
+
+            Bitmap myBitmap = BitmapFactory.decodeFile(normalizedPath.getAbsolutePath());
+
+            Log.d("imageWrite", normalizedPath.getAbsolutePath());
+
+            ImageView myImage = (ImageView) findViewById(R.id.normalizedView);
+
+            myImage.setImageBitmap(myBitmap);
+        }
+        else{
+            Log.d("imageWrite", "FAILURE ---");
+        }
 
         Button forwardButton = (Button)findViewById(R.id.forwardButton);
         forwardButton.setOnClickListener(new View.OnClickListener(){
@@ -178,12 +208,16 @@ public class KingTagging extends AppCompatActivity {
         else{
             currentSquare.setBackgroundResource(R.drawable.crown);
             currentSquare.setSelected(true);
+            if(currentSquare.getTag() != null){
+                String name = currentSquare.getTag().toString();
+                Log.d("myTag2", "button tag " + name);
+                int y = Integer.parseInt(name.substring(name.length()-1));
+                int x = Integer.parseInt(name.substring(name.length()-2, name.length()-1));
+                checkerBoard.setKing(x, y);
+            } else {
+                Log.d("myTag2", String.valueOf(currentSquare.getId()));
+            }
         }
-        
-        String name = currentSquare.getTag().toString();
-        int y = Integer.parseInt(name.substring(name.length()-1))-1;
-        int x = Integer.parseInt(name.substring(name.length()-2, name.length()-1))-1;
-        PhotoPreview.getCheckerBoard().setKing(x, y);
     }
 
 }

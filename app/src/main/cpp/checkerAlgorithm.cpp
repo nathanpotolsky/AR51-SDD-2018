@@ -110,9 +110,9 @@ float preprocessing(Mat& processedImage, Mat& gray, Mat& image) {
     double sigmaColor = 17, sigmaSpace = 17;
     float desiredHeight = 800.0;
     float ratio = image.size().height / desiredHeight;
-    resize(processedImage, image, cv::Size(), 1 / ratio, 1 / ratio);
+
     Mat intermediate;
-    bilateralFilter(image, intermediate, d, sigmaColor, sigmaSpace);
+    resize(processedImage, intermediate, cv::Size(), 1 / ratio, 1 / ratio);
     bilateralFilter(intermediate, image, d, sigmaColor, sigmaSpace);
     return ratio;
 }
@@ -122,7 +122,7 @@ int contourSorting(Mat& image, vector<vector<Point> > &contours, vector<Point> &
     double maxArea = 200.0;
     for (int i = 0; i < contours.size(); ++i) {
         double area = contourArea(contours[i]);
-        approxPolyDP(contours[i], approx, arcLength(Mat(contours[i]), true) * 0.01, true);
+        approxPolyDP(contours[i], approx, arcLength(Mat(contours[i]), true) * 0.05, true);
         if (approx.size() == 4 && area > maxArea) {
             maxArea = area;
             maxContourIndex = i;
@@ -132,7 +132,10 @@ int contourSorting(Mat& image, vector<vector<Point> > &contours, vector<Point> &
     Scalar color = (0, 255, 255);
     if (maxArea / (image.size().height * image.size().width) < 0.3) {
         cout << "maxArea too small" << endl;
+        drawContours(contourImage, contours, maxContourIndex, Scalar(0, 255, 0), thickness);
+        contourImage.copyTo(*warpedImage);
         return 0;
+
     }
 }
 
@@ -254,6 +257,8 @@ void tileDetection(Mat& warp, Mat& warpColored,vector<vector<Point> > pointsSort
     int area = warp.size().height * warp.size().width;
     int minDistCenterT1 = warp.size().width;
     int minDistCenterT2 = warp.size().width;
+
+
     for (int row = 0; row < (pointsSorted.size() - 1); ++row) {
         sort(pointsSorted[row].begin(), pointsSorted[row].end(), comparePointsX);
         vector<int> tempRow;
@@ -264,16 +269,16 @@ void tileDetection(Mat& warp, Mat& warpColored,vector<vector<Point> > pointsSort
             w = pointsSorted[row + 1][col + 1].x - x, h = pointsSorted[row + 1][col + 1].y - y;
             if ((float(w) / h > 1.4) || (float(h) / w > 1.4) || (float(w)/h <= 0) || (w * h < area / 200)) continue;
             float buffer = 0.05;
-            x = int(x + buffer * w);
-            y = int(y + buffer * h);
-            Rect roi = Rect(x, y, int((1 - 2 * buffer) * w), int((1 - 2 * buffer) * h));
+            int roiX = int(x + buffer * w);
+            int roiY = int(y + buffer * h);
+            Rect roi = Rect(roiX, roiY, int((1 - 2 * buffer) * w), int((1 - 2 * buffer) * h));
             Mat tile = warp(roi);
             Mat coloredTile = warpColored(roi);
 
             // Circle Detection Begins
             vector<Vec3f> circles;
             autoCanny(tile, 0.33, lower, upper);
-            int dp = 1, minDist = w, cannyThresh = 75, accumulator=15, minRadius=w/4, maxRadius=w/2;
+            int dp = 1, minDist = w, cannyThresh = 75, accumulator=30, minRadius=w/4, maxRadius=0.4*w;
             HoughCircles(tile, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
 
             if (circles.size() == 0) tempRow.push_back(0);
@@ -287,11 +292,11 @@ void tileDetection(Mat& warp, Mat& warpColored,vector<vector<Point> > pointsSort
                 Rect insideChecker = Rect(checkerX, checkerY, width, width);
                 Scalar tileColor = mean(coloredTile(insideChecker));
                 float minColorDist = FLT_MAX;
-                int minIndex;
+                int minIndex = -1;
                 Point2f middle = Point2f(x + w/2, y + h/2);
                 int distCenter = int(euclideanDistance(center, middle));
-                Mat* tileCopy = new Mat;
-                *tileCopy = coloredTile.clone();
+                Mat* tileCopy = new Mat();
+                // *tileCopy = coloredTile.clone();
                 for (int c = 0; c < colors.size(); ++c) {
                     float colorDistance = cv::norm(tileColor, colors[c]);
                     if (colorDistance < minColorDist) {
@@ -299,17 +304,22 @@ void tileDetection(Mat& warp, Mat& warpColored,vector<vector<Point> > pointsSort
                         minIndex = c;
                     }
                 }
-                if (minIndex == 0) {
-                    if (distCenter < minDistCenterT1) {
-                        minDistCenterT1 = distCenter;
-                        team1 = tileCopy;
-                    }
-                } else {
-                    if (distCenter < minDistCenterT2) {
-                        minDistCenterT2 = distCenter;
-                        team2 = tileCopy;
-                    }
+                if (minIndex > -1) {
+                    if (minIndex == 0) {
+                        if (distCenter < minDistCenterT1) {
+                            minDistCenterT1 = distCenter;
+                            //team1 = tileCopy;
+                            coloredTile.copyTo(*team1);
 
+                        }
+                    } else {
+                        if (distCenter < minDistCenterT2) {
+                            minDistCenterT2 = distCenter;
+                            //team2 = tileCopy;
+                            coloredTile.copyTo(*team2);
+                        }
+
+                    }
                 }
                 tempRow.push_back(minIndex + 1);
 
@@ -375,12 +385,14 @@ Java_com_example_nathan_myapplication_BoardDetectionActivity_convertPicture(JNIE
     //convert long args to Mat pointers
     Mat* raw = (Mat*)mRaw;
     Mat* normalized = (Mat*)mNormalized;
-    Mat* team1 = (Mat*)team1;
-    Mat* team2 = (Mat*)team2;
+    Mat* team1 = (Mat*)mTeam1;
+    Mat* team2 = (Mat*)mTeam2;
 
     //get our board data
     vector<vector <int>> initBoard;
     vector<Scalar> colors;
+    colors.push_back(Scalar(0, 0, 255));
+    colors.push_back(Scalar(0, 0, 0));
     int arr = checker(raw, normalized, team1, team2, colors, initBoard);
 
     //initialize array lengths
@@ -403,31 +415,5 @@ Java_com_example_nathan_myapplication_BoardDetectionActivity_convertPicture(JNIE
 }
 
 int main() {
-    // Test cases
-//    vector<vector<int> > Board;
-//    vector<Scalar> colors1;
-//    colors1.push_back(Scalar(0, 0, 255));
-//    colors1.push_back(Scalar(0, 0, 0));
-////    checker("TestImages/ex1.jpeg", colors1, Board);
-//    printBoard(Board);
-    /*vector<Scalar> colors2;
-    colors2.push_back(Scalar(0, 0, 255));
-    colors2.push_back(Scalar(255, 255, 255));
-    checker("TestImages/chessboard4.jpg", colors2);
-    checker("TestImages/empty_board_irl.jpg", colors1);
 
-    string file;
-    file = "TestImages/ex1.jpeg";
-    file = "TestImages/empty_board_irl.jpg";
-    file = "TestImages/chessboard4.jpg";
-
-    int sum = 0;
-    int n = 0;
-    for (int i = 0; i < n; ++i) {
-        clock_t t = clock();
-        checker(file, colors2);
-        t = clock() - t;
-        sum += t;
-    }
-    cout << "Average time: " << float(sum) * 1000/ (n * CLOCKS_PER_SEC) << "ms" << endl;*/
 }

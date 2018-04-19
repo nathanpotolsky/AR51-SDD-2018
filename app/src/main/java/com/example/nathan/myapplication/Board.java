@@ -13,6 +13,40 @@ public abstract class Board {
     ArrayList<Position> ourPieces = new ArrayList<Position>();
     ArrayList<Position> theirPieces = new ArrayList<Position>();
 
+    public ArrayList<String> printBoardText() {
+        ArrayList<String> arrayList = new ArrayList<String>();
+
+        Log.d("myTag", "    0 1 2 3 4 5 6 7 ");
+        Log.d("myTag", "  /-----------------");
+        arrayList.add("     0_1_2_3_4_5_6_7");
+
+        for(int i = 0; i<rows; i++)
+        {
+            String currentRow = i + " |";
+            for(int j = 0; j<columns; j++)
+            {
+                if(intBoard[i][j] == 1){
+                    currentRow += "1";
+                }
+                else if(intBoard[i][j] == 2){
+                    currentRow += "2️";
+                }
+                else if(intBoard[i][j] == 3){
+                    currentRow += "3";
+                }
+                else if(intBoard[i][j] == 4){
+                    currentRow += "4";
+                }
+                else{
+                    currentRow += "0";
+                }
+            }
+            Log.d("myTag", currentRow);
+            arrayList.add(currentRow);
+        }
+        return arrayList;
+    }
+
     public ArrayList<String> printBoard(){
         ArrayList<String> arrayList = new ArrayList<String>();
 
@@ -26,16 +60,16 @@ public abstract class Board {
             for(int j = 0; j<columns; j++)
             {
                 if(intBoard[i][j] == 1){
-                    currentRow += "♣️";
-                }
-                else if(intBoard[i][j] == 2){
                     currentRow += "♦";
                 }
+                else if(intBoard[i][j] == 2){
+                    currentRow += "♣️";
+                }
                 else if(intBoard[i][j] == 3){
-                    currentRow += "\uD83D\uDDA4️";
+                    currentRow += "❤️";
                 }
                 else if(intBoard[i][j] == 4){
-                    currentRow += "❤️";
+                    currentRow += "\uD83D\uDDA4️";
                 }
                 else{
                     currentRow += "⬜";

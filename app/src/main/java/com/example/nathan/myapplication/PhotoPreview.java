@@ -16,13 +16,6 @@ import java.io.File;
 
 public class PhotoPreview extends AppCompatActivity {
 
-    private static CheckerBoard checkerBoard = new CheckerBoard();
-
-    public static CheckerBoard getCheckerBoard()
-    {
-        return checkerBoard;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -30,16 +23,14 @@ public class PhotoPreview extends AppCompatActivity {
         setContentView(R.layout.activity_photo_preview);
 
 //        File imgFile = new  File("/sdcard/Images/test_image.jpg");
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        File path1 = cw.getDir("dank_memes", Context.MODE_PRIVATE);
-        String filename = "checkerboard.png";
-        File path2 = new File(path1, filename);
+        ContextWrapper normalizedCW = new ContextWrapper(getApplicationContext());
+        File normalizedPath = new File(normalizedCW.getDir("dank_memes", Context.MODE_PRIVATE), "normalizedCheckerboard.png");
 
-        if(path1.exists()){
+        if(normalizedPath.exists()){
 
-            Bitmap myBitmap = BitmapFactory.decodeFile(path2.getAbsolutePath());
+            Bitmap myBitmap = BitmapFactory.decodeFile(normalizedPath.getAbsolutePath());
 
-            Log.d("imageWrite", path2.getAbsolutePath());
+            Log.d("imageWrite", normalizedPath.getAbsolutePath());
 
             ImageView myImage = (ImageView) findViewById(R.id.photoPreview);
 
@@ -56,6 +47,40 @@ public class PhotoPreview extends AppCompatActivity {
 //                Log.d("imageWrite", "FileName:" + files[i].getName());
 //                Log.d("imageWrite", "FileName:" + files[i]);
 //            }
+        }
+        else{
+            Log.d("imageWrite", "FAILURE ---");
+        }
+
+        ContextWrapper team1CW = new ContextWrapper(getApplicationContext());
+        File team1path = new File(team1CW.getDir("dank_memes", Context.MODE_PRIVATE), "team1.png");
+
+        if(team1path.exists()){
+
+            Bitmap myBitmap = BitmapFactory.decodeFile(team1path.getAbsolutePath());
+
+            Log.d("imageWrite", team1path.getAbsolutePath());
+
+            ImageView myImage = (ImageView) findViewById(R.id.team1);
+
+            myImage.setImageBitmap(myBitmap);
+        }
+        else{
+            Log.d("imageWrite", "FAILURE ---");
+        }
+
+        ContextWrapper team2CW = new ContextWrapper(getApplicationContext());
+        File team2path = new File(team2CW.getDir("dank_memes", Context.MODE_PRIVATE), "team2.png");
+
+        if(team2path.exists()){
+
+            Bitmap myBitmap = BitmapFactory.decodeFile(team2path.getAbsolutePath());
+
+            Log.d("imageWrite", team2path.getAbsolutePath());
+
+            ImageView myImage = (ImageView) findViewById(R.id.team2);
+
+            myImage.setImageBitmap(myBitmap);
         }
         else{
             Log.d("imageWrite", "FAILURE ---");
