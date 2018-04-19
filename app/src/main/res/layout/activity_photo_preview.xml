@@ -8,7 +8,7 @@
     tools:context=".PhotoPreview">
 
     <ImageView
-        android:id="@+id/photoPreview"
+        android:id="@+id/team2"
         android:layout_width="85dp"
         android:layout_height="85dp"
         android:layout_marginTop="360dp"
@@ -16,7 +16,7 @@
         app:layout_constraintHorizontal_bias="0.818"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/board" />
+        app:srcCompat="@drawable/whitepiece" />
 
     <ImageView
         android:id="@+id/team1"
@@ -27,10 +27,10 @@
         app:layout_constraintHorizontal_bias="0.181"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/board" />
+        app:srcCompat="@drawable/redpiece" />
 
     <ImageView
-        android:id="@+id/photoPreview2"
+        android:id="@+id/photoPreview"
         android:layout_width="360dp"
         android:layout_height="360dp"
         app:layout_constraintEnd_toEndOf="parent"
