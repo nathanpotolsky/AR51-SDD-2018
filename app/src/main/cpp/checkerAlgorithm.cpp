@@ -134,6 +134,8 @@ int contourSorting(Mat& image, Mat& contourImage, Mat*& warpedImage,
             boardApprox = approx;
         }
     }
+    if (maxContourIndex == -1) cerr << "Can't find any square contours" << endl;
+    int thickness = 4;
     Scalar color = (0, 255, 255);
     if (maxArea / (image.size().height * image.size().width) < 0.3) {
         cout << "maxArea too small" << endl;
@@ -372,14 +374,15 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     vector<Point> approx, boardApprox;
     Mat contourImage = orig.clone();
     resize(contourImage, contourImage, cv::Size(), 1 / ratio, 1 / ratio);
-    contourSorting(image, contours, approx, boardApprox);
+    contourSorting(image, contourImage, warpedImage, contours, approx, boardApprox);
 
     // Perspective Transform
     Mat warp, warpColored;
     warpedImage = perspectiveTransform(warp, warpColored, processedImage, orig, boardApprox, ratio);
 
     // Point detection
-    vector<vector<Point> > pointsSorted = pointDection(warp, lower, upper);
+    vector<vector<Point> > pointsSorted = pointDection(warpColored, warp, warpedImage, lower, upper);
+    if (!pointsSorted.size()) return 0;
 
     // Tile detection begins
     tileDetection(warp, warpColored, pointsSorted, team1, team2, lower, upper, colors, Board);
