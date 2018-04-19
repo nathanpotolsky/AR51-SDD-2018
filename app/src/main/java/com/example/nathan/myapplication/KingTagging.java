@@ -1,12 +1,19 @@
 package com.example.nathan.myapplication;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+
+import java.io.File;
 
 public class KingTagging extends AppCompatActivity {
 
@@ -16,6 +23,23 @@ public class KingTagging extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_king_tagging);
+
+        ContextWrapper normalizedCW = new ContextWrapper(getApplicationContext());
+        File normalizedPath = new File(normalizedCW.getDir("dank_memes", Context.MODE_PRIVATE), "normalizedCheckerboard.png");
+
+        if(normalizedPath.exists()){
+
+            Bitmap myBitmap = BitmapFactory.decodeFile(normalizedPath.getAbsolutePath());
+
+            Log.d("imageWrite", normalizedPath.getAbsolutePath());
+
+            ImageView myImage = (ImageView) findViewById(R.id.normalizedView);
+
+            myImage.setImageBitmap(myBitmap);
+        }
+        else{
+            Log.d("imageWrite", "FAILURE ---");
+        }
 
         Button forwardButton = (Button)findViewById(R.id.forwardButton);
         forwardButton.setOnClickListener(new View.OnClickListener(){

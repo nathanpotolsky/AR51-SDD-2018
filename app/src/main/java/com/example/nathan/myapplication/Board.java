@@ -26,16 +26,16 @@ public abstract class Board {
             for(int j = 0; j<columns; j++)
             {
                 if(intBoard[i][j] == 1){
-                    currentRow += "♣️";
-                }
-                else if(intBoard[i][j] == 2){
                     currentRow += "♦";
                 }
+                else if(intBoard[i][j] == 2){
+                    currentRow += "♣️";
+                }
                 else if(intBoard[i][j] == 3){
-                    currentRow += "\uD83D\uDDA4️";
+                    currentRow += "❤️";
                 }
                 else if(intBoard[i][j] == 4){
-                    currentRow += "❤️";
+                    currentRow += "\uD83D\uDDA4️";
                 }
                 else{
                     currentRow += "⬜";
