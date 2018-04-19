@@ -159,6 +159,10 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
         Object[] objBoardState = convertPicture(mRaw.getNativeObjAddr(), mNormalized.getNativeObjAddr(), mTeam1.getNativeObjAddr(), mTeam2.getNativeObjAddr());
 
         Log.d("myTag", "objBoardState size " + objBoardState.length);
+        Log.d("myTag", "mRaw size " + mRaw.size());
+        Log.d("myTag", "mNormalized size " + mNormalized.size());
+        Log.d("myTag", "mTeam1 size " + mTeam1.size());
+        Log.d("myTag", "mTeam2 size " + mTeam2.size());
         CheckerBoard tempCheckerBoard = new CheckerBoard(objBoardState);
 
         tempCheckerBoard.printBoard();
@@ -170,6 +174,7 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
         Imgcodecs.imwrite(pathNormalizedCheckerboard, mNormalized);
         Imgcodecs.imwrite(pathTeam1, mTeam1);
         Imgcodecs.imwrite(pathTeam2, mTeam2);
+
     }
 
     @Override

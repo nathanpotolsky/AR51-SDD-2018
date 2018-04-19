@@ -32,7 +32,7 @@ public class PhotoPreview extends AppCompatActivity {
 //        File imgFile = new  File("/sdcard/Images/test_image.jpg");
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         File path1 = cw.getDir("dank_memes", Context.MODE_PRIVATE);
-        String filename = "checkerboard.png";
+        String filename = "normalizedCheckerboard.png";
         File path2 = new File(path1, filename);
 
         if(path1.exists()){
