@@ -17,7 +17,10 @@ import java.io.File;
 
 public class KingTagging extends AppCompatActivity {
 
-    CheckerBoard checkerBoard = BoardDetectionActivity.getCheckerBoard();
+    private static CheckerBoard checkerBoard = ColorSelection.getCheckerBoard();
+
+    public static CheckerBoard getCheckerBoard() {return checkerBoard;}
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

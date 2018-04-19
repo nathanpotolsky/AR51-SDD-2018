@@ -111,10 +111,12 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
         return 0;
     }
 
-    int maxDimension = 1000;
+    int maxDimension = 1088;
     // Resize the image if it's too large. Processing will take too long and don't need that much resolution
-    if (image_.size().width > maxDimension || image_.size().height > maxDimension) {
+    if (image_.size().width > maxDimension) {
         resize(image_, image_, Size(maxDimension, maxDimension * image_.size().height / image_.size().width));
+    } else if(image_.size().height > maxDimension) {
+        resize(image_, image_, Size(maxDimension * image_.size().width / image_.size().height, maxDimension));
     }
 
     Mat image = image_;
@@ -124,14 +126,19 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     Mat processedImage, gray;
     Mat canvasImage = orig.clone();
     cvtColor(image, processedImage, CV_BGR2GRAY);
-    int d = 11;
+    int d = 8;
     double sigmaColor = 17, sigmaSpace = 17;
     float desiredHeight = 800.0;
     float ratio = image.size().height / desiredHeight;
-    resize(processedImage, image, cv::Size(), 1 / ratio, 1 / ratio);
+
     Mat intermediate;
-    bilateralFilter(image, intermediate, d, sigmaColor, sigmaSpace);
+    resize(processedImage, intermediate, cv::Size(), 1 / ratio, 1 / ratio);
     bilateralFilter(intermediate, image, d, sigmaColor, sigmaSpace);
+
+//    resize(processedImage, image, cv::Size(), 1 / ratio, 1 / ratio);
+//    Mat intermediate;
+//    bilateralFilter(image, intermediate, d, sigmaColor, sigmaSpace);
+//    bilateralFilter(intermediate, image, d, sigmaColor, sigmaSpace);
     // Preprocessing Ends
 
     // Contour Detection Begins
@@ -155,7 +162,7 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     for (int i = 0; i < contours.size(); ++i) {
         if (debug) drawContours(contourImage, contours, i, Scalar(0,255,0), 1);
         double area = contourArea(contours[i]);
-        approxPolyDP(contours[i], approx, arcLength(Mat(contours[i]), true) * 0.01, true);
+        approxPolyDP(contours[i], approx, arcLength(Mat(contours[i]), true) * 0.05, true);
         if (approx.size() == 4 && area > maxArea) {
             maxArea = area;
             maxContourIndex = i;
@@ -176,7 +183,10 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     }
     if (maxArea / (image.size().height * image.size().width) < 0.1) {
         cout << "maxArea too small" << endl;
+        drawContours(contourImage, contours, maxContourIndex, Scalar(0, 255, 0), thickness);
+        contourImage.copyTo(*warpedImage);
         return 0;
+
     }
     // Contour Sorting Ends
 
@@ -246,8 +256,9 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     Mat boardEdges;
     vector<Vec2f> lines;
     // int lower, upper;
-    autoCanny(warp, 0.33, lower, upper);
-    Canny(warp, boardEdges, lower, upper);
+    int boardEdgesLower, boardEdgesUpper;
+    autoCanny(warp, 0.33, boardEdgesLower, boardEdgesUpper);
+    Canny(warp, boardEdges, boardEdgesLower, boardEdgesUpper);
     float PI = 3.1415926;
     if (debug) {
         imshow("warp initial", boardEdges);
@@ -255,7 +266,10 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     }
     HoughLines(boardEdges, lines, 1, PI / 180, 200);
     if (debug) { cout << "lines " << lines.size() << endl; }
-    if (lines.size() <= 1) { return 0; }
+    if (lines.size() <= 1) {
+        warpColored.copyTo(*warpedImage);
+        return 0;
+    }
     // sort lines by rho
     sort(lines.begin(), lines.end(), compareLines);
     if (debug) { cout << "lines sorted" << endl; }
@@ -330,7 +344,8 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     int minDistCenterT1 = warp.size().width;
     int minDistCenterT2 = warp.size().width;
 
-
+    bool foundT1 = false;
+    bool foundT2 = false;
     for (int row = 0; row < (pointsSorted.size() - 1); ++row) {
         sort(pointsSorted[row].begin(), pointsSorted[row].end(), comparePointsX);
         // cout << "sorted: " << pointsSorted[row] << endl;
@@ -353,9 +368,14 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
 
             // Circle Detection Begins
             vector<Vec3f> circles;
-            autoCanny(tile, 0.33, lower, upper);
-            int dp = 1, minDist = w, cannyThresh = upper, accumulator=30, minRadius=w/4, maxRadius=0.4*w;
-            HoughCircles(tile, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
+            Mat blurred; double sigma = 1, threshold = 5, amount = 1;
+            GaussianBlur(tile, blurred, Size(), sigma, sigma);
+            Mat lowContrastMask = abs(tile - blurred) < threshold;
+            Mat sharpened = tile*(1+amount) + blurred*(-amount);
+            tile.copyTo(sharpened, lowContrastMask);
+            autoCanny(sharpened, 0.5, lower, upper);
+            int dp = 1, minDist = w, cannyThresh = boardEdgesUpper, accumulator=30, minRadius=w/4, maxRadius=0.5*w;
+            HoughCircles(sharpened, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
 
             if (circles.size() == 0) tempRow.push_back(0);
             for (int i = 0; i < circles.size(); ++i) {
@@ -388,6 +408,7 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
                             minDistCenterT1 = distCenter;
                             //team1 = tileCopy;
                             coloredTile.copyTo(*team1);
+                            foundT1 = true;
 
                         }
                     } else {
@@ -395,6 +416,7 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
                             minDistCenterT2 = distCenter;
                             //team2 = tileCopy;
                             coloredTile.copyTo(*team2);
+                            foundT2 = true;
                         }
 
                     }
@@ -404,16 +426,6 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
                 circle(warpColored, centerShifted, radius, tileColor, -1);
                 // Mat roi = tile(Range(circles[i][1] - circles[i][2], circles[i][1] + circles[i][2] + 1), cv::Range(circles[i][0] - circles[i][2], circles[i][0] + circles[i][2] + 1));
             }
-            if (debug) {
-                Mat edgeComparison, cannyTile;
-                Canny(tile, cannyTile, 100 / 2, 100);
-                hconcat(warp(roi), cannyTile, edgeComparison);
-                // hconcat(warp(roi), boardEdges(roi), edgeComparison);
-                imshow("Comparison", edgeComparison);
-                imshow("warp", warpColored);
-                waitKey(0);
-                destroyWindow("Comparison");
-            }
         }
         if (tempRow.size() > 0) { Board.push_back(tempRow); }
     }
@@ -421,9 +433,8 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     // imshow("checkerboard", processedImage);
     // imshow("Board edges", boardEdges);
     // imshow("intersection", intersectionMask);
-    if (debug) {
-        imshow("BoardGuess", warpColored);
-        waitKey(0);
+    if (!(foundT1 && foundT2)) {
+        boardEdges.copyTo(*warpedImage);
     }
     return 1;
 }
