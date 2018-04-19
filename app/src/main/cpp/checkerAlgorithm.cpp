@@ -111,9 +111,10 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
         return 0;
     }
 
+    int maxDimension = 1000;
     // Resize the image if it's too large. Processing will take too long and don't need that much resolution
-    if (image_.size().width > 800 || image_.size().height > 800) {
-        resize(image_, image_, Size(800, 800 * image_.size().height / image_.size().width));
+    if (image_.size().width > maxDimension || image_.size().height > maxDimension) {
+        resize(image_, image_, Size(maxDimension, maxDimension * image_.size().height / image_.size().width));
     }
 
     Mat image = image_;
@@ -227,9 +228,11 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     if (debug) cout << type2str(warp.type()) << endl;
     warpPerspective(processedImage, warp, transformMatrix, size);
     warpPerspective(orig, warpColored, transformMatrix, size);
-    Mat* normalized = new Mat();
-    *normalized = warpColored.clone();
-    warpedImage = normalized;
+    //resize(*warpedImage, *warpedImage, warpColored.size());
+    warpColored.copyTo(*warpedImage);
+//    Mat* normalized = new Mat();
+//    *normalized = warpColored.clone();
+//    warpedImage = normalized;
     if (debug) {
         imshow("warp initial", warp);
         // waitKey(0);
@@ -272,7 +275,7 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
 
         int thetaDeg = int(theta * 180 / PI);
         // if (debug) cout << thetaDeg << endl;
-        float tol = 5;
+        float tol = 10;
         if (-tol < thetaDeg  % 180 && thetaDeg % 180 < tol) {
 
             if (abs(rho - prevVDist) > minDist) {
@@ -302,7 +305,7 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     if (debug) {
         imshow("intersection", intersectionMask);
     }
-    waitKey(0);
+    // waitKey(0);
 
     findNonZero(intersectionMask, points);
     if (debug) { cout << "num points " << points.size() << endl; }
@@ -326,6 +329,8 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     // vector<vector<int >> Board;
     int minDistCenterT1 = warp.size().width;
     int minDistCenterT2 = warp.size().width;
+
+
     for (int row = 0; row < (pointsSorted.size() - 1); ++row) {
         sort(pointsSorted[row].begin(), pointsSorted[row].end(), comparePointsX);
         // cout << "sorted: " << pointsSorted[row] << endl;
@@ -338,7 +343,7 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
             // cout << (float(w) / h ) << endl;
             // cout << (float(h) / w ) << endl;
             // cout << endl;
-            if ((float(w) / h > 1.4) || (float(h) / w > 1.4) || (float(w)/h <= 0) || (w * h < area / 200)) continue;
+            if ((float(w) / h > 1.6) || (float(h) / w > 1.6) || (float(w)/h <= 0) || (w * h < area / 200)) continue;
             float buffer = 0.05;
             x = int(x + buffer * w);
             y = int(y + buffer * h);
@@ -364,11 +369,11 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
                 Scalar tileColor = mean(coloredTile(insideChecker));
                 if (debug) { cout << tileColor << endl; }
                 float minColorDist = FLT_MAX;
-                int minIndex;
+                int minIndex = -1;
                 Point2f middle = Point2f(x + w/2, y + h/2);
                 int distCenter = int(euclideanDistance(center, middle));
-                Mat* tileCopy = new Mat;
-                *tileCopy = coloredTile.clone();
+                Mat* tileCopy = new Mat();
+                // *tileCopy = coloredTile.clone();
                 for (int c = 0; c < colors.size(); ++c) {
                     float colorDistance = cv::norm(tileColor, colors[c]);
                     if (debug) { cout << "distance" << colorDistance << endl; }
@@ -377,17 +382,22 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
                         minIndex = c;
                     }
                 }
-                if (minIndex == 0) {
-                    if (distCenter < minDistCenterT1) {
-                        minDistCenterT1 = distCenter;
-                        team1 = tileCopy;
-                    }
-                } else {
-                    if (distCenter < minDistCenterT2) {
-                        minDistCenterT2 = distCenter;
-                        team2 = tileCopy;
-                    }
+                if (minIndex > -1) {
+                    if (minIndex == 0) {
+                        if (distCenter < minDistCenterT1) {
+                            minDistCenterT1 = distCenter;
+                            //team1 = tileCopy;
+                            coloredTile.copyTo(*team1);
 
+                        }
+                    } else {
+                        if (distCenter < minDistCenterT2) {
+                            minDistCenterT2 = distCenter;
+                            //team2 = tileCopy;
+                            coloredTile.copyTo(*team2);
+                        }
+
+                    }
                 }
                 tempRow.push_back(minIndex + 1);
 
@@ -411,8 +421,10 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     // imshow("checkerboard", processedImage);
     // imshow("Board edges", boardEdges);
     // imshow("intersection", intersectionMask);
-    if (debug) {imshow("BoardGuess", warpColored);}
-    waitKey(0);
+    if (debug) {
+        imshow("BoardGuess", warpColored);
+        waitKey(0);
+    }
     return 1;
 }
 
@@ -423,12 +435,14 @@ Java_com_example_nathan_myapplication_BoardDetectionActivity_convertPicture(JNIE
     //convert long args to Mat pointers
     Mat* raw = (Mat*)mRaw;
     Mat* normalized = (Mat*)mNormalized;
-    Mat* team1 = (Mat*)team1;
-    Mat* team2 = (Mat*)team2;
+    Mat* team1 = (Mat*)mTeam1;
+    Mat* team2 = (Mat*)mTeam2;
 
     //get our board data
     vector<vector <int>> initBoard;
     vector<Scalar> colors;
+    colors.push_back(Scalar(0, 0, 255));
+    colors.push_back(Scalar(0, 0, 0));
     int arr = checker(raw, normalized, team1, team2, colors, initBoard);
 
     //initialize array lengths
@@ -451,31 +465,5 @@ Java_com_example_nathan_myapplication_BoardDetectionActivity_convertPicture(JNIE
 }
 
 int main() {
-    // Test cases
-//    vector<vector<int> > Board;
-//    vector<Scalar> colors1;
-//    colors1.push_back(Scalar(0, 0, 255));
-//    colors1.push_back(Scalar(0, 0, 0));
-////    checker("TestImages/ex1.jpeg", colors1, Board);
-//    printBoard(Board);
-    /*vector<Scalar> colors2;
-    colors2.push_back(Scalar(0, 0, 255));
-    colors2.push_back(Scalar(255, 255, 255));
-    checker("TestImages/chessboard4.jpg", colors2);
-    checker("TestImages/empty_board_irl.jpg", colors1);
 
-    string file;
-    file = "TestImages/ex1.jpeg";
-    file = "TestImages/empty_board_irl.jpg";
-    file = "TestImages/chessboard4.jpg";
-
-    int sum = 0;
-    int n = 0;
-    for (int i = 0; i < n; ++i) {
-        clock_t t = clock();
-        checker(file, colors2);
-        t = clock() - t;
-        sum += t;
-    }
-    cout << "Average time: " << float(sum) * 1000/ (n * CLOCKS_PER_SEC) << "ms" << endl;*/
 }
