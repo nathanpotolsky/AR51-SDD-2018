@@ -98,9 +98,7 @@ double euclideanDistance(Point2f& a, Point2f& b) {
 }
 
 // Resize the image if it's too large. Processing will take too long and don't need that much resolution
-void resizeImage(Mat& image_) {
-    int maxDimension = 1088;
-    // Resize the image if it's too large. Processing will take too long and don't need that much resolution
+void resizeImage(Mat& image_, int maxDimension) {
     if (image_.size().width > maxDimension) {
         resize(image_, image_, Size(maxDimension, maxDimension * image_.size().height / image_.size().width));
     } else if(image_.size().height > maxDimension) {
@@ -110,7 +108,7 @@ void resizeImage(Mat& image_) {
 
 // Preprocessing image variable
 // returns the processed ratio
-float preprocessing(Mat& processedImage, Mat& gray, Mat& image) {
+float preprocessing(Mat& processedImage, Mat& image) {
     cvtColor(image, processedImage, CV_BGR2GRAY);
     int d = 8;
     double sigmaColor = 17, sigmaSpace = 17;
@@ -123,9 +121,10 @@ float preprocessing(Mat& processedImage, Mat& gray, Mat& image) {
     return ratio;
 }
 
-int contourSorting(Mat& image, vector<vector<Point> > &contours, vector<Point> &approx, vector<Point> &boardApprox) {
+int contourSorting(Mat& image, vector<vector<Point> > &contours, vector<Point> &boardApprox) {
     int maxContourIndex = -1;
     double maxArea = 200.0;
+    vector<Point> approx;
     for (int i = 0; i < contours.size(); ++i) {
         double area = contourArea(contours[i]);
         approxPolyDP(contours[i], approx, arcLength(Mat(contours[i]), true) * 0.05, true);
@@ -136,16 +135,10 @@ int contourSorting(Mat& image, vector<vector<Point> > &contours, vector<Point> &
         }
     }
     if (maxContourIndex == -1) cerr << "Can't find any square contours" << endl;
-    Scalar color = (0, 255, 255);
-    if (maxArea / (image.size().height * image.size().width) < 0.3) {
-        return -1;
-    }
+    if (maxArea / (image.size().height * image.size().width) < 0.3) return -1;
 }
 
-
-Mat* perspectiveTransform(Mat& warp, Mat& warpColored, Mat& processedImage, Mat& orig, vector<Point> &boardApprox, float& ratio) {
-    // order vertices
-    array<Point2f,4> rect;
+void orderVertices(vector<Point>& boardApprox, array<Point2f,4>& rect, array<Point2f,4>& dstRect ) {
     int minSum = 10000, maxSum = -1;
     for (int i = 0; i < boardApprox.size(); ++i) {
         int sum = boardApprox[i].x + boardApprox[i].y;
@@ -179,20 +172,20 @@ Mat* perspectiveTransform(Mat& warp, Mat& warpColored, Mat& processedImage, Mat&
     leftHeight = euclideanDistance(rect[0], rect[3]);
     rightHeight = euclideanDistance(rect[1], rect[2]);
     int maxHeight = int(max(leftHeight, rightHeight));
-
-
-    array<Point2f, 4> dstRect = { Point(0,0), Point(maxWidth - 1,0), Point(maxWidth - 1,maxHeight - 1),Point(0,maxHeight - 1) };
-    // rect,dstRect
-
-
-    // perspective transform(rect, dstrect, processedimage, warp, warpcolored)
-    Mat transformMatrix = getPerspectiveTransform(rect, dstRect);
-    Size size(maxWidth, maxHeight);
-    warpPerspective(processedImage, warp, transformMatrix, size);
-    warpPerspective(orig, warpColored, transformMatrix, size);
+    dstRect = { Point(0,0), Point(maxWidth - 1,0), Point(maxWidth - 1,maxHeight - 1),Point(0,maxHeight - 1) };
 }
 
-vector<vector<Point> > pointDection(Mat& warpColored, Mat& warp, Mat*& warpedImage, int& boardEdgesLower, int& boardEdgesUpper){
+Mat* perspectiveTransform(Mat& input, Mat& dst,array<Point2f,4>& rect, array<Point2f,4>& dstRect, float& ratio) {
+    Mat transformMatrix = getPerspectiveTransform(rect, dstRect);
+
+    int width = dstRect[1].x - dstRect[0].x;
+    int height = dstRect[3].y - dstRect[0].y;
+    // perspective transform(rect, dstrect, processedimage, warp, warpcolored)
+    Size size(width, height );
+    warpPerspective(input, dst, transformMatrix, size);
+}
+
+vector<vector<Point> > pointDetection(Mat& warpColored, Mat& warp, Mat*& warpedImage, int& boardEdgesLower, int& boardEdgesUpper){
     Mat hMask = Mat::zeros(warp.size(), CV_8U);
     Mat vMask = Mat::zeros(warp.size(), CV_8U);
 
@@ -352,20 +345,16 @@ void tileDetection(Mat& warp, Mat& warpColored,vector<vector<Point> > pointsSort
 // Takes in the file of checkerboard image, and the team colors
 // returns a 2D vector of the Board, where 0: no piece, 1: colors[0] piece, 2: colors[1] piece
 int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const vector<Scalar>& colors, vector<vector<int> >& Board) {
-
-    Mat image_ = *imageRef;
-    if (!image_.data) {
-        cerr << "could not open or find the image" << endl;
-        return 0;
-    }
+    Mat image = *imageRef;
+    if (!image.data) { return 0;}
     // Resizing image
-    resizeImage(image_);
+    int maxDimension = 1088;
+    resizeImage(image, maxDimension);
 
-       // Preprocessing
-    Mat image = image_;
+    // Preprocessing
     Mat orig = image.clone();
-    Mat processedImage, gray;
-    float ratio = preprocessing(processedImage, gray, image);
+    Mat processedImage;
+    float ratio = preprocessing(processedImage, image);
 
     // Contour Detection
     int lower = 0, upper = 0;
@@ -376,18 +365,20 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     findContours(image, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
 
     // Contour sorting
-    vector<Point> approx, boardApprox;
-
-    if (contourSorting(image, contours, approx, boardApprox) == -1) return 0;
+    vector<Point> boardApprox;
+    if (contourSorting(image, contours, boardApprox) == -1) return 0;
 
     // Perspective Transform
+    array<Point2f, 4> rect, dstRect;
+    orderVertices(boardApprox, rect, dstRect);
     Mat warp, warpColored;
-    warpedImage = perspectiveTransform(warp, warpColored, processedImage, orig, boardApprox, ratio);
+    perspectiveTransform(orig, warpColored, rect, dstRect, ratio);
+    perspectiveTransform(processedImage, warp, rect, dstRect, ratio);
     warpColored.copyTo(*warpedImage);
 
     // Point detection
     int boardEdgesLower, boardEdgesUpper;
-    vector<vector<Point> > pointsSorted = pointDection(warpColored, warp, warpedImage, boardEdgesLower, boardEdgesUpper);
+    vector<vector<Point> > pointsSorted = pointDetection(warpColored, warp, warpedImage, boardEdgesLower, boardEdgesUpper);
     if (!pointsSorted.size()) return 0;
 
     // Tile detection begins
