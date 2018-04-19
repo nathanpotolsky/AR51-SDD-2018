@@ -126,7 +126,7 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     Mat processedImage, gray;
     Mat canvasImage = orig.clone();
     cvtColor(image, processedImage, CV_BGR2GRAY);
-    int d = 11;
+    int d = 8;
     double sigmaColor = 17, sigmaSpace = 17;
     float desiredHeight = 800.0;
     float ratio = image.size().height / desiredHeight;
@@ -265,7 +265,10 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     }
     HoughLines(boardEdges, lines, 1, PI / 180, 200);
     if (debug) { cout << "lines " << lines.size() << endl; }
-    if (lines.size() <= 1) { return 0; }
+    if (lines.size() <= 1) {
+        warpColored.copyTo(*warpedImage);
+        return 0;
+    }
     // sort lines by rho
     sort(lines.begin(), lines.end(), compareLines);
     if (debug) { cout << "lines sorted" << endl; }
