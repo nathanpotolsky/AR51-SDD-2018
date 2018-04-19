@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 
 public class HomePage extends AppCompatActivity {
 
@@ -21,5 +24,8 @@ public class HomePage extends AppCompatActivity {
                 startActivity(optionIntent);
             }
         });
+        ImageView wavyView = (ImageView)findViewById(R.id.wavyID);
+        Glide.with(this).load(R.drawable.wavy).into(wavyView);
+
     }
 }
