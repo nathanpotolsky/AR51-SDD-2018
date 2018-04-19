@@ -256,8 +256,9 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     Mat boardEdges;
     vector<Vec2f> lines;
     // int lower, upper;
-    autoCanny(warp, 0.33, lower, upper);
-    Canny(warp, boardEdges, lower, upper);
+    int boardEdgesLower, boardEdgesUpper;
+    autoCanny(warp, 0.33, boardEdgesLower, boardEdgesUpper);
+    Canny(warp, boardEdges, boardEdgesLower, boardEdgesUpper);
     float PI = 3.1415926;
     if (debug) {
         imshow("warp initial", boardEdges);
@@ -343,7 +344,8 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     int minDistCenterT1 = warp.size().width;
     int minDistCenterT2 = warp.size().width;
 
-
+    bool foundT1 = false;
+    bool foundT2 = false;
     for (int row = 0; row < (pointsSorted.size() - 1); ++row) {
         sort(pointsSorted[row].begin(), pointsSorted[row].end(), comparePointsX);
         // cout << "sorted: " << pointsSorted[row] << endl;
@@ -366,9 +368,14 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
 
             // Circle Detection Begins
             vector<Vec3f> circles;
-            autoCanny(tile, 0.33, lower, upper);
-            int dp = 1, minDist = w, cannyThresh = 75, accumulator=30, minRadius=w/4, maxRadius=0.4*w;
-            HoughCircles(tile, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
+            Mat blurred; double sigma = 1, threshold = 5, amount = 1;
+            GaussianBlur(tile, blurred, Size(), sigma, sigma);
+            Mat lowContrastMask = abs(tile - blurred) < threshold;
+            Mat sharpened = tile*(1+amount) + blurred*(-amount);
+            tile.copyTo(sharpened, lowContrastMask);
+            autoCanny(sharpened, 0.5, lower, upper);
+            int dp = 1, minDist = w, cannyThresh = boardEdgesUpper, accumulator=30, minRadius=w/4, maxRadius=0.5*w;
+            HoughCircles(sharpened, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
 
             if (circles.size() == 0) tempRow.push_back(0);
             for (int i = 0; i < circles.size(); ++i) {
@@ -401,6 +408,7 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
                             minDistCenterT1 = distCenter;
                             //team1 = tileCopy;
                             coloredTile.copyTo(*team1);
+                            foundT1 = true;
 
                         }
                     } else {
@@ -408,6 +416,7 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
                             minDistCenterT2 = distCenter;
                             //team2 = tileCopy;
                             coloredTile.copyTo(*team2);
+                            foundT2 = true;
                         }
 
                     }
@@ -417,16 +426,6 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
                 circle(warpColored, centerShifted, radius, tileColor, -1);
                 // Mat roi = tile(Range(circles[i][1] - circles[i][2], circles[i][1] + circles[i][2] + 1), cv::Range(circles[i][0] - circles[i][2], circles[i][0] + circles[i][2] + 1));
             }
-            if (debug) {
-                Mat edgeComparison, cannyTile;
-                Canny(tile, cannyTile, 100 / 2, 100);
-                hconcat(warp(roi), cannyTile, edgeComparison);
-                // hconcat(warp(roi), boardEdges(roi), edgeComparison);
-                imshow("Comparison", edgeComparison);
-                imshow("warp", warpColored);
-                waitKey(0);
-                destroyWindow("Comparison");
-            }
         }
         if (tempRow.size() > 0) { Board.push_back(tempRow); }
     }
@@ -434,9 +433,8 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     // imshow("checkerboard", processedImage);
     // imshow("Board edges", boardEdges);
     // imshow("intersection", intersectionMask);
-    if (debug) {
-        imshow("BoardGuess", warpColored);
-        waitKey(0);
+    if (!(foundT1 && foundT2)) {
+        boardEdges.copyTo(*warpedImage);
     }
     return 1;
 }
