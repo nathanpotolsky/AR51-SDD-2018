@@ -202,8 +202,9 @@ vector<vector<Point> > pointDection(Mat& warpColored, Mat& warp, Mat*& warpedIma
     Mat boardEdges;
     vector<vector<Point> > pointsSorted;
     vector<Vec2f> lines;
-    autoCanny(warp, 0.33, lower, upper);
-    Canny(warp, boardEdges, lower, upper);
+    int boardEdgesLower, boardEdgesUpper;
+    autoCanny(warp, 0.33, boardEdgesLower, boardEdgesUpper);
+    Canny(warp, boardEdges, boardEdgesLower, boardEdgesUpper);
     float PI = 3.1415926;
     HoughLines(boardEdges, lines, 1, PI / 180, 200);
     if (lines.size() <= 1) {
@@ -270,7 +271,8 @@ void tileDetection(Mat& warp, Mat& warpColored,vector<vector<Point> > pointsSort
     int minDistCenterT1 = warp.size().width;
     int minDistCenterT2 = warp.size().width;
 
-
+    bool foundT1 = false;
+    bool foundT2 = false;
     for (int row = 0; row < (pointsSorted.size() - 1); ++row) {
         sort(pointsSorted[row].begin(), pointsSorted[row].end(), comparePointsX);
         vector<int> tempRow;
@@ -289,9 +291,14 @@ void tileDetection(Mat& warp, Mat& warpColored,vector<vector<Point> > pointsSort
 
             // Circle Detection Begins
             vector<Vec3f> circles;
-            autoCanny(tile, 0.33, lower, upper);
-            int dp = 1, minDist = w, cannyThresh = 75, accumulator=30, minRadius=w/4, maxRadius=0.4*w;
-            HoughCircles(tile, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
+            Mat blurred; double sigma = 1, threshold = 5, amount = 1;
+            GaussianBlur(tile, blurred, Size(), sigma, sigma);
+            Mat lowContrastMask = abs(tile - blurred) < threshold;
+            Mat sharpened = tile*(1+amount) + blurred*(-amount);
+            tile.copyTo(sharpened, lowContrastMask);
+            autoCanny(sharpened, 0.5, lower, upper);
+            int dp = 1, minDist = w, cannyThresh = boardEdgesUpper, accumulator=30, minRadius=w/4, maxRadius=0.5*w;
+            HoughCircles(sharpened, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
 
             if (circles.size() == 0) tempRow.push_back(0);
             for (int i = 0; i < circles.size(); ++i) {
@@ -322,6 +329,7 @@ void tileDetection(Mat& warp, Mat& warpColored,vector<vector<Point> > pointsSort
                             minDistCenterT1 = distCenter;
                             //team1 = tileCopy;
                             coloredTile.copyTo(*team1);
+                            foundT1 = true;
 
                         }
                     } else {
@@ -329,6 +337,7 @@ void tileDetection(Mat& warp, Mat& warpColored,vector<vector<Point> > pointsSort
                             minDistCenterT2 = distCenter;
                             //team2 = tileCopy;
                             coloredTile.copyTo(*team2);
+                            foundT2 = true;
                         }
 
                     }
@@ -343,15 +352,12 @@ void tileDetection(Mat& warp, Mat& warpColored,vector<vector<Point> > pointsSort
     waitKey(0);
 }
 
-
-// Takes in the file of checkerboard image, and the team colors
-// returns a 2D vector of the Board, where 0: no piece, 1: colors[0] piece, 2: colors[1] piece
-int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const vector<Scalar>& colors, vector<vector<int> >& Board) {
-
-    Mat image_ = *imageRef;
-    if (!image_.data) {
-        cerr << "could not open or find the image" << endl;
-        return 0;
+    // imshow("checkerboard", processedImage);
+    // imshow("Board edges", boardEdges);
+    // imshow("intersection", intersectionMask);
+    if (debug) {
+        imshow("BoardGuess", warpColored);
+        waitKey(0);
     }
 
     // Resizing image
