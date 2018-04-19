@@ -18,7 +18,11 @@ import java.io.File;
 public class ColorSelection extends AppCompatActivity {
 
     boolean selected = true;
-    CheckerBoard checkerBoard = BoardDetectionActivity.getCheckerBoard();
+    private static CheckerBoard checkerBoard = BoardDetectionActivity.getCheckerBoard();
+
+    public static CheckerBoard getCheckerBoard() {return checkerBoard;}
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
