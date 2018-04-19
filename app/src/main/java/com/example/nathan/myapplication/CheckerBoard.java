@@ -3,16 +3,18 @@ package com.example.nathan.myapplication;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.Comparator;
 
+//This is an implementation of the Board class specific to Checkers. It handles finding moves
+//specified by the user, as well as swapping team colors and toggling the location of kings.
 public class CheckerBoard extends Board{
 
-    ArrayList<CheckersMove> ourMoves = new ArrayList<CheckersMove>();
-    ArrayList<CheckersMove> theirMoves = new ArrayList<CheckersMove>();
-    ArrayList<Position> instantLosses = new ArrayList<Position>();
+    ArrayList<CheckersMove> ourMoves = new ArrayList<>();
+    ArrayList<CheckersMove> theirMoves = new ArrayList<>();
+    ArrayList<Position> instantLosses = new ArrayList<>();
 
+    //Initializes a dummy CheckerBoard
     public CheckerBoard() {
         rows = 8;
         columns = 8;
@@ -27,6 +29,7 @@ public class CheckerBoard extends Board{
         intBoard[7] = new int[] {0,0,0,0,0,0,0,0};
     }
 
+    //Converts an Object[] to an int[][] and initializes the pieces
     public CheckerBoard(Object[] arr){
         rows = 8;
         columns = 8;
@@ -39,7 +42,7 @@ public class CheckerBoard extends Board{
         }
     }
 
-
+    //Toggles if a piece is a king or not at location (x, y)
     public void setKing(int x, int y) {
         if (intBoard[x][y] == 1) {
             intBoard[x][y] = 3;
@@ -52,6 +55,7 @@ public class CheckerBoard extends Board{
         }
     }
 
+    //Switches all the teams on the board
     public void switchTeams() {
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < columns; ++j) {
@@ -68,12 +72,14 @@ public class CheckerBoard extends Board{
         }
     }
 
+    //Ranks all the moves from best (highest) weight to worst (lowest) weight
     public ArrayList<CheckersMove> rankedMoves() {
         assignMoveWeights();
         ourMoves = sortMoves(ourMoves);
         return ourMoves;
     }
 
+    //Sorts the checker moves by weights
     public ArrayList<CheckersMove> sortMoves(ArrayList<CheckersMove> moveArrayToSort){
         moveArrayToSort.sort( new Comparator<CheckersMove>(){
             @Override
@@ -89,10 +95,6 @@ public class CheckerBoard extends Board{
         });
         return moveArrayToSort;
     }
-
-//    public LinkedList<Position> instantLosses() {
-//        return instantLosses;
-//    }
 
     public ArrayList<CheckersMove> instantLosses() {
         ArrayList<CheckersMove> takes = new ArrayList<CheckersMove>();

@@ -3,18 +3,21 @@ package com.example.nathan.myapplication;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+
+//This class represents the abstract Board class. It can be extended to support other games with
+//square or rectangular boards such as Connect Four and Othello.
 
 public abstract class Board {
 
     int rows;
     int columns;
     int[][] intBoard;
-    ArrayList<Position> ourPieces = new ArrayList<Position>();
-    ArrayList<Position> theirPieces = new ArrayList<Position>();
+    ArrayList<Position> ourPieces = new ArrayList<>();
+    ArrayList<Position> theirPieces = new ArrayList<>();
 
+    //Prints the board using text characters
     public ArrayList<String> printBoardText() {
-        ArrayList<String> arrayList = new ArrayList<String>();
+        ArrayList<String> arrayList = new ArrayList<>();
 
         Log.d("myTag", "    0 1 2 3 4 5 6 7 ");
         Log.d("myTag", "  /-----------------");
@@ -47,8 +50,9 @@ public abstract class Board {
         return arrayList;
     }
 
+    //Prints the board using emojis for certain text characters
     public ArrayList<String> printBoard(){
-        ArrayList<String> arrayList = new ArrayList<String>();
+        ArrayList<String> arrayList = new ArrayList<>();
 
         Log.d("myTag", "    0 1 2 3 4 5 6 7 ");
         Log.d("myTag", "  /-----------------");

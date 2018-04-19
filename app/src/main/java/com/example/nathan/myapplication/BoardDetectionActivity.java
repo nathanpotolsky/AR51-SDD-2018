@@ -31,6 +31,10 @@ import android.view.View.OnTouchListener;
 import android.view.SurfaceView;
 import android.widget.Button;
 
+//This class creates an OpenCV camera, lets the user take a picture of the board, and
+//sends the photo data to our C++ algorithm to perform our vision analysis. This class
+//also retrieves a normalized version of the board, and two pictures representing the
+//two different team pieces.
 public class BoardDetectionActivity extends Activity implements OnTouchListener, CvCameraViewListener2 {
     private static final String  TAG              = "OCVSample::Activity";
 
@@ -75,25 +79,20 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
         }
     };
 
-    public BoardDetectionActivity() {
-        Log.i(TAG, "Instantiated new " + this.getClass());
-    }
-
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.i(TAG, "called onCreate");
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.color_blob_detection_surface_view);
 
-        mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.color_blob_detection_activity_surface_view);
+        mOpenCvCameraView = findViewById(R.id.color_blob_detection_activity_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
 
-        Button takePhotoButton = (Button)findViewById(R.id.takePhotoButton);
+        Button takePhotoButton = findViewById(R.id.takePhotoButton);
         takePhotoButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -105,6 +104,7 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
         });
     }
 
+    //Grabs the image the user took and saves it to the phone for future access
     public void SaveImage () {
         Mat mIntermediateMat = mRgba;
 
@@ -115,16 +115,16 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
         Imgproc.cvtColor(mRgba, mIntermediateMat, Imgproc.COLOR_RGBA2BGR, 3);
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        File path = cw.getDir("dank_memes", Context.MODE_PRIVATE);
+        File path = cw.getDir("final_draught", Context.MODE_PRIVATE);
         File file = new File(path, "checkerboard.png");
 
-        Boolean bool = null;
         String fullfilename = file.toString();
-        bool = Imgcodecs.imwrite(fullfilename, mIntermediateMat);
+        Imgcodecs.imwrite(fullfilename, mIntermediateMat);
 
         SaveNormalizedPhotoAndTeamColors(path, mIntermediateMat);
     }
 
+    //Creates the board and saves the normalized photos, as well as the team piece photos
     public void SaveNormalizedPhotoAndTeamColors (File path, Mat mRaw) {
         Mat mNormalized = new Mat();
         Mat mTeam1 = new Mat();
@@ -132,15 +132,9 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
 
         Object[] objBoardState = convertPicture(mRaw.getNativeObjAddr(), mNormalized.getNativeObjAddr(), mTeam1.getNativeObjAddr(), mTeam2.getNativeObjAddr());
 
-        Log.d("myTag", "objBoardState size " + objBoardState.length);
-        Log.d("myTag", "mRaw size " + mRaw.size());
-        Log.d("myTag", "mNormalized size " + mNormalized.size());
-        Log.d("myTag", "mTeam1 size " + mTeam1.size());
-        Log.d("myTag", "mTeam2 size " + mTeam2.size());
-        CheckerBoard tempCheckerBoard = new CheckerBoard(objBoardState);
         checkerBoard = new CheckerBoard(objBoardState);
 
-        tempCheckerBoard.printBoard();
+        checkerBoard.printBoard();
 
         String pathNormalizedCheckerboard = new File(path, "normalizedCheckerboard.png").toString();
         String pathTeam1 = new File(path, "team1.png").toString();
@@ -179,6 +173,7 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
             mOpenCvCameraView.disableView();
     }
 
+    //Initializes a color photo of the frame the camera is showing
     public void onCameraViewStarted(int width, int height) {
         mRgba = new Mat(height, width, CvType.CV_8UC4);
     }
@@ -187,6 +182,7 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
         mRgba.release();
     }
 
+    //Grabs the average color of the touched region
     public boolean onTouch(View v, MotionEvent event) {
         int cols = mRgba.cols();
         int rows = mRgba.rows();
@@ -197,7 +193,6 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
         int x = (int)event.getX() - xOffset;
         int y = (int)event.getY() - yOffset;
 
-        Log.i(TAG, "Touch image coordinates: (" + x + ", " + y + ")");
 
         if ((x < 0) || (y < 0) || (x > cols) || (y > rows)) return false;
 
@@ -222,9 +217,6 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
 
         mBlobColorRgba = converScalarHsv2Rgba(mBlobColorHsv);
 
-        Log.i(TAG, "Touched rgba color: (" + mBlobColorRgba.val[0] + ", " + mBlobColorRgba.val[1] +
-                ", " + mBlobColorRgba.val[2] + ", " + mBlobColorRgba.val[3] + ")");
-
         mDetector.setHsvColor(mBlobColorHsv);
 
         Imgproc.resize(mDetector.getSpectrum(), mSpectrum, SPECTRUM_SIZE, 0, 0, Imgproc.INTER_LINEAR_EXACT);
@@ -237,11 +229,13 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
         return false; // don't need subsequent touch events
     }
 
+    //Grabs the color photo data of the frame the camera is showing
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
         mRgba = inputFrame.rgba();
         return mRgba;
     }
 
+    //Converts a scalar to RGBA
     private Scalar converScalarHsv2Rgba(Scalar hsvColor) {
         Mat pointMatRgba = new Mat();
         Mat pointMatHsv = new Mat(1, 1, CvType.CV_8UC3, hsvColor);
@@ -250,5 +244,6 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
         return new Scalar(pointMatRgba.get(0, 0));
     }
 
+    //Function declaration for the C++ code
     public native Object[] convertPicture(long mRaw, long mNormalized, long mTeam1, long mTeam2);
 }
