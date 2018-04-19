@@ -106,7 +106,7 @@ void resizeImage(Mat& image_) {
 // returns the processed ratio
 float preprocessing(Mat& processedImage, Mat& gray, Mat& image) {
     cvtColor(image, processedImage, CV_BGR2GRAY);
-    int d = 11;
+    int d = 8;
     double sigmaColor = 17, sigmaSpace = 17;
     float desiredHeight = 800.0;
     float ratio = image.size().height / desiredHeight;
@@ -197,6 +197,11 @@ vector<vector<Point> > pointDection(Mat& warp, int lower, int upper){
     Canny(warp, boardEdges, lower, upper);
     float PI = 3.1415926;
     HoughLines(boardEdges, lines, 1, PI / 180, 200);
+    if (debug) { cout << "lines " << lines.size() << endl; }
+    if (lines.size() <= 1) {
+        warpColored.copyTo(*warpedImage);
+        return 0;
+    }
     // sort lines by rho
     sort(lines.begin(), lines.end(), compareLines);
     int minDist = 20;
