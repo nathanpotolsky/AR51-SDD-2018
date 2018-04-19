@@ -111,10 +111,12 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
         return 0;
     }
 
-    int maxDimension = 1000;
+    int maxDimension = 1088;
     // Resize the image if it's too large. Processing will take too long and don't need that much resolution
-    if (image_.size().width > maxDimension || image_.size().height > maxDimension) {
+    if (image_.size().width > maxDimension) {
         resize(image_, image_, Size(maxDimension, maxDimension * image_.size().height / image_.size().width));
+    } else if(image_.size().height > maxDimension) {
+        resize(image_, image_, Size(maxDimension * image_.size().width / image_.size().height, maxDimension));
     }
 
     Mat image = image_;
@@ -128,10 +130,15 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     double sigmaColor = 17, sigmaSpace = 17;
     float desiredHeight = 800.0;
     float ratio = image.size().height / desiredHeight;
-    resize(processedImage, image, cv::Size(), 1 / ratio, 1 / ratio);
+
     Mat intermediate;
-    bilateralFilter(image, intermediate, d, sigmaColor, sigmaSpace);
+    resize(processedImage, intermediate, cv::Size(), 1 / ratio, 1 / ratio);
     bilateralFilter(intermediate, image, d, sigmaColor, sigmaSpace);
+
+//    resize(processedImage, image, cv::Size(), 1 / ratio, 1 / ratio);
+//    Mat intermediate;
+//    bilateralFilter(image, intermediate, d, sigmaColor, sigmaSpace);
+//    bilateralFilter(intermediate, image, d, sigmaColor, sigmaSpace);
     // Preprocessing Ends
 
     // Contour Detection Begins
@@ -176,7 +183,10 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     }
     if (maxArea / (image.size().height * image.size().width) < 0.1) {
         cout << "maxArea too small" << endl;
+        drawContours(contourImage, contours, maxContourIndex, Scalar(0, 255, 0), thickness);
+        contourImage.copyTo(*warpedImage);
         return 0;
+
     }
     // Contour Sorting Ends
 
@@ -354,7 +364,7 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
             // Circle Detection Begins
             vector<Vec3f> circles;
             autoCanny(tile, 0.33, lower, upper);
-            int dp = 1, minDist = w, cannyThresh = upper, accumulator=30, minRadius=w/4, maxRadius=0.4*w;
+            int dp = 1, minDist = w, cannyThresh = 75, accumulator=30, minRadius=w/4, maxRadius=0.4*w;
             HoughCircles(tile, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
 
             if (circles.size() == 0) tempRow.push_back(0);
