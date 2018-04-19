@@ -24,3 +24,7 @@ openCVLibrary340/
 # ignore debug images
 *Debug
 *DebugImages
+openCVLibrary341/build/generated/mockable-android-26.v3.jar
+.idea/misc.xml
+app/CMakeLists.txt
+app/CMakeLists.txt
