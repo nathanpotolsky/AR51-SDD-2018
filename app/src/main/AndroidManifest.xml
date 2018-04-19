@@ -39,7 +39,6 @@
         <!-- android:name=".CheckersCamera" -->
         <!-- android:label="@string/title_activity_checkers_camera" -->
         <!-- android:theme="@style/AppTheme.NoActionBar" /> -->
-        <activity android:name=".CameraFillerPage" />
         <activity android:name=".ColorSelection" />
         <activity android:name=".KingTagging" />
         <activity android:name=".ARPage" />

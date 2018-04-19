@@ -12,6 +12,7 @@ import android.util.Log;
 
 public class CheckersOptions1 extends AppCompatActivity {
 
+    /** Initial option selections are false */
     private static boolean showAllMoves = false;
     private static boolean rankAllMoves = false;
     private static boolean instantTakes = false;
@@ -19,6 +20,7 @@ public class CheckersOptions1 extends AppCompatActivity {
     private static boolean bestMove = false;
     private static boolean worstMove = false;
 
+    /** Return current selection of each option */
     public static boolean showAllMoves() {
         return showAllMoves;
     }
@@ -43,31 +45,7 @@ public class CheckersOptions1 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkers_options1);
 
-//        Button backButton = (Button)findViewById(R.id.backButton);
-//        backButton.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v){
-//                Intent optionIntent = new Intent(getApplicationContext(), MainActivity.class);
-//                startActivity(optionIntent);
-//            }
-//        });
-
-//        Button forwardButton = (Button)findViewById(R.id.forwardButton);
-//        forwardButton.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v){
-////                Intent optionIntent = new Intent(getApplicationContext(), MainActivity.class);
-////                startActivity(optionIntent);
-//                if(checkCameraHardware(getApplicationContext())){
-//                    Toast.makeText(CheckersOptions1.this,"You have a camera",Toast.LENGTH_LONG).show();
-//                    getCameraInstance();
-//                }
-//                else{
-//                    Toast.makeText(CheckersOptions1.this,"You do not have a camera",Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        });
-
+        // Set up forward button
         Button forwardButton = (Button)findViewById(R.id.forwardButton);
         forwardButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -125,28 +103,5 @@ public class CheckersOptions1 extends AppCompatActivity {
                 Log.d("myTag", "rankAllMoves: " + rankAllMoves);
             }
         });
-    }
-
-    /** Check if this device has a camera */
-    private boolean checkCameraHardware(Context context) {
-        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
-            // this device has a camera
-            return true;
-        } else {
-            // no camera on this device
-            return false;
-        }
-    }
-
-    /** A safe way to get an instance of the Camera object. */
-    public static Camera getCameraInstance(){
-        Camera c = null;
-        try {
-            c = Camera.open(); // attempt to get a Camera instance
-        }
-        catch (Exception e){
-            // Camera is not available (in use or does not exist)
-        }
-        return c; // returns null if camera is unavailable
     }
 }
