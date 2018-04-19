@@ -1,5 +1,6 @@
 package com.example.nathan.myapplication;
 
+//A position class that represents a location in 2D space.
 public class Position {
 
     int x;

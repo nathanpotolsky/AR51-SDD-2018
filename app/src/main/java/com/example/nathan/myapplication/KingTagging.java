@@ -15,6 +15,9 @@ import android.widget.ImageView;
 
 import java.io.File;
 
+//Allows the user to tag an image of their board, notifying the location of kings.
+//The button is a toggle, so clicking a crown on/off will switch that piece
+//to a king/normal piece.
 public class KingTagging extends AppCompatActivity {
 
     private static CheckerBoard checkerBoard = ColorSelection.getCheckerBoard();
@@ -27,21 +30,17 @@ public class KingTagging extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_king_tagging);
 
+        //Grabs the normalized image of the board
         ContextWrapper normalizedCW = new ContextWrapper(getApplicationContext());
-        File normalizedPath = new File(normalizedCW.getDir("dank_memes", Context.MODE_PRIVATE), "normalizedCheckerboard.png");
+        File normalizedPath = new File(normalizedCW.getDir("final_draught", Context.MODE_PRIVATE), "normalizedCheckerboard.png");
 
         if(normalizedPath.exists()){
-
             Bitmap myBitmap = BitmapFactory.decodeFile(normalizedPath.getAbsolutePath());
-
-            Log.d("imageWrite", normalizedPath.getAbsolutePath());
-
             ImageView myImage = (ImageView) findViewById(R.id.normalizedView);
-
             myImage.setImageBitmap(myBitmap);
         }
         else{
-            Log.d("imageWrite", "FAILURE ---");
+            Log.d("imageWrite", "NORMALIZED FAILURE ---");
         }
 
         Button forwardButton = (Button)findViewById(R.id.forwardButton);
@@ -53,6 +52,7 @@ public class KingTagging extends AppCompatActivity {
             }
         });
 
+        //Creates all the buttons for the kings
         final Button King11 = findViewById(R.id.king11);
         final Button King12 = findViewById(R.id.king12);
         final Button King13 = findViewById(R.id.king13);
@@ -200,6 +200,8 @@ public class KingTagging extends AppCompatActivity {
 
     }
 
+    //Makes the king overlay invisible/visible and switches the piece at that location
+    //to a normal piece/king
     public void selectKing(Button currentSquare){
         if(currentSquare.isSelected()){
             currentSquare.setBackgroundColor(Color.TRANSPARENT);
@@ -210,12 +212,9 @@ public class KingTagging extends AppCompatActivity {
             currentSquare.setSelected(true);
             if(currentSquare.getTag() != null){
                 String name = currentSquare.getTag().toString();
-                Log.d("myTag2", "button tag " + name);
                 int y = Integer.parseInt(name.substring(name.length()-1));
                 int x = Integer.parseInt(name.substring(name.length()-2, name.length()-1));
                 checkerBoard.setKing(x, y);
-            } else {
-                Log.d("myTag2", String.valueOf(currentSquare.getId()));
             }
         }
     }
