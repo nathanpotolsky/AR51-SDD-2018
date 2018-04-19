@@ -1,15 +1,13 @@
 package com.example.nathan.myapplication;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.util.Log;
 
+//Allows the user to select which type of moves they want displayed by the app. Each of the
+//buttons is a toggle. Other pages can access the options the user chose through the getter functions.
 public class CheckersOptions1 extends AppCompatActivity {
 
     /** Initial option selections are false */
@@ -46,7 +44,7 @@ public class CheckersOptions1 extends AppCompatActivity {
         setContentView(R.layout.activity_checkers_options1);
 
         // Set up forward button
-        Button forwardButton = (Button)findViewById(R.id.forwardButton);
+        Button forwardButton = findViewById(R.id.forwardButton);
         forwardButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -55,7 +53,8 @@ public class CheckersOptions1 extends AppCompatActivity {
             }
         });
 
-        Button showAllMovesButton = (Button)findViewById(R.id.toggleButton);
+        //Set up Show All Moves button
+        Button showAllMovesButton = findViewById(R.id.toggleButton);
         showAllMovesButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -63,7 +62,8 @@ public class CheckersOptions1 extends AppCompatActivity {
             }
         });
 
-        Button instantTakesButton = (Button)findViewById(R.id.toggleButton2);
+        //Set up Instant Takes button
+        Button instantTakesButton = findViewById(R.id.toggleButton2);
         instantTakesButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -71,7 +71,8 @@ public class CheckersOptions1 extends AppCompatActivity {
             }
         });
 
-        Button instantLossesButton = (Button)findViewById(R.id.toggleButton3);
+        //Set up Instant Losses button
+        Button instantLossesButton = findViewById(R.id.toggleButton3);
         instantLossesButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -79,7 +80,8 @@ public class CheckersOptions1 extends AppCompatActivity {
             }
         });
 
-        Button bestMoveButton = (Button)findViewById(R.id.toggleButton4);
+        //Sets up Best Move button
+        Button bestMoveButton = findViewById(R.id.toggleButton4);
         bestMoveButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -87,7 +89,8 @@ public class CheckersOptions1 extends AppCompatActivity {
             }
         });
 
-        Button worstMoveButton = (Button)findViewById(R.id.toggleButton5);
+        //Sets up Worst Move button
+        Button worstMoveButton = findViewById(R.id.toggleButton5);
         worstMoveButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -95,12 +98,12 @@ public class CheckersOptions1 extends AppCompatActivity {
             }
         });
 
-        Button rankAllMovesButton = (Button)findViewById(R.id.toggleButton6);
+        //Sets up Rank All Moves button
+        Button rankAllMovesButton = findViewById(R.id.toggleButton6);
         rankAllMovesButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 rankAllMoves = !rankAllMoves;
-                Log.d("myTag", "rankAllMoves: " + rankAllMoves);
             }
         });
     }

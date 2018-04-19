@@ -14,6 +14,8 @@ import android.widget.ImageView;
 
 import java.io.File;
 
+//Shows a preview of the captured images to the user to ensure that a proper photo was taken.
+//Shows a normalized view of the board and two pieces representing the opposing teams.
 public class PhotoPreview extends AppCompatActivity {
 
     @Override
@@ -22,73 +24,48 @@ public class PhotoPreview extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_preview);
 
-//        File imgFile = new  File("/sdcard/Images/test_image.jpg");
+        //Retrieves the normalized board file
         ContextWrapper normalizedCW = new ContextWrapper(getApplicationContext());
-        File normalizedPath = new File(normalizedCW.getDir("dank_memes", Context.MODE_PRIVATE), "normalizedCheckerboard.png");
+        File normalizedPath = new File(normalizedCW.getDir("final_draught", Context.MODE_PRIVATE), "normalizedCheckerboard.png");
 
         if(normalizedPath.exists()){
-
             Bitmap myBitmap = BitmapFactory.decodeFile(normalizedPath.getAbsolutePath());
-
-            Log.d("imageWrite", normalizedPath.getAbsolutePath());
-
-            ImageView myImage = (ImageView) findViewById(R.id.photoPreview);
-
+            ImageView myImage = findViewById(R.id.photoPreview);
             myImage.setImageBitmap(myBitmap);
-//            Log.d("imageWrite", "SUCCESS ---");
-//
-//            String pathStr = path1.getAbsolutePath();
-//            Log.d("imageWrite", "Path: " + pathStr);
-//            File directory = new File(pathStr);
-//            File[] files = directory.listFiles();
-//            Log.d("imageWrite", "Size: "+ files.length);
-//            for (int i = 0; i < files.length; i++)
-//            {
-//                Log.d("imageWrite", "FileName:" + files[i].getName());
-//                Log.d("imageWrite", "FileName:" + files[i]);
-//            }
         }
         else{
-            Log.d("imageWrite", "FAILURE ---");
+            Log.d("imageWrite", "NORMALIZED FAILURE ---");
         }
 
+        //Retrieves the first team color image
         ContextWrapper team1CW = new ContextWrapper(getApplicationContext());
-        File team1path = new File(team1CW.getDir("dank_memes", Context.MODE_PRIVATE), "team1.png");
+        File team1path = new File(team1CW.getDir("final_draught", Context.MODE_PRIVATE), "team1.png");
 
         if(team1path.exists()){
-
             Bitmap myBitmap = BitmapFactory.decodeFile(team1path.getAbsolutePath());
-
-            Log.d("imageWrite", team1path.getAbsolutePath());
-
-            ImageView myImage = (ImageView) findViewById(R.id.team1);
-
+            ImageView myImage = findViewById(R.id.team1);
             myImage.setImageBitmap(myBitmap);
         }
         else{
-            Log.d("imageWrite", "FAILURE ---");
+            Log.d("imageWrite", "TEAM1 FAILURE ---");
         }
 
+        //Retrieves the second team color image
         ContextWrapper team2CW = new ContextWrapper(getApplicationContext());
-        File team2path = new File(team2CW.getDir("dank_memes", Context.MODE_PRIVATE), "team2.png");
+        File team2path = new File(team2CW.getDir("final_draugt", Context.MODE_PRIVATE), "team2.png");
 
         if(team2path.exists()){
-
             Bitmap myBitmap = BitmapFactory.decodeFile(team2path.getAbsolutePath());
-
-            Log.d("imageWrite", team2path.getAbsolutePath());
-
-            ImageView myImage = (ImageView) findViewById(R.id.team2);
-
+            ImageView myImage = findViewById(R.id.team2);
             myImage.setImageBitmap(myBitmap);
         }
         else{
-            Log.d("imageWrite", "FAILURE ---");
+            Log.d("imageWrite", "TEAM2 FAILURE ---");
         }
 
-        Button AcceptPhotoButon = (Button) findViewById(R.id.AcceptPhotoButon);
+        Button AcceptPhotoButton = findViewById(R.id.AcceptPhotoButon);
 
-        AcceptPhotoButon.setOnClickListener(new View.OnClickListener() {
+        AcceptPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent optionIntent = new Intent(getApplicationContext(), ColorSelection.class);

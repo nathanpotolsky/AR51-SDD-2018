@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 
+//The home page for the app. Allows the user to move to the options page
 public class HomePage extends AppCompatActivity {
 
     @Override
@@ -24,6 +25,7 @@ public class HomePage extends AppCompatActivity {
                 startActivity(optionIntent);
             }
         });
+
         ImageView wavyView = (ImageView)findViewById(R.id.wavyID);
         Glide.with(this).load(R.drawable.wavy).into(wavyView);
 

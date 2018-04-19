@@ -96,8 +96,9 @@ public class CheckerBoard extends Board{
         return moveArrayToSort;
     }
 
+    //Gathers the instant losses that may befall the user
     public ArrayList<CheckersMove> instantLosses() {
-        ArrayList<CheckersMove> takes = new ArrayList<CheckersMove>();
+        ArrayList<CheckersMove> takes = new ArrayList<>();
         Iterator<CheckersMove> itr = theirMoves.iterator();
         while (itr.hasNext()) {
             CheckersMove move = itr.next();
@@ -108,8 +109,9 @@ public class CheckerBoard extends Board{
         return takes;
     }
 
+    //Gathers the instant takes that the user can make
     public ArrayList<CheckersMove> instantTakes() {
-        ArrayList<CheckersMove> takes = new ArrayList<CheckersMove>();
+        ArrayList<CheckersMove> takes = new ArrayList<>();
         Iterator<CheckersMove> itr = ourMoves.iterator();
         while (itr.hasNext()) {
             CheckersMove move = itr.next();
@@ -120,22 +122,26 @@ public class CheckerBoard extends Board{
         return takes;
     }
 
+    //Returns all the moves
     public ArrayList<CheckersMove> allMoves() {
         return ourMoves;
     }
 
+    //Returns the best move
     public CheckersMove bestMove() {
         assignMoveWeights();
         ourMoves = sortMoves(ourMoves);
         return ourMoves.get(0);
     }
 
+    //Returns the worst move
     public CheckersMove worstMove() {
         assignMoveWeights();
         ourMoves = sortMoves(ourMoves);
         return ourMoves.get(ourMoves.size()-1);
     }
 
+    //Reinitializes the pieces lists
     void addPiecesToLists(){
         //Clear our piece lists to be empty
         ourPieces.clear();
@@ -148,7 +154,6 @@ public class CheckerBoard extends Board{
                 //If location has id 1 or 3, it means one of our pieces (3 means king)
                 if(intBoard[i][j] == 1 || intBoard[i][j] == 3){
                     ourPieces.add(new Position(i, j));
-                    //Log.d("myTag", "We have a piece at (" + i + ", " + j + ")");
                 }
                 else if(intBoard[i][j] == 2 || intBoard[i][j] == 4) {
                     theirPieces.add(new Position(i, j));
@@ -157,6 +162,7 @@ public class CheckerBoard extends Board{
         }
     }
 
+    //Finds all the moves the player can make
     public void findValidMoves(boolean isOurTeam){
         //Default to processing moves for our team
         ArrayList<Position> piecesList = null;
@@ -195,7 +201,6 @@ public class CheckerBoard extends Board{
                 //If proposedUpLeftPoint is empty
                 if(intBoard[x-1][y-1] == 0){
                     movesList.add(new CheckersMove(new Position(x, y), proposedUpLeftPoint, false));
-                    //Log.d("myTag", "(" + x + ", " + y + ") can go to (" + proposedUpLeftPoint.x + ", " + proposedUpLeftPoint.y + ")");
                 }
                 //If proposedUpLeftPoint has enemy piece AND the square on the other side is free
                 else if((intBoard[x-1][y-1] == otherTeamMan || intBoard[x][y] == otherTeamKing) && (intBoard[x-2][y-2] == 0)){
@@ -204,7 +209,6 @@ public class CheckerBoard extends Board{
                     if (!isOurTeam) {
                         instantLosses.add(new Position(x-1, y-1));
                     }
-                    //Log.d("myTag", "(" + x + ", " + y + ") can jump to (" + proposedUpLeftPoint.x + ", " + proposedUpLeftPoint.y + ")");
                 }
             }
             //If proposed space is within board
@@ -212,7 +216,6 @@ public class CheckerBoard extends Board{
                 //If proposedRightPoint is empty
                 if(intBoard[x-1][y+1] == 0){
                     movesList.add(new CheckersMove(new Position(x, y), proposedUpRightPoint, false));
-                    //Log.d("myTag", "(" + x + ", " + y + ") can go to (" + proposedUpRightPoint.x + ", " + proposedUpRightPoint.y + ")");
                 }
                 //If proposedRightPoint has enemy piece AND the square on the other side is free
                 else if((intBoard[x-1][y+1] == otherTeamMan || intBoard[x][y] == otherTeamKing) && (intBoard[x-2][y+2] == 0)){
@@ -221,7 +224,6 @@ public class CheckerBoard extends Board{
                     if (!isOurTeam) {
                         instantLosses.add(new Position(x-1, y+1));
                     }
-                    //Log.d("myTag", "(" + x + ", " + y + ") can jump to (" + proposedUpRightPoint.x + ", " + proposedUpRightPoint.y + ")");
                 }
             }
             //If this piece is a king and if proposed space is within board
@@ -229,7 +231,6 @@ public class CheckerBoard extends Board{
                 //If proposedDownLeftPoint is empty
                 if(intBoard[x+1][y-1] == 0){
                     movesList.add(new CheckersMove(new Position(x, y), proposedDownLeftPoint, false));
-                    //Log.d("myTag", "(" + x + ", " + y + ") can go to (" + proposedDownLeftPoint.x + ", " + proposedDownLeftPoint.y + ")");
                 }
                 //If proposedDownLeftPoint has enemy piece AND the square on the other side is free
                 else if((intBoard[x+1][y-1] == otherTeamMan || intBoard[x][y] == otherTeamKing) && (intBoard[x+2][y-2] == 0)){
@@ -238,7 +239,6 @@ public class CheckerBoard extends Board{
                     if (!isOurTeam) {
                         instantLosses.add(new Position(x+1, y-1));
                     }
-                    //Log.d("myTag", "(" + x + ", " + y + ") can jump to (" + proposedDownLeftPoint.x + ", " + proposedDownLeftPoint.y + ")");
                 }
             }
             //If this piece is a king and if proposed space is within board
@@ -246,7 +246,6 @@ public class CheckerBoard extends Board{
                 //If proposedDownRightPoint is empty
                 if(intBoard[x+1][y+1] == 0){
                     movesList.add(new CheckersMove(new Position(x, y), proposedDownRightPoint, false));
-                    //Log.d("myTag", "(" + x + ", " + y + ") can go to (" + proposedDownRightPoint.x + ", " + proposedDownRightPoint.y + ")");
                 }
                 //If proposedDownRightPoint has enemy piece AND the square on the other side is free
                 else if((intBoard[x+1][y+1] == otherTeamMan || intBoard[x][y] == otherTeamKing) && (intBoard[x+2][y+2] == 0)){
@@ -256,12 +255,12 @@ public class CheckerBoard extends Board{
                     if (!isOurTeam) {
                         instantLosses.add(new Position(x+1, y+1));
                     }
-                    //Log.d("myTag", "(" + x + ", " + y + ") can jump to (" + proposedDownRightPoint.x + ", " + proposedDownRightPoint.y + ")");
                 }
             }
         }
     }
 
+    //Assigns weights to the moves based on various contexts, as well as updates a description for the move
     void assignMoveWeights() {
         ArrayList<CheckersMove> moves = ourMoves;
         if (moves.size() != 0) {
@@ -271,6 +270,7 @@ public class CheckerBoard extends Board{
                 curr.weight = 0;
                 curr.description = "";
 
+                //Checks if a move is a jump move
                 if (curr.isJumpMove) {
                     curr.weight += 2;
                     curr.description += "You can jump over a piece.";
@@ -285,6 +285,7 @@ public class CheckerBoard extends Board{
                 Position downLeft = new Position(endPoint.getX()+1, endPoint.getY()-1);
                 Position downRight = new Position(endPoint.getX()+1, endPoint.getY()+1);
 
+                //Checks if you blocked or will be captured by an enemy piece
                 if (isWithinBoard(upRight) && (intBoard[upRight.getX()][upRight.getY()] == 2 || intBoard[upRight.getX()][upRight.getY()] == 4)) {
                     if (isWithinBoard(downLeft) && intBoard[downLeft.getX()][downLeft.getY()] != 0) {
                         curr.weight += 0.25;
@@ -303,6 +304,7 @@ public class CheckerBoard extends Board{
                     }
                 }
 
+                //Checks if you will be blocked or captured by an enemy piece
                 if (isWithinBoard(upLeft) && (intBoard[upLeft.getX()][upLeft.getY()] == 2 || intBoard[upLeft.getX()][upLeft.getY()] == 4)) {
                     if (isWithinBoard(downRight) && intBoard[downRight.getX()][downRight.getY()] != 0) {
                         curr.weight += 0.25;
@@ -325,6 +327,7 @@ public class CheckerBoard extends Board{
                     }
                 }
 
+                //Checks if you blocked or will be capture by a piece
                 if (isWithinBoard(downLeft) && intBoard[downLeft.getX()][downLeft.getY()] == 4) {
                     if (isWithinBoard(upRight) && intBoard[upRight.getX()][upRight.getY()] != 0) {
                         curr.weight += 0.25;
@@ -347,6 +350,7 @@ public class CheckerBoard extends Board{
                     }
                 }
 
+                //Checks if you blocked or will be capture by a piece
                 if (isWithinBoard(downRight) && intBoard[downRight.getX()][downRight.getY()] == 4) {
                     if (isWithinBoard(upLeft) && intBoard[upLeft.getX()][upLeft.getY()] != 0) {
                         curr.weight += 0.25;
@@ -368,8 +372,8 @@ public class CheckerBoard extends Board{
                         }
                     }
                 }
-                //check if on edge
 
+                //Checks if you will move to an edge
                 if (!isWithinBoard(upLeft) || !isWithinBoard(upRight)) {
                     curr.weight += 0.5;
                     if (curr.description.length() == 0) {
@@ -379,7 +383,7 @@ public class CheckerBoard extends Board{
                     }
                 }
 
-                //check if not king and on opposite side
+                //Checks if you can be kinged by moving to the opposite edge
                 if (intBoard[startPoint.getX()][startPoint.getY()] == 1 && endPoint.getX() == 0) {
                     curr.weight += 1;
                     if (curr.description.length() == 0) {
@@ -398,6 +402,7 @@ public class CheckerBoard extends Board{
                     curr.description += ".";
                 }
 
+                //Otherwise, the move is neutral
                 if (curr.description.length() == 0) {
                     curr.description += "This move is neutral.";
                 }
@@ -405,6 +410,7 @@ public class CheckerBoard extends Board{
         }
     }
 
+    //Checks if a move is within the board
     boolean isWithinBoard (Position endPoint){
         if((endPoint.x >= 0) && (endPoint.x <= rows-1) && (endPoint.y >= 0) && (endPoint.y <= columns-1)){
             return true;
@@ -412,14 +418,14 @@ public class CheckerBoard extends Board{
         return false;
     }
 
+    //Gets the location of all the pieces
     ArrayList<String> getAllPieces(){
-        ArrayList<String> arrayList = new ArrayList<String>();
+        ArrayList<String> arrayList = new ArrayList<>();
         for(int i = 0; i < ourPieces.size(); i++)
         {
             int x = ourPieces.get(i).getX();
             int y = ourPieces.get(i).getY();
             arrayList.add(("We have a piece at (" + x + ", " + y + ")"));
-            Log.d("myTag", "We have a piece at (" + x + ", " + y + ")");
         }
 
         for(int i = 0; i < theirPieces.size(); i++)
@@ -427,13 +433,13 @@ public class CheckerBoard extends Board{
             int x = theirPieces.get(i).getX();
             int y = theirPieces.get(i).getY();
             arrayList.add(("They have a piece at (" + x + ", " + y + ")"));
-            Log.d("myTag", "They have a piece at (" + x + ", " + y + ")");
         }
         return arrayList;
     }
 
+    //Gets a description of all the moves
     ArrayList<String> getAllMoves(boolean ourTeam){
-        ArrayList<String> arrayList = new ArrayList<String>();
+        ArrayList<String> arrayList = new ArrayList<>();
         assignMoveWeights();
 
         if(ourTeam == true){
@@ -445,15 +451,11 @@ public class CheckerBoard extends Board{
                 int endY = ourMoves.get(i).getEndPoint().getY();
                 boolean isJumpMove = ourMoves.get(i).getIsJumpMove();
                 if(isJumpMove ==  false){
-                    Log.d("myTag", "Our (" + startX + ", " + startY + ") can move to (" + endX + ", " + endY + ") [move]");
                     arrayList.add("Our (" + startX + ", " + startY + ") can move to (" + endX + ", " + endY + ") [move]");
                 }
                 else{
-                    Log.d("myTag", "Our (" + startX + ", " + startY + ") can jump to (" + endX + ", " + endY + ") [jump] [Instant Take]");
                     arrayList.add("Our (" + startX + ", " + startY + ") can jump to (" + endX + ", " + endY + ") [jump] [Instant Take]");
                 }
-                Log.d("myTag", "Move weight: " + ourMoves.get(i).weight);
-                Log.d("myTag", "Move description: " + ourMoves.get(i).description);
             }
         }
         else {
@@ -464,10 +466,8 @@ public class CheckerBoard extends Board{
                 int endY = theirMoves.get(i).getEndPoint().getY();
                 boolean isJumpMove = theirMoves.get(i).getIsJumpMove();
                 if (isJumpMove == false) {
-                    Log.d("myTag", "Their (" + startX + ", " + startY + ") can move to (" + endX + ", " + endY + ") [move]");
                     arrayList.add("Their (" + startX + ", " + startY + ") can move to (" + endX + ", " + endY + ") [move]");
                 } else {
-                    Log.d("myTag", "Their (" + startX + ", " + startY + ") can jump to (" + endX + ", " + endY + ") [jump] [Our (" + ((startX + endX) / 2) + ", " + ((startY + endY) / 2) + ") is in peril] [Instant Loss]");
                     arrayList.add("Their (" + startX + ", " + startY + ") can jump to (" + endX + ", " + endY + ") [jump] [Our (" + ((startX + endX) / 2) + ", " + ((startY + endY) / 2) + ") is in peril] [Instant Loss]");
                 }
             }

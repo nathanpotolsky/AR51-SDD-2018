@@ -10,23 +10,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+//The main page for the app where multiple games are implemented.
 public class MainActivity extends AppCompatActivity {
-
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("native-lib");
-        System.loadLibrary("opencv_java3");
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        // Example of a call to a native method
-//        TextView tv = findViewById(R.id.sample_text);
-//        tv.setText(stringFromJNI());
-
+        //Creates the checkers button. Directs the user to the option selection page.
         Button checkersButton = (Button)findViewById(R.id.checkersButton);
         checkersButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -36,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Creates the Connect Four button. Performs a test on a dummy board.
         Button connectFourButton = (Button)findViewById(R.id.connectFourButton);
         connectFourButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -47,39 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 tempCheckerBoard.findValidMoves(false);
                 Log.d("myTag", "  \\-----------------");
                 tempCheckerBoard.getAllPieces();
-//                tempCheckerBoard.getAllMoves();
             }
         });
     }
-
-    public void open(View view){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Which do you prefer?");
-
-        alertDialogBuilder.setPositiveButton("IOS", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-                Toast.makeText(MainActivity.this,"You selected IOS",Toast.LENGTH_LONG).show();
-            }
-        });
-
-        alertDialogBuilder.setNeutralButton("Leave App", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
-
-        alertDialogBuilder.setNegativeButton("Android",new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-                Toast.makeText(MainActivity.this,"You selected Android",Toast.LENGTH_LONG).show();
-            }
-        });
-
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
 }
