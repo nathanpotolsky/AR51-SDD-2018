@@ -46,6 +46,7 @@
 
     <Button
         android:id="@+id/king11"
+        android:tag="king00"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginBottom="448dp"
@@ -58,6 +59,7 @@
 
     <Button
         android:id="@+id/king12"
+        android:tag="king01"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginBottom="448dp"

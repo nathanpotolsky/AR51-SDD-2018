@@ -16,13 +16,6 @@ import java.io.File;
 
 public class PhotoPreview extends AppCompatActivity {
 
-    private static CheckerBoard checkerBoard = new CheckerBoard();
-
-    public static CheckerBoard getCheckerBoard()
-    {
-        return checkerBoard;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

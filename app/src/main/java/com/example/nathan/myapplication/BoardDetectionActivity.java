@@ -45,6 +45,13 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
 
     private CameraBridgeViewBase mOpenCvCameraView;
 
+    private static CheckerBoard checkerBoard = new CheckerBoard();
+
+    public static CheckerBoard getCheckerBoard()
+    {
+        return checkerBoard;
+    }
+
     static {
         System.loadLibrary("native-lib");
         System.loadLibrary("opencv_java3");
@@ -164,6 +171,7 @@ public class BoardDetectionActivity extends Activity implements OnTouchListener,
         Log.d("myTag", "mTeam1 size " + mTeam1.size());
         Log.d("myTag", "mTeam2 size " + mTeam2.size());
         CheckerBoard tempCheckerBoard = new CheckerBoard(objBoardState);
+        checkerBoard = new CheckerBoard(objBoardState);
 
         tempCheckerBoard.printBoard();
 

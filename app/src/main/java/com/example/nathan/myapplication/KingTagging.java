@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 public class KingTagging extends AppCompatActivity {
+
+    CheckerBoard checkerBoard = BoardDetectionActivity.getCheckerBoard();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,12 +181,16 @@ public class KingTagging extends AppCompatActivity {
         else{
             currentSquare.setBackgroundResource(R.drawable.crown);
             currentSquare.setSelected(true);
+            if(currentSquare.getTag() != null){
+                String name = currentSquare.getTag().toString();
+                Log.d("myTag2", "button tag " + name);
+                int y = Integer.parseInt(name.substring(name.length()-1));
+                int x = Integer.parseInt(name.substring(name.length()-2, name.length()-1));
+                checkerBoard.setKing(x, y);
+            } else {
+                Log.d("myTag2", String.valueOf(currentSquare.getId()));
+            }
         }
-        
-        String name = currentSquare.getTag().toString();
-        int y = Integer.parseInt(name.substring(name.length()-1))-1;
-        int x = Integer.parseInt(name.substring(name.length()-2, name.length()-1))-1;
-        PhotoPreview.getCheckerBoard().setKing(x, y);
     }
 
 }
