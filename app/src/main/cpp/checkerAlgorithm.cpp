@@ -174,7 +174,7 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
         imshow("CanvasImage", contourImage);
         waitKey(0);
     }
-    if (maxArea / (image.size().height * image.size().width) < 0.3) {
+    if (maxArea / (image.size().height * image.size().width) < 0.1) {
         cout << "maxArea too small" << endl;
         return 0;
     }
@@ -345,16 +345,16 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
             // cout << endl;
             if ((float(w) / h > 1.6) || (float(h) / w > 1.6) || (float(w)/h <= 0) || (w * h < area / 200)) continue;
             float buffer = 0.05;
-            x = int(x + buffer * w);
-            y = int(y + buffer * h);
-            Rect roi = Rect(x, y, int((1 - 2 * buffer) * w), int((1 - 2 * buffer) * h));
+            int roiX = int(x + buffer * w);
+            int roiY = int(y + buffer * h);
+            Rect roi = Rect(roiX, roiY, int((1 - 2 * buffer) * w), int((1 - 2 * buffer) * h));
             Mat tile = warp(roi);
             Mat coloredTile = warpColored(roi);
 
             // Circle Detection Begins
             vector<Vec3f> circles;
             autoCanny(tile, 0.33, lower, upper);
-            int dp = 1, minDist = w, cannyThresh = 75, accumulator=15, minRadius=w/4, maxRadius=w/2;
+            int dp = 1, minDist = w, cannyThresh = upper, accumulator=15, minRadius=w/4, maxRadius=w/2;
             HoughCircles(tile, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
 
             if (circles.size() == 0) tempRow.push_back(0);
