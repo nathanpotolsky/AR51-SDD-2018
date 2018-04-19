@@ -47,6 +47,7 @@ string type2str(int type) {
     return r;
 }
 
+/* Helper function to find median */
 double _median(Mat channel) {
     double m = (channel.rows*channel.cols) / 2;
     int bin = 0;
@@ -70,6 +71,7 @@ double _median(Mat channel) {
     return med;
 }
 
+/* Print board function */
 void printBoard(const vector<vector<int> >& Board) {
     cout << string(Board[0].size() * 4 + 1, '-') << endl;
     for (int row = 0; row < Board.size(); ++row) {
@@ -141,8 +143,7 @@ int contourSorting(Mat& image, Mat& contourImage, Mat*& warpedImage,
         cout << "maxArea too small" << endl;
         drawContours(contourImage, contours, maxContourIndex, Scalar(0, 255, 0), thickness);
         contourImage.copyTo(*warpedImage);
-        return 0;
-
+        return -1;
     }
 }
 
@@ -374,7 +375,7 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     vector<Point> approx, boardApprox;
     Mat contourImage = orig.clone();
     resize(contourImage, contourImage, cv::Size(), 1 / ratio, 1 / ratio);
-    contourSorting(image, contourImage, warpedImage, contours, approx, boardApprox);
+    if (contourSorting(image, contourImage, warpedImage, contours, approx, boardApprox) == -1) return 0;
 
     // Perspective Transform
     Mat warp, warpColored;
