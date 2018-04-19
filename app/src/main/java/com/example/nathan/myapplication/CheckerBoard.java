@@ -2,28 +2,29 @@ package com.example.nathan.myapplication;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.Comparator;
 
 public class CheckerBoard extends Board{
 
-    LinkedList<CheckersMove> ourMoves = new LinkedList<CheckersMove>();
-    LinkedList<CheckersMove> theirMoves = new LinkedList<CheckersMove>();
-    LinkedList<Position> instantLosses = new LinkedList<Position>();
+    ArrayList<CheckersMove> ourMoves = new ArrayList<CheckersMove>();
+    ArrayList<CheckersMove> theirMoves = new ArrayList<CheckersMove>();
+    ArrayList<Position> instantLosses = new ArrayList<Position>();
 
     public CheckerBoard() {
         rows = 8;
         columns = 8;
         intBoard = new int[rows][columns];
-        intBoard[0] = new int[] {0,0,0,0,0,0,0,0};
+        intBoard[0] = new int[] {3,0,0,0,0,0,0,4};
         intBoard[1] = new int[] {0,0,0,0,0,0,0,0};
         intBoard[2] = new int[] {0,0,0,0,0,0,0,0};
         intBoard[3] = new int[] {0,0,0,0,0,0,0,0};
         intBoard[4] = new int[] {0,0,0,0,0,0,0,0};
-        intBoard[5] = new int[] {0,0,0,1,0,0,0,0};
-        intBoard[6] = new int[] {0,0,0,0,2,0,0,0};
-        intBoard[7] = new int[] {0,0,0,1,0,1,0,0};
+        intBoard[5] = new int[] {0,0,0,0,0,2,0,0};
+        intBoard[6] = new int[] {0,0,0,0,1,0,0,0};
+        intBoard[7] = new int[] {0,0,0,0,0,0,0,0};
     }
 
     public CheckerBoard(Object[] arr){
@@ -59,29 +60,46 @@ public class CheckerBoard extends Board{
         }
     }
 
-    public LinkedList<CheckersMove> rankedMoves() {
+    public ArrayList<CheckersMove> rankedMoves() {
         assignMoveWeights();
-        ourMoves.sort( new Comparator<CheckersMove>(){
+        ourMoves = sortMoves(ourMoves);
+        return ourMoves;
+    }
+
+    public ArrayList<CheckersMove> sortMoves(ArrayList<CheckersMove> moveArrayToSort){
+        moveArrayToSort.sort( new Comparator<CheckersMove>(){
             @Override
             public int compare(CheckersMove o1, CheckersMove o2){
-                if (o1.weight < o2.weight) {
+                if (o1.weight > o2.weight) {
                     return -1;
-                } else if (o1.weight > o2.weight) {
+                } else if (o1.weight < o2.weight) {
                     return 1;
                 } else {
                     return 0;
                 }
             }
         });
-        return ourMoves;
+        return moveArrayToSort;
     }
 
-    public LinkedList<Position> instantLosses() {
-        return instantLosses;
+//    public LinkedList<Position> instantLosses() {
+//        return instantLosses;
+//    }
+
+    public ArrayList<CheckersMove> instantLosses() {
+        ArrayList<CheckersMove> takes = new ArrayList<CheckersMove>();
+        Iterator<CheckersMove> itr = theirMoves.iterator();
+        while (itr.hasNext()) {
+            CheckersMove move = itr.next();
+            if (move.isJumpMove) {
+                takes.add(move);
+            }
+        }
+        return takes;
     }
 
-    public LinkedList<CheckersMove> instantTakes() {
-        LinkedList<CheckersMove> takes = new LinkedList<CheckersMove>();
+    public ArrayList<CheckersMove> instantTakes() {
+        ArrayList<CheckersMove> takes = new ArrayList<CheckersMove>();
         Iterator<CheckersMove> itr = ourMoves.iterator();
         while (itr.hasNext()) {
             CheckersMove move = itr.next();
@@ -92,45 +110,26 @@ public class CheckerBoard extends Board{
         return takes;
     }
 
-    public LinkedList<CheckersMove> allMoves() {
+    public ArrayList<CheckersMove> allMoves() {
         return ourMoves;
     }
 
     public CheckersMove bestMove() {
         assignMoveWeights();
-        ourMoves.sort( new Comparator<CheckersMove>(){
-            @Override
-            public int compare(CheckersMove o1, CheckersMove o2){
-                if (o1.weight < o2.weight) {
-                    return -1;
-                } else if (o1.weight > o2.weight) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-        });
-        return ourMoves.getFirst();
+        ourMoves = sortMoves(ourMoves);
+        return ourMoves.get(0);
     }
 
     public CheckersMove worstMove() {
         assignMoveWeights();
-        ourMoves.sort( new Comparator<CheckersMove>(){
-            @Override
-            public int compare(CheckersMove o1, CheckersMove o2){
-                if (o1.weight < o2.weight) {
-                    return -1;
-                } else if (o1.weight > o2.weight) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-        });
-        return ourMoves.getLast();
+        ourMoves = sortMoves(ourMoves);
+        return ourMoves.get(ourMoves.size()-1);
     }
 
     void addPiecesToLists(){
+        //Clear our piece lists to be empty
+        ourPieces.clear();
+        theirPieces.clear();
         //Go through board, looking for our men then add to a list
         for(int i = 0; i<rows; i++)
         {
@@ -150,13 +149,22 @@ public class CheckerBoard extends Board{
 
     public void findValidMoves(boolean isOurTeam){
         //Default to processing moves for our team
-        LinkedList<Position> piecesList = ourPieces;
-        LinkedList<CheckersMove> movesList = ourMoves;
-        int otherTeamMan = 2;
-        int otherTeamKing = 4;
+        ArrayList<Position> piecesList = null;
+        ArrayList<CheckersMove> movesList = null;
+        int otherTeamMan = 0;
+        int otherTeamKing = 0;
 
         //If we're processing moves for their team
-        if(isOurTeam == false){
+        if(isOurTeam == true){
+            ourMoves.clear();
+            piecesList = ourPieces;
+            movesList = ourMoves;
+            otherTeamMan = 2;
+            otherTeamKing = 4;
+        }
+        //If we're processing moves for their team
+        else if(isOurTeam == false){
+            theirMoves.clear();
             piecesList = theirPieces;
             movesList = theirMoves;
             otherTeamMan = 1;
@@ -167,12 +175,13 @@ public class CheckerBoard extends Board{
         {
             int x = piecesList.get(i).x;
             int y = piecesList.get(i).y;
+            int curSpaceId = intBoard[x][y];
             Position proposedUpLeftPoint = new Position(x-1,y-1);
             Position proposedUpRightPoint = new Position(x-1,y+1);
             Position proposedDownLeftPoint = new Position(x+1,y-1);
             Position proposedDownRightPoint = new Position(x+1,y+1);
             //If proposed space is within board
-            if(isWithinBoard(proposedUpLeftPoint)){
+            if(isWithinBoard(proposedUpLeftPoint) && (curSpaceId != 2)){
                 //If proposedUpLeftPoint is empty
                 if(intBoard[x-1][y-1] == 0){
                     movesList.add(new CheckersMove(new Position(x, y), proposedUpLeftPoint, false));
@@ -189,7 +198,7 @@ public class CheckerBoard extends Board{
                 }
             }
             //If proposed space is within board
-            if(isWithinBoard(proposedUpRightPoint)){
+            if(isWithinBoard(proposedUpRightPoint) && (curSpaceId != 2)){
                 //If proposedRightPoint is empty
                 if(intBoard[x-1][y+1] == 0){
                     movesList.add(new CheckersMove(new Position(x, y), proposedUpRightPoint, false));
@@ -206,7 +215,7 @@ public class CheckerBoard extends Board{
                 }
             }
             //If this piece is a king and if proposed space is within board
-            if(intBoard[x][y] == 3 && isWithinBoard(proposedDownLeftPoint)){
+            if(isWithinBoard(proposedDownLeftPoint) && (curSpaceId != 1)){
                 //If proposedDownLeftPoint is empty
                 if(intBoard[x+1][y-1] == 0){
                     movesList.add(new CheckersMove(new Position(x, y), proposedDownLeftPoint, false));
@@ -223,7 +232,7 @@ public class CheckerBoard extends Board{
                 }
             }
             //If this piece is a king and if proposed space is within board
-            if(intBoard[x][y] == 3 && isWithinBoard(proposedDownRightPoint)){
+            if(isWithinBoard(proposedDownRightPoint) && (curSpaceId != 1)){
                 //If proposedDownRightPoint is empty
                 if(intBoard[x+1][y+1] == 0){
                     movesList.add(new CheckersMove(new Position(x, y), proposedDownRightPoint, false));
@@ -244,7 +253,7 @@ public class CheckerBoard extends Board{
     }
 
     void assignMoveWeights() {
-        LinkedList<CheckersMove> moves = ourMoves;
+        ArrayList<CheckersMove> moves = ourMoves;
         if (moves.size() != 0) {
             Iterator<CheckersMove> itr = moves.iterator();
             while(itr.hasNext()) {
@@ -393,11 +402,13 @@ public class CheckerBoard extends Board{
         return false;
     }
 
-    void printAllPieces(){
+    ArrayList<String> getAllPieces(){
+        ArrayList<String> arrayList = new ArrayList<String>();
         for(int i = 0; i < ourPieces.size(); i++)
         {
             int x = ourPieces.get(i).getX();
             int y = ourPieces.get(i).getY();
+            arrayList.add(("We have a piece at (" + x + ", " + y + ")"));
             Log.d("myTag", "We have a piece at (" + x + ", " + y + ")");
         }
 
@@ -405,43 +416,53 @@ public class CheckerBoard extends Board{
         {
             int x = theirPieces.get(i).getX();
             int y = theirPieces.get(i).getY();
+            arrayList.add(("They have a piece at (" + x + ", " + y + ")"));
             Log.d("myTag", "They have a piece at (" + x + ", " + y + ")");
         }
+        return arrayList;
     }
 
-    void printAllMoves(){
+    ArrayList<String> getAllMoves(boolean ourTeam){
+        ArrayList<String> arrayList = new ArrayList<String>();
         assignMoveWeights();
-        for(int i = 0; i < ourMoves.size(); i++)
-        {
-            int startX = ourMoves.get(i).getStartPoint().getX();
-            int startY = ourMoves.get(i).getStartPoint().getY();
-            int endX = ourMoves.get(i).getEndPoint().getX();
-            int endY = ourMoves.get(i).getEndPoint().getY();
-            boolean isJumpMove = ourMoves.get(i).getIsJumpMove();
-            if(isJumpMove ==  false){
-                Log.d("myTag", "Our (" + startX + ", " + startY + ") can move to (" + endX + ", " + endY + ") [move]");
-            }
-            else{
-                Log.d("myTag", "Our (" + startX + ", " + startY + ") can jump to (" + endX + ", " + endY + ") [jump] [Instant Take]");
-            }
-            Log.d("myTag", "Move weight: " + ourMoves.get(i).weight);
-            Log.d("myTag", "Move description: " + ourMoves.get(i).description);
-        }
 
-        for(int i = 0; i < theirMoves.size(); i++)
-        {
-            int startX = theirMoves.get(i).getStartPoint().getX();
-            int startY = theirMoves.get(i).getStartPoint().getY();
-            int endX = theirMoves.get(i).getEndPoint().getX();
-            int endY = theirMoves.get(i).getEndPoint().getY();
-            boolean isJumpMove = theirMoves.get(i).getIsJumpMove();
-            if(isJumpMove ==  false){
-                Log.d("myTag", "Their (" + startX + ", " + startY + ") can move to (" + endX + ", " + endY + ") [move]");
-            }
-            else{
-                Log.d("myTag", "Their (" + startX + ", " + startY + ") can jump to (" + endX + ", " + endY + ") [jump] [Our (" + ((startX+endX)/2) + ", " + ((startY+endY)/2) + ") is in peril] [Instant Loss]");
+        if(ourTeam == true){
+            for(int i = 0; i < ourMoves.size(); i++)
+            {
+                int startX = ourMoves.get(i).getStartPoint().getX();
+                int startY = ourMoves.get(i).getStartPoint().getY();
+                int endX = ourMoves.get(i).getEndPoint().getX();
+                int endY = ourMoves.get(i).getEndPoint().getY();
+                boolean isJumpMove = ourMoves.get(i).getIsJumpMove();
+                if(isJumpMove ==  false){
+                    Log.d("myTag", "Our (" + startX + ", " + startY + ") can move to (" + endX + ", " + endY + ") [move]");
+                    arrayList.add("Our (" + startX + ", " + startY + ") can move to (" + endX + ", " + endY + ") [move]");
+                }
+                else{
+                    Log.d("myTag", "Our (" + startX + ", " + startY + ") can jump to (" + endX + ", " + endY + ") [jump] [Instant Take]");
+                    arrayList.add("Our (" + startX + ", " + startY + ") can jump to (" + endX + ", " + endY + ") [jump] [Instant Take]");
+                }
+                Log.d("myTag", "Move weight: " + ourMoves.get(i).weight);
+                Log.d("myTag", "Move description: " + ourMoves.get(i).description);
             }
         }
+        else {
+            for (int i = 0; i < theirMoves.size(); i++) {
+                int startX = theirMoves.get(i).getStartPoint().getX();
+                int startY = theirMoves.get(i).getStartPoint().getY();
+                int endX = theirMoves.get(i).getEndPoint().getX();
+                int endY = theirMoves.get(i).getEndPoint().getY();
+                boolean isJumpMove = theirMoves.get(i).getIsJumpMove();
+                if (isJumpMove == false) {
+                    Log.d("myTag", "Their (" + startX + ", " + startY + ") can move to (" + endX + ", " + endY + ") [move]");
+                    arrayList.add("Their (" + startX + ", " + startY + ") can move to (" + endX + ", " + endY + ") [move]");
+                } else {
+                    Log.d("myTag", "Their (" + startX + ", " + startY + ") can jump to (" + endX + ", " + endY + ") [jump] [Our (" + ((startX + endX) / 2) + ", " + ((startY + endY) / 2) + ") is in peril] [Instant Loss]");
+                    arrayList.add("Their (" + startX + ", " + startY + ") can jump to (" + endX + ", " + endY + ") [jump] [Our (" + ((startX + endX) / 2) + ", " + ((startY + endY) / 2) + ") is in peril] [Instant Loss]");
+                }
+            }
+        }
+        return arrayList;
     }
 
 }

@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
                 tempCheckerBoard.findValidMoves(true);
                 tempCheckerBoard.findValidMoves(false);
                 Log.d("myTag", "  \\-----------------");
-                tempCheckerBoard.printAllPieces();
-                tempCheckerBoard.printAllMoves();
+                tempCheckerBoard.getAllPieces();
+//                tempCheckerBoard.getAllMoves();
             }
         });
     }
