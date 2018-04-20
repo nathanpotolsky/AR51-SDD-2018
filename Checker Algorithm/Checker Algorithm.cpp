@@ -5,7 +5,6 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
 #include <string>
 
 using namespace cv;
@@ -46,6 +45,7 @@ string type2str(int type) {
 	return r;
 }
 
+/* Helper function to find median */
 double _median(Mat channel) {
 	double m = (channel.rows*channel.cols) / 2;
 	int bin = 0;
@@ -69,6 +69,7 @@ double _median(Mat channel) {
 	return med;
 }
 
+/* Print board function */
 void printBoard(const vector<vector<int> >& Board) {
 	cout << string(Board[0].size() * 4 + 1, '-') << endl;
 	for (int row = 0; row < Board.size(); ++row) {
@@ -85,8 +86,6 @@ void printBoard(const vector<vector<int> >& Board) {
 
 void autoCanny(Mat& image, float sigma, int& lower, int& upper) {
 	double med = _median(image);
-	// Scalar temp = mean(image);
-	// cout << "Med and temp " << med << " " << temp << endl;
 	lower = int(max(0.0, (1.0 - sigma) * med));
 	upper = int(min(255.0, (1.0 + sigma) * med));
 }
@@ -96,91 +95,52 @@ double euclideanDistance(Point2f& a, Point2f& b) {
 	return sqrt(pow(diff.x, 2) + pow(diff.y, 2));
 }
 
-// Takes in the file of checkerboard image, and the team colors
-// returns a 2D vector of the Board, where 0: no piece, 1: colors[0] piece, 2: colors[1] piece
-int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const vector<Scalar>& colors, vector<vector<int> >& Board) {
-	bool debug = false;
-
-	// if (debug) cout << "Opening file: " << file << std::endl;
-	Mat image_ = *imageRef;
-	// image_ = imread(file, CV_LOAD_IMAGE_COLOR);
-	if (!image_.data) {
-		cerr << "could not open or find the image" << endl;
-		return 0;
-	}
-
-	int maxDimension = 1000;
-	// Resize the image if it's too large. Processing will take too long and don't need that much resolution
-	if (image_.size().width > maxDimension || image_.size().height > maxDimension) {
+// Resize the image if it's too large. Processing will take too long and don't need that much resolution
+void resizeImage(Mat& image_, int maxDimension) {
+	if (image_.size().width > maxDimension) {
 		resize(image_, image_, Size(maxDimension, maxDimension * image_.size().height / image_.size().width));
 	}
+	else if (image_.size().height > maxDimension) {
+		resize(image_, image_, Size(maxDimension * image_.size().width / image_.size().height, maxDimension));
+	}
+}
 
-	Mat image = image_;
-	Mat orig = image.clone();
-
-	// Preprocessing Begins
-	Mat processedImage, gray;
-	Mat canvasImage = orig.clone();
-	cvtColor(image, processedImage, CV_BGR2GRAY);
-	int d = 11;
-	double sigmaColor = 17, sigmaSpace = 17;
-	float desiredHeight = 800.0;
-	float ratio = image.size().height / desiredHeight;
-	resize(processedImage, image, cv::Size(), 1 / ratio, 1 / ratio);
+// Preprocessing image variable
+// returns the processed ratio
+float preprocessing(Mat& src, float desiredHeight) {
 	Mat intermediate;
-	bilateralFilter(image, intermediate, d, sigmaColor, sigmaSpace);
-	bilateralFilter(intermediate, image, d, sigmaColor, sigmaSpace);
-	// Preprocessing Ends
+	cvtColor(src, src, CV_BGR2GRAY);
+	float ratio = src.size().height / desiredHeight;
 
-	// Contour Detection Begins
-	// Canny(image, image, 30, 100);
-	int lower = 0, upper = 0;
-	autoCanny(image, 0.33, lower, upper);
-	// cout << "Lower, upper: " << lower << ", " << upper << endl;
-	Canny(image, image, lower, upper);
-	vector<vector<Point> > contours;
-	vector<Vec4i> hierarchy;
-	findContours(image, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
-	// Contour Detection Ends
+	resize(src, intermediate, cv::Size(), 1 / ratio, 1 / ratio);
+	int d = 8;	double sigmaColor = 17, sigmaSpace = 17;
+	bilateralFilter(intermediate, src, d, sigmaColor, sigmaSpace);
+	return ratio;
+}
 
-	// Contour sorting begins
-	vector<Point> approx, boardApprox;
-	double maxArea = 200.0;
+void detectContours(Mat& src, vector<vector<Point> >& contours, vector<Vec4i>& hierarchy) {
+	int lower, upper;
+	autoCanny(src, 0.33, lower, upper);
+	Canny(src, src, lower, upper);
+	findContours(src, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
+}
+vector<Point> findLargestQuadralateral(vector<vector<Point> > &contours) {
 	int maxContourIndex = -1;
-	Mat contourImage = orig.clone();
-	resize(contourImage, contourImage, cv::Size(), 1 / ratio, 1 / ratio);
-
+	double maxArea = 200.0;
+	vector<Point> boardApprox, approx;
 	for (int i = 0; i < contours.size(); ++i) {
-		if (debug) drawContours(contourImage, contours, i, Scalar(0, 255, 0), 1);
 		double area = contourArea(contours[i]);
-		approxPolyDP(contours[i], approx, arcLength(Mat(contours[i]), true) * 0.01, true);
+		approxPolyDP(contours[i], approx, arcLength(Mat(contours[i]), true) * 0.05, true);
 		if (approx.size() == 4 && area > maxArea) {
 			maxArea = area;
 			maxContourIndex = i;
 			boardApprox = approx;
 		}
 	}
-	if (debug) {
-		cout << "Max area " << maxArea << endl;
-		cout << "resized image area " << image.size().height * image.size().width << endl;
-	}
-	if (maxContourIndex == -1) cerr << "Can't find any square contours" << endl;
-	int thickness = 4;
-	Scalar color = (0, 255, 255);
-	if (debug) {
-		drawContours(contourImage, contours, maxContourIndex, Scalar(0, 0, 255), thickness);
-		imshow("CanvasImage", contourImage);
-		waitKey(0);
-	}
-	if (maxArea / (image.size().height * image.size().width) < 0.1) {
-		cout << "maxArea too small" << endl;
-		return 0;
-	}
-	// Contour Sorting Ends
+	return boardApprox;
+}
 
-	// Perspective Transform Begins
-	if (debug) cout << "Board Approx\n" << boardApprox << endl;
-	array<Point2f, 4> rect;
+void orderVertices(vector<Point>& boardApprox, array<Point2f, 4>& rect, array<Point2f, 4>& dstRect, float ratio) {
 	int minSum = 10000, maxSum = -1;
 	for (int i = 0; i < boardApprox.size(); ++i) {
 		int sum = boardApprox[i].x + boardApprox[i].y;
@@ -214,55 +174,42 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
 	leftHeight = euclideanDistance(rect[0], rect[3]);
 	rightHeight = euclideanDistance(rect[1], rect[2]);
 	int maxHeight = int(max(leftHeight, rightHeight));
+	dstRect = { Point(0,0), Point(maxWidth - 1,0), Point(maxWidth - 1,maxHeight - 1),Point(0,maxHeight - 1) };
 
-	array<Point2f, 4> dstRect = { Point(0,0), Point(maxWidth - 1,0), Point(maxWidth - 1,maxHeight - 1),Point(0,maxHeight - 1) };
-	if (debug) for (int i = 0; i < rect.size(); ++i) { cout << rect[i] << endl; }
-	if (debug) for (int i = 0; i < dstRect.size(); ++i) { cout << dstRect[i] << endl; }
+}
 
+void perspectiveTransform(Mat& input, Mat& dst, array<Point2f, 4>& rect, array<Point2f, 4>& dstRect) {
 	Mat transformMatrix = getPerspectiveTransform(rect, dstRect);
-	Mat warp, warpColored;
-	Size size(maxWidth, maxHeight);
-	if (debug) cout << type2str(orig.type()) << endl;
-	if (debug) cout << type2str(warp.type()) << endl;
-	warpPerspective(processedImage, warp, transformMatrix, size);
-	warpPerspective(orig, warpColored, transformMatrix, size);
-	//resize(*warpedImage, *warpedImage, warpColored.size());
-	warpColored.copyTo(*warpedImage);
-	//    Mat* normalized = new Mat();
-	//    *normalized = warpColored.clone();
-	//    warpedImage = normalized;
-	if (debug) {
-		imshow("warp initial", warp);
-		// waitKey(0);
-	}
-	//Perspective Transform Ends
 
-	// Point detection begins
+	int width = dstRect[1].x - dstRect[0].x + 1;
+	int height = dstRect[3].y - dstRect[0].y + 1;
+	// perspective transform(rect, dstrect, processedimage, warp, warpcolored)
+	Size size(width, height);
+	warpPerspective(input, dst, transformMatrix, size);
+}
+
+vector<vector<Point> > pointDetection(Mat& warp, int& boardEdgesLower, int& boardEdgesUpper) {
 	Mat hMask = Mat::zeros(warp.size(), CV_8U);
 	Mat vMask = Mat::zeros(warp.size(), CV_8U);
 
 	Mat boardEdges;
+	vector<vector<Point> > pointsSorted;
 	vector<Vec2f> lines;
-	// int lower, upper;
-	autoCanny(warp, 0.33, lower, upper);
-	Canny(warp, boardEdges, lower, upper);
+	autoCanny(warp, 0.33, boardEdgesLower, boardEdgesUpper);
+	Canny(warp, boardEdges, boardEdgesLower, boardEdgesUpper);
 	float PI = 3.1415926;
-	if (debug) {
-		imshow("warp initial", boardEdges);
-		// waitKey();
-	}
 	HoughLines(boardEdges, lines, 1, PI / 180, 200);
-	if (debug) { cout << "lines " << lines.size() << endl; }
-	if (lines.size() <= 1) { return 0; }
+	if (lines.size() <= 1) {
+		cerr << "not enough lines detected" << endl;
+		return pointsSorted;
+	}
 	// sort lines by rho
 	sort(lines.begin(), lines.end(), compareLines);
-	if (debug) { cout << "lines sorted" << endl; }
 	int minDist = 20;
 	int prevVDist = -1000, prevHDist = -1000;
 	int numCols = 0;
 	for (int i = 0; i < lines.size(); ++i) {
 		float rho = lines[i][0], theta = lines[i][1];
-		//if (debug) { cout << "Line " << i << " data: " << rho << " " << theta << endl; }
 		Point pt1, pt2;
 		double a = cos(theta), b = sin(theta);
 		double x0 = a * rho, y0 = b * rho;
@@ -272,14 +219,12 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
 		pt2.y = cvRound(y0 - 1000 * (a));
 
 		int thetaDeg = int(theta * 180 / PI);
-		// if (debug) cout << thetaDeg << endl;
-		float tol = 10;
+		float tol = 5;
 		if (-tol < thetaDeg % 180 && thetaDeg % 180 < tol) {
 
 			if (abs(rho - prevVDist) > minDist) {
 				pt2.x = (pt1.x + pt2.x) / 2;
 				pt1.x = pt2.x;
-				// pt2.y = vMask.size().height - 1;
 
 				line(vMask, pt1, pt2, Scalar(255), 1);
 				prevVDist = rho;
@@ -288,7 +233,6 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
 		}
 		else if (90 - tol < thetaDeg % 180 && thetaDeg % 180 < 90 + tol) {
 			if (abs(rho - prevHDist) > minDist) {
-				// pt2.x = hMask.size().width - 1;
 				pt2.y = (pt1.y + pt2.y) / 2;
 				pt1.y = pt2.y;
 				line(hMask, pt1, pt2, Scalar(255), 1);
@@ -299,49 +243,53 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
 	Mat intersectionMask;
 	bitwise_and(hMask, vMask, intersectionMask);
 	vector<Point> points;
-	vector<vector<Point> > pointsSorted;
-	if (debug) {
-		imshow("intersection", intersectionMask);
-	}
-	// waitKey(0);
+	waitKey(0);
 
 	findNonZero(intersectionMask, points);
-	if (debug) { cout << "num points " << points.size() << endl; }
-	if (debug) { cout << "num columns " << numCols << endl; }
-	int oldHeight = -1000;
-	//sort(points.begin(), points.end(), comparePointsY);
 	vector<Point>::const_iterator rowBegin = points.begin(), rowEnd = rowBegin + numCols;
 	for (int i = 0; i < points.size() / numCols; ++i) {
 		rowBegin = points.begin() + i * numCols;
 		rowEnd = rowBegin + numCols;
 		vector<Point> temp(rowBegin, rowEnd);
-		if (debug) { cout << "Row " << i << ": " << temp << endl; }
 		pointsSorted.push_back(temp);
 	}
-	// Point Detection Ends
+	return pointsSorted;
+}
 
-	// Tile detection begins
-	if (debug) { cout << "num rows " << pointsSorted.size() << endl; }
-	if (debug) { cout << "num cols " << pointsSorted[0].size() << endl; }
+void sharpenImage(Mat& src, Mat& dst, double sigma, double threshold, double amount) {
+	Mat blurred;
+	GaussianBlur(src, blurred, Size(), sigma, sigma);
+	Mat lowContrastMask = abs(src - blurred) < threshold;
+	dst = src * (1 + amount) + blurred * (-amount);
+	src.copyTo(dst, lowContrastMask);
+}
+
+Scalar determineTileColor(Mat& src, Vec3f circle) {
+	Point2f center(cvRound(circle[0]), cvRound(circle[0]));
+	int radius = cvRound(circle[2]);
+	int width = radius / sqrt(2);
+	int checkerX = center.x - width, checkerY = center.y - width;
+	Rect insideChecker = Rect(checkerX, checkerY, width, width);
+	return mean(src(insideChecker));
+}
+
+void tileDetection(Mat& warp, Mat& warpColored, vector<vector<Point> > pointsSorted,
+	Mat*& team1, Mat*& team2, const vector<Scalar>& colors, vector<vector<int> >& Board, int& boardEdgesUpper) {
 	int area = warp.size().height * warp.size().width;
-	// vector<vector<int >> Board;
 	int minDistCenterT1 = warp.size().width;
 	int minDistCenterT2 = warp.size().width;
 
-
+	bool foundT1 = false;
+	bool foundT2 = false;
 	for (int row = 0; row < (pointsSorted.size() - 1); ++row) {
 		sort(pointsSorted[row].begin(), pointsSorted[row].end(), comparePointsX);
-		// cout << "sorted: " << pointsSorted[row] << endl;
 		vector<int> tempRow;
 
 		for (int col = 0; col < (pointsSorted[row].size() - 1); ++col) {
 			int x, y, w, h;
 			x = pointsSorted[row][col].x, y = pointsSorted[row][col].y;
 			w = pointsSorted[row + 1][col + 1].x - x, h = pointsSorted[row + 1][col + 1].y - y;
-			// cout << (float(w) / h ) << endl;
-			// cout << (float(h) / w ) << endl;
-			// cout << endl;
-			if ((float(w) / h > 1.6) || (float(h) / w > 1.6) || (float(w) / h <= 0) || (w * h < area / 200)) continue;
+			if ((float(w) / h > 1.4) || (float(h) / w > 1.4) || (float(w) / h <= 0) || (w * h < area / 200)) continue;
 			float buffer = 0.05;
 			int roiX = int(x + buffer * w);
 			int roiY = int(y + buffer * h);
@@ -351,30 +299,26 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
 
 			// Circle Detection Begins
 			vector<Vec3f> circles;
-			autoCanny(tile, 0.33, lower, upper);
-			int dp = 1, minDist = w, cannyThresh = upper, accumulator = 30, minRadius = w / 4, maxRadius = 0.4*w;
-			HoughCircles(tile, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
+			Mat sharpened;
+			double sigma = 1, threshold = 5, amount = 1;
+			sharpenImage(tile, sharpened, sigma, threshold, amount);
+			int dp = 1, minDist = w, cannyThresh = boardEdgesUpper, accumulator = 30, minRadius = w / 4, maxRadius = 0.5*w;
+			HoughCircles(sharpened, circles, CV_HOUGH_GRADIENT, dp, minDist, cannyThresh, accumulator, minRadius, maxRadius);
 
 			if (circles.size() == 0) tempRow.push_back(0);
 			for (int i = 0; i < circles.size(); ++i) {
-				Point2f center(cvRound(circles[i][0]), cvRound(circles[i][0]));
-				int radius = cvRound(circles[i][2]);
-				circle(tile, center, radius, Scalar(255), 2);
-				Point centerShifted(x + center.x, y + center.y);
-				int width = radius / sqrt(2);
-				int checkerX = center.x - width, checkerY = center.y - width;
-				Rect insideChecker = Rect(checkerX, checkerY, width, width);
-				Scalar tileColor = mean(coloredTile(insideChecker));
-				if (debug) { cout << tileColor << endl; }
+				// Color detection begins				
 				float minColorDist = FLT_MAX;
 				int minIndex = -1;
 				Point2f middle = Point2f(x + w / 2, y + h / 2);
+
+				Point2f center(cvRound(circles[i][0]), cvRound(circles[i][0]));
 				int distCenter = int(euclideanDistance(center, middle));
 				Mat* tileCopy = new Mat();
-				// *tileCopy = coloredTile.clone();
+				
+				Scalar tileColor = determineTileColor(coloredTile, circles[i]);
 				for (int c = 0; c < colors.size(); ++c) {
 					float colorDistance = cv::norm(tileColor, colors[c]);
-					if (debug) { cout << "distance" << colorDistance << endl; }
 					if (colorDistance < minColorDist) {
 						minColorDist = colorDistance;
 						minIndex = c;
@@ -384,48 +328,76 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
 					if (minIndex == 0) {
 						if (distCenter < minDistCenterT1) {
 							minDistCenterT1 = distCenter;
-							//team1 = tileCopy;
 							coloredTile.copyTo(*team1);
-
+							foundT1 = true;
 						}
 					}
 					else {
 						if (distCenter < minDistCenterT2) {
 							minDistCenterT2 = distCenter;
-							//team2 = tileCopy;
 							coloredTile.copyTo(*team2);
+							foundT2 = true;
 						}
 
 					}
 				}
 				tempRow.push_back(minIndex + 1);
-
-				circle(warpColored, centerShifted, radius, tileColor, -1);
-				// Mat roi = tile(Range(circles[i][1] - circles[i][2], circles[i][1] + circles[i][2] + 1), cv::Range(circles[i][0] - circles[i][2], circles[i][0] + circles[i][2] + 1));
-			}
-			if (debug) {
-				Mat edgeComparison, cannyTile;
-				Canny(tile, cannyTile, 100 / 2, 100);
-				hconcat(warp(roi), cannyTile, edgeComparison);
-				// hconcat(warp(roi), boardEdges(roi), edgeComparison);
-				imshow("Comparison", edgeComparison);
-				imshow("warp", warpColored);
-				waitKey(0);
-				destroyWindow("Comparison");
 			}
 		}
 		if (tempRow.size() > 0) { Board.push_back(tempRow); }
 	}
+}
 
-	// imshow("checkerboard", processedImage);
-	// imshow("Board edges", boardEdges);
-	// imshow("intersection", intersectionMask);
-	if (debug) {
-		imshow("BoardGuess", warpColored);
-		waitKey(0);
-	}
+
+// Takes in Mat pointers and returns by reference pointers to :image of the checkerboard, image of team 1 and team 2 pieces
+// Also returns the Board state by reference, where 0: no piece, 1: colors[0] piece, 2: colors[1] piece
+int checker(Mat* imageRef, Mat *&normalized, Mat *&team1, Mat *&team2, const vector<Scalar>& colors, vector<vector<int> >& Board) {
+	// dereference the image and check to see if it is a valid image in memory
+	Mat image = *imageRef;
+	if (!image.data) { return 0; }
+	
+	// Shrink the image if width or height > maxDimension
+	int maxDimension = 1088;
+	resizeImage(image, maxDimension);
+
+	Mat orig = image.clone();
+
+	// Apply grayscale conversion and noise filtering and steps image size down to 800px
+	float desiredHeight = 800.0;
+	float ratio = preprocessing(image, desiredHeight);
+
+	// Contour Detection
+	vector<vector<Point> > contours;
+	vector<Vec4i> hierarchy;
+	detectContours(image, contours, hierarchy);
+
+
+	// Contour sorting
+	vector<Point> boardApprox = findLargestQuadralateral(contours);
+	int imageArea = image.size().height * image.size().width;
+	if (contourArea(boardApprox) / imageArea < 0.3) { return -1; }
+	
+	// Perspective Transform
+	array<Point2f, 4> rect, dstRect;
+	orderVertices(boardApprox, rect, dstRect, ratio);
+	Mat warp, warpColored, gray;
+	cvtColor(orig, gray, CV_BGR2GRAY);
+	perspectiveTransform(orig, warpColored, rect, dstRect);
+	perspectiveTransform(gray, warp, rect, dstRect);
+	warpColored.copyTo(*normalized);
+
+	// Point detection
+	int boardEdgesLower, boardEdgesUpper;
+	vector<vector<Point> > pointsSorted = pointDetection(warp, boardEdgesLower, boardEdgesUpper);
+	if (!pointsSorted.size()) return 0;
+
+	// Tile detection begins
+	tileDetection(warp, warpColored, pointsSorted, team1, team2, colors, Board, boardEdgesUpper);
+
 	return 1;
 }
+
+
 
 int main() {
 	// Test cases
@@ -440,10 +412,9 @@ int main() {
 	Mat* team2 = new Mat();
 	Mat* normalized = new Mat();
 	int ret = checker(imageRef, normalized, team1, team2, colors1, Board);
-	imshow("Team 1", *team1);
-	imshow("Team 2", *team2);
-	imshow("normalized", *normalized);
+	cout << "return value: " << ret << endl;
+	//imshow("Team 1", *team1);
+	//imshow("Team 2", *team2);
+	//imshow("normalized", *normalized);
 	if (ret) printBoard(Board);
-	waitKey(0);
-
 }
