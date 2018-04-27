@@ -35,9 +35,9 @@
 
     <ImageView
         android:id="@+id/normalizedView"
-        android:layout_width="370dp"
+        android:layout_width="368dp"
         android:layout_height="370dp"
-        android:layout_marginTop="62dp"
+        android:layout_marginTop="78dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -47,20 +47,20 @@
         android:id="@+id/king11"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="428dp"
+        android:layout_marginBottom="426dp"
         android:background="@android:color/transparent"
         android:tag="king00"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.051"
+        app:layout_constraintHorizontal_bias="0.04"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king12"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="428dp"
+        android:layout_marginBottom="426dp"
         android:background="@android:color/transparent"
         android:tag="king01"
         android:textSize="18sp"
@@ -71,11 +71,11 @@
 
     <Button
         android:id="@+id/king13"
-        android:tag="king02"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="428dp"
+        android:layout_marginBottom="426dp"
         android:background="@android:color/transparent"
+        android:tag="king02"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,11 +84,11 @@
 
     <Button
         android:id="@+id/king14"
-        android:tag="king03"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="428dp"
+        android:layout_marginBottom="426dp"
         android:background="@android:color/transparent"
+        android:tag="king03"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -97,11 +97,11 @@
 
     <Button
         android:id="@+id/king15"
-        android:tag="king04"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="428dp"
+        android:layout_marginBottom="426dp"
         android:background="@android:color/transparent"
+        android:tag="king04"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -110,11 +110,11 @@
 
     <Button
         android:id="@+id/king16"
-        android:tag="king05"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="428dp"
+        android:layout_marginBottom="426dp"
         android:background="@android:color/transparent"
+        android:tag="king05"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -123,11 +123,11 @@
 
     <Button
         android:id="@+id/king17"
-        android:tag="king06"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="428dp"
+        android:layout_marginBottom="426dp"
         android:background="@android:color/transparent"
+        android:tag="king06"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -136,37 +136,37 @@
 
     <Button
         android:id="@+id/king18"
-        android:tag="king07"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="428dp"
+        android:layout_marginBottom="426dp"
         android:background="@android:color/transparent"
+        android:tag="king07"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintHorizontal_bias="0.97"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king21"
-        android:tag="king10"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginBottom="376dp"
         android:background="@android:color/transparent"
+        android:tag="king10"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.051"
+        app:layout_constraintHorizontal_bias="0.04"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king22"
-        android:tag="king11"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginBottom="376dp"
         android:background="@android:color/transparent"
+        android:tag="king11"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -175,11 +175,11 @@
 
     <Button
         android:id="@+id/king23"
-        android:tag="king12"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginBottom="376dp"
         android:background="@android:color/transparent"
+        android:tag="king12"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -188,11 +188,11 @@
 
     <Button
         android:id="@+id/king24"
-        android:tag="king13"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginBottom="376dp"
         android:background="@android:color/transparent"
+        android:tag="king13"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -201,11 +201,11 @@
 
     <Button
         android:id="@+id/king25"
-        android:tag="king14"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginBottom="376dp"
         android:background="@android:color/transparent"
+        android:tag="king14"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -214,11 +214,11 @@
 
     <Button
         android:id="@+id/king26"
-        android:tag="king15"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginBottom="376dp"
         android:background="@android:color/transparent"
+        android:tag="king15"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -227,11 +227,11 @@
 
     <Button
         android:id="@+id/king27"
-        android:tag="king16"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginBottom="376dp"
         android:background="@android:color/transparent"
+        android:tag="king16"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -240,37 +240,37 @@
 
     <Button
         android:id="@+id/king28"
-        android:tag="king17"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginBottom="376dp"
         android:background="@android:color/transparent"
+        android:tag="king17"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintHorizontal_bias="0.97"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king31"
-        android:tag="king20"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="328dp"
+        android:layout_marginBottom="334dp"
         android:background="@android:color/transparent"
+        android:tag="king20"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.051"
+        app:layout_constraintHorizontal_bias="0.04"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king32"
-        android:tag="king21"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="328dp"
+        android:layout_marginBottom="334dp"
         android:background="@android:color/transparent"
+        android:tag="king21"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -279,11 +279,11 @@
 
     <Button
         android:id="@+id/king33"
-        android:tag="king22"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="328dp"
+        android:layout_marginBottom="334dp"
         android:background="@android:color/transparent"
+        android:tag="king22"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -292,11 +292,11 @@
 
     <Button
         android:id="@+id/king34"
-        android:tag="king23"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="328dp"
+        android:layout_marginBottom="334dp"
         android:background="@android:color/transparent"
+        android:tag="king23"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -305,11 +305,11 @@
 
     <Button
         android:id="@+id/king35"
-        android:tag="king24"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="328dp"
+        android:layout_marginBottom="334dp"
         android:background="@android:color/transparent"
+        android:tag="king24"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -318,11 +318,11 @@
 
     <Button
         android:id="@+id/king36"
-        android:tag="king25"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="328dp"
+        android:layout_marginBottom="334dp"
         android:background="@android:color/transparent"
+        android:tag="king25"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -331,11 +331,11 @@
 
     <Button
         android:id="@+id/king37"
-        android:tag="king26"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="328dp"
+        android:layout_marginBottom="334dp"
         android:background="@android:color/transparent"
+        android:tag="king26"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -344,37 +344,37 @@
 
     <Button
         android:id="@+id/king38"
-        android:tag="king27"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="328dp"
+        android:layout_marginBottom="334dp"
         android:background="@android:color/transparent"
+        android:tag="king27"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintHorizontal_bias="0.97"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king41"
-        android:tag="king30"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="276dp"
+        android:layout_marginBottom="298dp"
         android:background="@android:color/transparent"
+        android:tag="king30"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.051"
+        app:layout_constraintHorizontal_bias="0.04"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king42"
-        android:tag="king31"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="276dp"
+        android:layout_marginBottom="298dp"
         android:background="@android:color/transparent"
+        android:tag="king31"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -383,11 +383,11 @@
 
     <Button
         android:id="@+id/king43"
-        android:tag="king32"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="276dp"
+        android:layout_marginBottom="298dp"
         android:background="@android:color/transparent"
+        android:tag="king32"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -396,11 +396,11 @@
 
     <Button
         android:id="@+id/king44"
-        android:tag="king33"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="276dp"
+        android:layout_marginBottom="298dp"
         android:background="@android:color/transparent"
+        android:tag="king33"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -409,11 +409,11 @@
 
     <Button
         android:id="@+id/king45"
-        android:tag="king34"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="276dp"
+        android:layout_marginBottom="298dp"
         android:background="@android:color/transparent"
+        android:tag="king34"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -422,11 +422,11 @@
 
     <Button
         android:id="@+id/king46"
-        android:tag="king35"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="276dp"
+        android:layout_marginBottom="298dp"
         android:background="@android:color/transparent"
+        android:tag="king35"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -435,11 +435,11 @@
 
     <Button
         android:id="@+id/king47"
-        android:tag="king36"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="276dp"
+        android:layout_marginBottom="298dp"
         android:background="@android:color/transparent"
+        android:tag="king36"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -448,37 +448,37 @@
 
     <Button
         android:id="@+id/king48"
-        android:tag="king37"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="276dp"
+        android:layout_marginBottom="298dp"
         android:background="@android:color/transparent"
+        android:tag="king37"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintHorizontal_bias="0.97"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king51"
-        android:tag="king40"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="232dp"
+        android:layout_marginBottom="256dp"
         android:background="@android:color/transparent"
+        android:tag="king40"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.051"
+        app:layout_constraintHorizontal_bias="0.04"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king52"
-        android:tag="king41"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="232dp"
+        android:layout_marginBottom="256dp"
         android:background="@android:color/transparent"
+        android:tag="king41"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -487,11 +487,11 @@
 
     <Button
         android:id="@+id/king53"
-        android:tag="king42"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="232dp"
+        android:layout_marginBottom="256dp"
         android:background="@android:color/transparent"
+        android:tag="king42"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -500,11 +500,11 @@
 
     <Button
         android:id="@+id/king54"
-        android:tag="king43"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="232dp"
+        android:layout_marginBottom="256dp"
         android:background="@android:color/transparent"
+        android:tag="king43"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -513,11 +513,11 @@
 
     <Button
         android:id="@+id/king55"
-        android:tag="king44"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="232dp"
+        android:layout_marginBottom="256dp"
         android:background="@android:color/transparent"
+        android:tag="king44"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -526,11 +526,11 @@
 
     <Button
         android:id="@+id/king56"
-        android:tag="king45"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="232dp"
+        android:layout_marginBottom="256dp"
         android:background="@android:color/transparent"
+        android:tag="king45"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -539,11 +539,11 @@
 
     <Button
         android:id="@+id/king57"
-        android:tag="king46"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="232dp"
+        android:layout_marginBottom="256dp"
         android:background="@android:color/transparent"
+        android:tag="king46"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -552,37 +552,37 @@
 
     <Button
         android:id="@+id/king58"
-        android:tag="king47"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="232dp"
+        android:layout_marginBottom="256dp"
         android:background="@android:color/transparent"
+        android:tag="king47"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintHorizontal_bias="0.97"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king61"
-        android:tag="king50"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="180dp"
+        android:layout_marginBottom="214dp"
         android:background="@android:color/transparent"
+        android:tag="king50"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.051"
+        app:layout_constraintHorizontal_bias="0.04"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king62"
-        android:tag="king51"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="180dp"
+        android:layout_marginBottom="214dp"
         android:background="@android:color/transparent"
+        android:tag="king51"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -591,11 +591,11 @@
 
     <Button
         android:id="@+id/king63"
-        android:tag="king52"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="180dp"
+        android:layout_marginBottom="214dp"
         android:background="@android:color/transparent"
+        android:tag="king52"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -604,11 +604,11 @@
 
     <Button
         android:id="@+id/king64"
-        android:tag="king53"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="180dp"
+        android:layout_marginBottom="214dp"
         android:background="@android:color/transparent"
+        android:tag="king53"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -617,11 +617,11 @@
 
     <Button
         android:id="@+id/king65"
-        android:tag="king54"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="180dp"
+        android:layout_marginBottom="214dp"
         android:background="@android:color/transparent"
+        android:tag="king54"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -630,11 +630,11 @@
 
     <Button
         android:id="@+id/king66"
-        android:tag="king55"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="180dp"
+        android:layout_marginBottom="214dp"
         android:background="@android:color/transparent"
+        android:tag="king55"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -643,11 +643,11 @@
 
     <Button
         android:id="@+id/king67"
-        android:tag="king56"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="180dp"
+        android:layout_marginBottom="214dp"
         android:background="@android:color/transparent"
+        android:tag="king56"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -656,37 +656,37 @@
 
     <Button
         android:id="@+id/king68"
-        android:tag="king57"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="180dp"
+        android:layout_marginBottom="214dp"
         android:background="@android:color/transparent"
+        android:tag="king57"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintHorizontal_bias="0.97"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king71"
-        android:tag="king60"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="124dp"
+        android:layout_marginBottom="172dp"
         android:background="@android:color/transparent"
+        android:tag="king60"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.051"
+        app:layout_constraintHorizontal_bias="0.04"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king72"
-        android:tag="king61"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="124dp"
+        android:layout_marginBottom="172dp"
         android:background="@android:color/transparent"
+        android:tag="king61"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -695,11 +695,11 @@
 
     <Button
         android:id="@+id/king73"
-        android:tag="king62"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="124dp"
+        android:layout_marginBottom="172dp"
         android:background="@android:color/transparent"
+        android:tag="king62"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -708,11 +708,11 @@
 
     <Button
         android:id="@+id/king74"
-        android:tag="king63"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="124dp"
+        android:layout_marginBottom="172dp"
         android:background="@android:color/transparent"
+        android:tag="king63"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -721,11 +721,11 @@
 
     <Button
         android:id="@+id/king75"
-        android:tag="king64"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="124dp"
+        android:layout_marginBottom="172dp"
         android:background="@android:color/transparent"
+        android:tag="king64"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -734,11 +734,11 @@
 
     <Button
         android:id="@+id/king76"
-        android:tag="king65"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="124dp"
+        android:layout_marginBottom="172dp"
         android:background="@android:color/transparent"
+        android:tag="king65"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -747,11 +747,11 @@
 
     <Button
         android:id="@+id/king77"
-        android:tag="king66"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="124dp"
+        android:layout_marginBottom="172dp"
         android:background="@android:color/transparent"
+        android:tag="king66"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -760,37 +760,37 @@
 
     <Button
         android:id="@+id/king78"
-        android:tag="king67"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="124dp"
+        android:layout_marginBottom="172dp"
         android:background="@android:color/transparent"
+        android:tag="king67"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintHorizontal_bias="0.97"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king81"
-        android:tag="king70"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="76dp"
+        android:layout_marginBottom="130dp"
         android:background="@android:color/transparent"
+        android:tag="king70"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.051"
+        app:layout_constraintHorizontal_bias="0.04"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/king82"
-        android:tag="king71"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="76dp"
+        android:layout_marginBottom="130dp"
         android:background="@android:color/transparent"
+        android:tag="king71"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -799,11 +799,11 @@
 
     <Button
         android:id="@+id/king83"
-        android:tag="king72"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="76dp"
+        android:layout_marginBottom="130dp"
         android:background="@android:color/transparent"
+        android:tag="king72"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -812,11 +812,11 @@
 
     <Button
         android:id="@+id/king84"
-        android:tag="king73"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="76dp"
+        android:layout_marginBottom="130dp"
         android:background="@android:color/transparent"
+        android:tag="king73"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -825,11 +825,11 @@
 
     <Button
         android:id="@+id/king85"
-        android:tag="king74"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="76dp"
+        android:layout_marginBottom="130dp"
         android:background="@android:color/transparent"
+        android:tag="king74"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -838,11 +838,11 @@
 
     <Button
         android:id="@+id/king86"
-        android:tag="king75"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="76dp"
+        android:layout_marginBottom="130dp"
         android:background="@android:color/transparent"
+        android:tag="king75"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -851,11 +851,11 @@
 
     <Button
         android:id="@+id/king87"
-        android:tag="king76"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="76dp"
+        android:layout_marginBottom="130dp"
         android:background="@android:color/transparent"
+        android:tag="king76"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -864,15 +864,15 @@
 
     <Button
         android:id="@+id/king88"
-        android:tag="king77"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="76dp"
+        android:layout_marginBottom="130dp"
         android:background="@android:color/transparent"
+        android:tag="king77"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintHorizontal_bias="0.97"
         app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

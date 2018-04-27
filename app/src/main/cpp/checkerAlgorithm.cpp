@@ -239,7 +239,9 @@ int checker(Mat* imageRef, Mat *&warpedImage, Mat *&team1, Mat *&team2, const ve
     warpPerspective(processedImage, warp, transformMatrix, size);
     warpPerspective(orig, warpColored, transformMatrix, size);
     //resize(*warpedImage, *warpedImage, warpColored.size());
-    warpColored.copyTo(*warpedImage);
+    Mat warpColoredResized;
+    resize(warpColored, warpColoredResized, Size(450, 450) );
+    warpColoredResized.copyTo(*warpedImage);
 //    Mat* normalized = new Mat();
 //    *normalized = warpColored.clone();
 //    warpedImage = normalized;
